@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="zh-HK">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>創業情報站</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+HK:wght@400;500;700&family=Noto+Serif+HK:wght@600;700&display=swap">
+<style>
+/* Layout: one narrow reading column, sticky page switcher, dated entries with hairlines.
+   Pages marked private show a password panel until unlocked. */
+:root {
+  --bg: #eef1f4; --surface: #ffffff; --ink: #101c26; --muted: #566774; --line: #d3dbe1;
+  --accent: #0b6e75; --fin: #1d5fa8; --pain: #b4234b; --content: #1f7a5a; --wash: #e3e9ee;
+  --font-display: "Noto Serif HK", "Songti TC", "PMingLiU", serif;
+  --font-body: "Noto Sans HK", "PingFang HK", "Microsoft JhengHei", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0e161d; --surface: #16212a; --ink: #e6edf2; --muted: #8fa0ad; --line: #26343f;
+    --accent: #4fc1c9; --fin: #6aa7e8; --pain: #f0708f; --content: #4cc39b; --wash: #1c2a35;
+    color-scheme: dark;
+  }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font-body);
+  font-size: 15px; line-height: 1.65;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: max(56px, env(safe-area-inset-bottom, 0px));
+}
+.wrap { max-width: 720px; margin: 0 auto; }
+a { color: var(--accent); }
+a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+header { padding: 28px 0 18px; }
+.top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.eyebrow { font-family: var(--font-mono); font-size: 12px; letter-spacing: .08em; color: var(--muted); text-transform: uppercase; }
+.lockbtn { font: inherit; font-size: 12px; font-family: var(--font-mono); color: var(--muted); background: none; border: 1px solid var(--line); border-radius: 99px; padding: 3px 10px; cursor: pointer; }
+h1 { font-family: var(--font-display); font-weight: 700; font-size: 30px; line-height: 1.25; margin: 6px 0 0; text-wrap: balance; }
+.sub { color: var(--muted); margin: 6px 0 0; }
+.sources { display: flex; flex-wrap: wrap; gap: 6px; margin: 16px 0 0; padding: 0; list-style: none; }
+.sources li { font-size: 12px; padding: 3px 9px; border: 1px solid var(--line); border-radius: 99px; background: var(--surface); color: var(--muted); display: flex; gap: 6px; align-items: center; }
+.sources i { width: 7px; height: 7px; border-radius: 50%; background: var(--content); display: block; }
+.sources li[data-s="limited"] i { background: transparent; border: 1.5px solid var(--muted); }
+.sources li[data-s="off"] i { background: var(--line); }
+.legend { font-size: 12px; color: var(--muted); margin: 8px 0 0; }
+nav {
+  position: sticky; top: 0; z-index: 11; background: var(--bg); border-bottom: 1px solid var(--line);
+  display: flex; gap: 2px; overflow-x: auto;
+  margin: 0 calc(-1 * max(16px, env(safe-area-inset-left, 0px)));
+  padding: env(safe-area-inset-top, 0px) max(16px, env(safe-area-inset-left, 0px)) 0;
+}
+nav button { font: inherit; font-weight: 500; background: none; border: 0; color: var(--muted); padding: 12px 14px; cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; margin-bottom: -1px; display: flex; gap: 6px; align-items: center; }
+nav button[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--accent); }
+.pill { font-family: var(--font-mono); font-size: 10px; letter-spacing: .04em; padding: 1px 6px; border-radius: 4px; background: var(--wash); color: var(--muted); }
+.bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 18px 0 6px; flex-wrap: wrap; }
+.datebox { display: flex; align-items: center; gap: 6px; }
+.datebox button { font: inherit; width: 36px; height: 36px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 8px; cursor: pointer; font-size: 16px; }
+.datebox button:disabled { opacity: .35; cursor: default; }
+.datebox .d { font-family: var(--font-mono); font-size: 14px; min-width: 9.5em; text-align: center; font-variant-numeric: tabular-nums; }
+.stamp { font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
+section { margin-top: 30px; min-width: 0; }
+section h2 { font-family: var(--font-display); font-size: 20px; margin: 0; display: flex; align-items: baseline; gap: 10px; padding-bottom: 8px; border-bottom: 2px solid var(--k); }
+section h2 small { font-family: var(--font-mono); font-size: 12px; font-weight: 400; color: var(--muted); }
+section[data-k="finance"] { --k: var(--fin); }
+section[data-k="pain"] { --k: var(--pain); }
+section[data-k="content"] { --k: var(--content); }
+section[data-k="weekly"] { --k: var(--accent); }
+.entry { padding: 16px 0; border-bottom: 1px solid var(--line); min-width: 0; }
+.entry h3 { font-size: 16px; line-height: 1.5; margin: 0; font-weight: 700; text-wrap: balance; overflow-wrap: anywhere; }
+.entry p { margin: 4px 0 0; color: var(--muted); overflow-wrap: anywhere; }
+.meta { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; margin-top: 8px; font-size: 12px; color: var(--muted); }
+.tag { font-family: var(--font-mono); font-size: 11px; letter-spacing: .04em; padding: 2px 7px; border-radius: 4px; background: var(--wash); color: var(--ink); }
+.kv { margin-top: 10px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; font-size: 14px; overflow-wrap: anywhere; }
+.kv b { display: block; font-size: 11px; font-family: var(--font-mono); letter-spacing: .06em; color: var(--k); margin-bottom: 2px; font-weight: 500; text-transform: uppercase; }
+.signal { display: inline-flex; gap: 3px; align-items: center; }
+.signal span { width: 14px; height: 5px; border-radius: 2px; background: var(--line); }
+.signal span.on { background: var(--pain); }
+.empty { padding: 36px 0 10px; color: var(--muted); }
+.empty h3 { font-family: var(--font-display); font-size: 20px; color: var(--ink); margin: 0 0 6px; }
+.idea { padding: 18px 0; border-bottom: 1px solid var(--line); display: grid; grid-template-columns: 2.2em minmax(0, 1fr); gap: 0 10px; }
+.idea .n { font-family: var(--font-mono); font-size: 22px; color: var(--accent); line-height: 1.3; }
+.idea h3 { margin: 0; font-size: 17px; }
+.idea dl { margin: 8px 0 0; display: grid; grid-template-columns: 5em minmax(0, 1fr); gap: 4px 10px; font-size: 14px; }
+.idea dt { color: var(--muted); font-family: var(--font-mono); font-size: 12px; padding-top: 2px; }
+.idea dd { margin: 0; overflow-wrap: anywhere; }
+.fin-note { margin: 14px 0 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+select, input[type="password"] { font: inherit; font-size: 15px; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 9px 12px; max-width: 100%; }
+.lock { margin-top: 30px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 20px; }
+.lock h3 { font-family: var(--font-display); font-size: 20px; margin: 0 0 4px; }
+.lock p { margin: 0 0 14px; color: var(--muted); }
+.lock form { display: flex; flex-wrap: wrap; gap: 8px; }
+.lock input[type="password"] { flex: 1 1 200px; min-width: 0; }
+.lock button[type="submit"] { font: inherit; font-weight: 500; background: var(--accent); color: var(--bg); border: 0; border-radius: 8px; padding: 9px 18px; cursor: pointer; }
+.lock button[disabled] { opacity: .6; cursor: default; }
+.lock label { flex-basis: 100%; font-size: 13px; color: var(--muted); display: flex; gap: 6px; align-items: center; }
+.err { flex-basis: 100%; color: var(--pain); font-size: 14px; margin: 0; min-height: 1.4em; }
+.mini-lock { margin-top: 24px; padding: 12px 14px; border: 1px dashed var(--line); border-radius: 8px; color: var(--muted); font-size: 14px; display: flex; justify-content: space-between; gap: 10px; align-items: center; }
+.mini-lock button { font: inherit; font-size: 13px; color: var(--accent); background: none; border: 0; cursor: pointer; text-decoration: underline; }
+footer { margin-top: 40px; font-size: 12px; color: var(--muted); }
+@media (max-width: 420px) { h1 { font-size: 26px; } .idea { grid-template-columns: 1.8em minmax(0, 1fr); } }
+@media (prefers-reduced-motion: no-preference) { .entry, .idea { animation: rise .25s ease-out both; } }
+@keyframes rise { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="top">
+      <div class="eyebrow" id="today-label">Billion Studio · 情報</div>
+      <button class="lockbtn" id="lockbtn" hidden>鎖返</button>
+    </div>
+    <h1>創業情報站</h1>
+    <p class="sub">每日掃財經、痛點同內容靈感，逢星期日出總結同下週行動。</p>
+    <ul class="sources" id="sources" aria-label="資料來源狀態"></ul>
+    <p class="legend">實心點：直接讀取　空心點：只靠網頁搜尋撈到公開內容，會唔齊</p>
+  </header>
+  <nav role="tablist" aria-label="版面" id="nav"></nav>
+  <main id="main" aria-live="polite"></main>
+  <footer>財經內容只係資料整理同個人觀點，唔係投資建議。痛點同題材係線索，開發前要先驗證真實需求。</footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+  var LABEL = { today: "今日", finance: "財經", pain: "痛點", content: "靈感", weekly: "每週總結" };
+  var EN = { finance: "Markets", pain: "Pain points", content: "Content" };
+  var VIEWS = ["today", "finance", "pain", "content", "weekly"];
+  var DAY_SECTIONS = ["finance", "pain", "content"];
+  var DEFAULT_SOURCES = [["Reddit","ok"],["YouTube","ok"],["Google Trends","ok"],["網頁搜尋","ok"],["Facebook","limited"],["Instagram","limited"],["Threads","limited"],["X","limited"],["小紅書","limited"]];
+  var WD = ["日","一","二","三","四","五","六"];
+  var LS_KEY = "desk-pw";
+
+  var pub = { pages: { finance: "private", pain: "private", content: "private", weekly: "private" }, days: {}, weeks: {}, meta: {} };
+  var store = null;            // decrypted store, null until unlocked
+  var state = { view: "today", dayIdx: 0, weekIdx: 0, ready: false, busy: false, err: "" };
+
+  function $(id) { return document.getElementById(id); }
+  function el(tag, attrs, kids) {
+    var n = document.createElement(tag);
+    if (attrs) for (var k in attrs) {
+      if (k === "text") n.textContent = attrs[k];
+      else if (k === "class") n.className = attrs[k];
+      else n.setAttribute(k, attrs[k]);
+    }
+    (kids || []).forEach(function (c) { if (c) n.appendChild(typeof c === "string" ? document.createTextNode(c) : c); });
+    return n;
+  }
+  function str(x) { return typeof x === "string" ? x : (x == null ? "" : String(x)); }
+  function arr(x) { return Array.isArray(x) ? x : []; }
+  function safeUrl(u) { return typeof u === "string" && /^https?:\/\//i.test(u) ? u : null; }
+  function fmtDate(s) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s || ""); if (!m) return s || "";
+    var d = new Date(Date.UTC(+m[1], +m[2] - 1, +m[3]));
+    return (+m[2]) + "月" + (+m[3]) + "日 週" + WD[d.getUTCDay()];
+  }
+  function fmtStamp(iso) {
+    var d = new Date(iso); if (!iso || isNaN(d)) return "";
+    var p = function (x) { return String(x).padStart(2, "0"); };
+    return p(d.getMonth() + 1) + "/" + p(d.getDate()) + " " + p(d.getHours()) + ":" + p(d.getMinutes());
+  }
+  function lsGet() { try { return localStorage.getItem(LS_KEY); } catch (e) { return null; } }
+  function lsSet(v) { try { if (v == null) localStorage.removeItem(LS_KEY); else localStorage.setItem(LS_KEY, v); } catch (e) {} }
+
+  /* ---------- visibility ---------- */
+  function isPublic(sec) { return pub.pages[sec] === "public"; }
+  function canSee(sec) { return isPublic(sec) || store !== null; }
+  function days() { return store ? store.days : pub.days; }
+  function weeks() { return store ? store.weeks : pub.weeks; }
+  function dayList() {
+    var d = days();
+    return Object.keys(d).sort().reverse().map(function (k) { return d[k]; });
+  }
+  function weekList() {
+    var w = weeks();
+    return Object.keys(w).sort().reverse().map(function (k) { return w[k]; });
+  }
+
+  /* ---------- crypto ---------- */
+  function unb64(s) { return Uint8Array.from(atob(s), function (c) { return c.charCodeAt(0); }); }
+  async function decryptBlob(blob, pw) {
+    if (!window.crypto || !crypto.subtle) throw new Error("insecure");
+    var km = await crypto.subtle.importKey("raw", new TextEncoder().encode(pw), "PBKDF2", false, ["deriveKey"]);
+    var key = await crypto.subtle.deriveKey(
+      { name: "PBKDF2", salt: unb64(blob.salt), iterations: blob.iter, hash: "SHA-256" },
+      km, { name: "AES-GCM", length: 256 }, false, ["decrypt"]);
+    var pt = await crypto.subtle.decrypt({ name: "AES-GCM", iv: unb64(blob.iv) }, key, unb64(blob.ct));
+    return JSON.parse(new TextDecoder().decode(pt));
+  }
+  var blobPromise = null;
+  function loadBlob() {
+    if (!blobPromise) blobPromise = fetch("data/store.enc.json", { cache: "no-cache" }).then(function (r) {
+      if (!r.ok) throw new Error("fetch " + r.status); return r.json();
+    }).catch(function (e) { blobPromise = null; throw e; });
+    return blobPromise;
+  }
+  async function unlock(pw, remember) {
+    state.busy = true; state.err = ""; render();
+    try {
+      var blob = await loadBlob();
+      store = await decryptBlob(blob, pw);
+      store.days = store.days || {}; store.weeks = store.weeks || {}; store.meta = store.meta || {};
+      if (remember) lsSet(pw);
+      state.dayIdx = 0; state.weekIdx = 0;
+    } catch (e) {
+      store = null; lsSet(null);
+      state.err = e && e.message === "insecure" ? "呢個瀏覽器唔支援解密，請用 https 網址開啟。"
+        : e && /^fetch/.test(e.message || "") ? "載入唔到資料，請稍後再試。" : "密碼唔啱。";
+    }
+    state.busy = false; render();
+  }
+  function lockAgain() { store = null; lsSet(null); state.dayIdx = 0; state.weekIdx = 0; render(); }
+
+  /* ---------- pieces ---------- */
+  function renderSources() {
+    var box = $("sources"); box.textContent = "";
+    var s = (store && store.meta && store.meta.sources) || (pub.meta && pub.meta.sources) || null;
+    DEFAULT_SOURCES.forEach(function (d) {
+      var v = s && s[d[0]]; if (v !== "ok" && v !== "limited" && v !== "off") v = s ? "off" : d[1];
+      box.appendChild(el("li", { "data-s": v }, [el("i"), d[0]]));
+    });
+  }
+  function renderNav() {
+    var nav = $("nav"); nav.textContent = "";
+    VIEWS.forEach(function (v) {
+      var priv = v !== "today" && !isPublic(v);
+      var b = el("button", { role: "tab", "data-v": v, "aria-selected": String(state.view === v) }, [
+        LABEL[v], priv && store === null ? el("span", { class: "pill", text: "私人" }) : null
+      ]);
+      nav.appendChild(b);
+    });
+  }
+  function lockPanel(what) {
+    var input = el("input", { type: "password", id: "pw", autocomplete: "current-password", placeholder: "密碼", "aria-label": "密碼" });
+    var btn = el("button", { type: "submit", text: state.busy ? "解鎖緊…" : "解鎖" });
+    if (state.busy) { btn.disabled = true; input.disabled = true; }
+    var chk = el("input", { type: "checkbox", id: "remember" });
+    var form = el("form", null, [input, btn,
+      el("label", { for: "remember" }, [chk, "喺呢部機記住密碼"]),
+      el("p", { class: "err", text: state.err, role: "alert" })]);
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      if (input.value) unlock(input.value, chk.checked);
+    });
+    return el("div", { class: "lock" }, [
+      el("h3", { text: "呢頁係私人頁面" }),
+      el("p", { text: what + "輸入密碼先睇到。" }), form
+    ]);
+  }
+  function miniLock(names) {
+    var b = el("button", { type: "button", text: "輸入密碼" });
+    b.addEventListener("click", function () { setView(names[0]); });
+    return el("div", { class: "mini-lock" }, [el("span", { text: "私人頁面：" + names.map(function (n) { return LABEL[n]; }).join("、") }), b]);
+  }
+
+  function entry(key, it) {
+    var url = safeUrl(it.url);
+    var meta = el("div", { class: "meta" });
+    if (it.source) meta.appendChild(el("span", { class: "tag", text: str(it.source) }));
+    if (key === "content" && it.channel) meta.appendChild(el("span", { class: "tag", text: str(it.channel) }));
+    arr(it.tickers).slice(0, 6).forEach(function (t) { meta.appendChild(el("span", { class: "tag", text: str(t) })); });
+    if (key === "pain" && it.signal) {
+      var n = Math.max(1, Math.min(3, +it.signal || 1));
+      meta.appendChild(el("span", { class: "signal", title: "訊號強度 " + n + "/3" }, [
+        el("span", { class: n >= 1 ? "on" : "" }), el("span", { class: n >= 2 ? "on" : "" }), el("span", { class: n >= 3 ? "on" : "" })]));
+      meta.appendChild(el("span", { text: "訊號 " + n + "/3" }));
+    }
+    if (url) meta.appendChild(el("a", { href: url, target: "_blank", rel: "noopener noreferrer", text: "原文連結" }));
+    var box = el("article", { class: "entry" }, [
+      el("h3", { text: str(it.title) }), it.summary ? el("p", { text: str(it.summary) }) : null, meta]);
+    if (key === "pain" && it.product) box.appendChild(el("div", { class: "kv" }, [el("b", { text: "可能做成" }), str(it.product)]));
+    if (key === "content" && it.hook) box.appendChild(el("div", { class: "kv" }, [el("b", { text: "建議標題" }), str(it.hook)]));
+    return box;
+  }
+  function sectionBlock(key, items, heading) {
+    var s = el("section", { "data-k": key });
+    if (heading) s.appendChild(el("h2", null, [LABEL[key], el("small", { text: EN[key] + " · " + items.length })]));
+    if (!items.length) s.appendChild(el("p", { class: "empty", text: "呢日冇呢類內容。" }));
+    items.forEach(function (it) { s.appendChild(entry(key, it)); });
+    return s;
+  }
+  function dayBar(list, day) {
+    var prev = el("button", { "aria-label": "較早一日", text: "‹" });
+    var next = el("button", { "aria-label": "較新一日", text: "›" });
+    prev.disabled = state.dayIdx >= list.length - 1; next.disabled = state.dayIdx <= 0;
+    prev.onclick = function () { state.dayIdx++; render(); };
+    next.onclick = function () { state.dayIdx--; render(); };
+    return el("div", { class: "bar" }, [
+      el("div", { class: "datebox" }, [prev, el("span", { class: "d", text: fmtDate(day.date) }), next]),
+      el("span", { class: "stamp", text: day.updatedAt ? "更新 " + fmtStamp(day.updatedAt) : "" })]);
+  }
+
+  /* ---------- views ---------- */
+  function renderDay(frag, only) {
+    var secs = only ? [only] : DAY_SECTIONS;
+    var visible = secs.filter(canSee), hidden = secs.filter(function (s) { return !canSee(s); });
+    if (!visible.length) {
+      frag.appendChild(lockPanel(only ? "「" + LABEL[only] + "」" : "今日內容"));
+      return;
+    }
+    var list = dayList();
+    if (!list.length) {
+      frag.appendChild(el("div", { class: "empty" }, [el("h3", { text: "未有內容" }), el("p", { text: "每日排程行完之後，內容會喺度出現。" })]));
+      return;
+    }
+    if (state.dayIdx >= list.length) state.dayIdx = 0;
+    var day = list[state.dayIdx];
+    frag.appendChild(dayBar(list, day));
+    visible.forEach(function (k) { frag.appendChild(sectionBlock(k, arr(day[k]), !only)); });
+    if (hidden.length) frag.appendChild(miniLock(hidden));
+  }
+  function renderWeekly(frag) {
+    if (!canSee("weekly")) { frag.appendChild(lockPanel("「每週總結」")); return; }
+    var list = weekList();
+    if (!list.length) {
+      frag.appendChild(el("div", { class: "empty" }, [el("h3", { text: "未有每週總結" }),
+        el("p", { text: "第一個星期日排程行完之後會出現：本週 3 個點子同下週行動、5 個值得拍嘅題材、一段財經觀察。" })]));
+      return;
+    }
+    if (state.weekIdx >= list.length) state.weekIdx = 0;
+    var w = list[state.weekIdx];
+    var sel = el("select", { id: "weekpick", "aria-label": "揀星期" });
+    list.forEach(function (x, i) {
+      var o = el("option", { value: String(i), text: str(x.week) + (x.range ? "　" + str(x.range) : "") });
+      if (i === state.weekIdx) o.selected = true; sel.appendChild(o);
+    });
+    sel.onchange = function () { state.weekIdx = +sel.value; render(); };
+    frag.appendChild(el("div", { class: "bar" }, [sel, el("span", { class: "stamp", text: w.updatedAt ? "更新 " + fmtStamp(w.updatedAt) : "" })]));
+    var ideas = el("section", { "data-k": "pain" }, [el("h2", null, ["本週最值得做嘅點子", el("small", { text: "Ideas" })])]);
+    arr(w.ideas).forEach(function (i, idx) {
+      ideas.appendChild(el("article", { class: "idea" }, [el("div", { class: "n", text: String(idx + 1) }),
+        el("div", null, [el("h3", { text: str(i.title) }), el("dl", null, [
+          el("dt", { text: "理由" }), el("dd", { text: str(i.why) }), el("dt", { text: "下週行動" }), el("dd", { text: str(i.action) })])])]));
+    });
+    frag.appendChild(ideas);
+    var topics = el("section", { "data-k": "content" }, [el("h2", null, ["最值得拍嘅題材", el("small", { text: "Topics" })])]);
+    arr(w.topics).forEach(function (t) {
+      topics.appendChild(el("article", { class: "entry" }, [el("h3", { text: str(t.title) }),
+        t.angle ? el("p", { text: str(t.angle) }) : null,
+        el("div", { class: "meta" }, [t.channel ? el("span", { class: "tag", text: str(t.channel) }) : null])]));
+    });
+    frag.appendChild(topics);
+    if (w.finance) frag.appendChild(el("section", { "data-k": "finance" }, [
+      el("h2", null, ["財經觀察", el("small", { text: "Markets" })]), el("p", { class: "fin-note", text: str(w.finance) })]));
+  }
+
+  function render() {
+    var main = $("main"), frag = document.createDocumentFragment();
+    if (!state.ready) frag.appendChild(el("p", { class: "empty", text: "載入中…" }));
+    else if (state.view === "weekly") renderWeekly(frag);
+    else renderDay(frag, state.view === "today" ? null : state.view);
+    var keepPw = document.activeElement && document.activeElement.id === "pw" ? document.activeElement.value : null;
+    main.textContent = ""; main.appendChild(frag);
+    if (keepPw !== null && $("pw")) $("pw").value = keepPw;
+    renderNav(); renderSources();
+    $("lockbtn").hidden = store === null;
+    var latest = dayList()[0];
+    $("today-label").textContent = "Billion Studio · 情報" + (latest ? " · 最新 " + latest.date : "");
+  }
+  function setView(v) {
+    if (VIEWS.indexOf(v) < 0) v = "today";
+    state.view = v; state.err = "";
+    try { history.replaceState(null, "", "#" + v); } catch (e) {}
+    render(); window.scrollTo(0, 0);
+  }
+  $("nav").addEventListener("click", function (e) { var b = e.target.closest("button[data-v]"); if (b) setView(b.getAttribute("data-v")); });
+  $("lockbtn").addEventListener("click", lockAgain);
+  var h = (location.hash || "").replace("#", ""); if (VIEWS.indexOf(h) >= 0) state.view = h;
+
+  /* ---------- boot ---------- */
+  render();
+  fetch("data/public.json", { cache: "no-cache" }).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
+    if (j && j.pages) pub = j;
+  }).catch(function () {}).then(function () {
+    state.ready = true; render();
+    var saved = lsGet(); if (saved) unlock(saved, true);
+  });
+})();
+</script>
+</body>
+</html>

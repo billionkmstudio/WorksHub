@@ -54,3 +54,47 @@ python monitor.py --no-alert  # 真數據，唔發 Telegram
 - 數據來自 Yahoo Finance（yfinance），屬非官方，偶爾會失敗或延遲。
 - 升跌家數只計 S&P 500 成份股，絕對數字會比全市場細好多，所以「≥300 隻」呢啲門檻對你嚟講好少出現，可以改細。
 - 成份股名單用目前版本回推歷史，會有倖存者偏差。
+
+---
+
+# 創業情報站（`/desk`）
+
+網址：`https://<你的帳號>.github.io/<repo>/desk/`
+
+每日財經、痛點挖掘、內容靈感，加每週總結。資料全部以 AES-256-GCM 加密存喺 `docs/desk/data/store.enc.json`，
+即使 repo 係 Public，冇密碼都睇唔到私人頁面嘅內容。
+
+## 頁面權限
+
+`desk/pages.json` 控制每頁係 `public`（任何人睇到）定 `private`（要密碼）：
+
+```json
+{ "finance": "private", "pain": "private", "content": "private", "weekly": "private" }
+```
+
+1. 喺 GitHub 直接改呢個檔案（例如 `"finance": "public"`）→ commit。
+2. `desk-rebuild` workflow 會自動重建 `public.json`，約一分鐘後生效。
+3. 公開頁面嘅內容會以明文放喺 repo，任何人都可以下載，請只公開你想公開嘅嘢。
+
+預設全部私人。所有私人頁面共用同一個密碼。
+
+## 一次性設定
+
+Repo → Settings → Secrets and variables → Actions → New repository secret：`DESK_PASSWORD`（同你解鎖網頁用嘅密碼一樣）。
+
+## 本機工具
+
+```bash
+pip install cryptography
+export DESK_PASSWORD='你的密碼'                      # 至少 12 個字元，唔好寫入任何檔案
+python desk/desk.py add --kind day  --file day.json   # 加入或更新某日內容
+python desk/desk.py add --kind week --file week.json  # 加入或更新某週總結
+python desk/desk.py build                             # 按 pages.json 重建公開資料
+DESK_PASSWORD_NEW='新密碼' python desk/desk.py rekey  # 換密碼（之後要更新 Secret）
+```
+
+## 要知道嘅限制
+
+- 加密喺瀏覽器入面解密，所以任何人都可以下載密文，再離線嘗試估密碼。密碼要夠長夠亂，唔好用常見字詞。
+- 呢個唔係有帳戶嘅登入系統，冇「邊個睇過」嘅紀錄。如果之後要分人、分權限，要改用 Cloudflare Access 之類。
+- 每日自動更新目前仍由 Claude 排程寫入原本嘅 Claude 頁面，未接駁到 GitHub。

@@ -1,0 +1,39 @@
+name: desk-rebuild
+
+# 改咗 desk/pages.json（邊頁公開、邊頁私人）之後，自動重建 docs/desk/data/public.json。
+# 需要 Repo → Settings → Secrets and variables → Actions → Secret：DESK_PASSWORD
+
+on:
+  push:
+    paths:
+      - desk/pages.json
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: desk-rebuild
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      DESK_PASSWORD: ${{ secrets.DESK_PASSWORD }}
+    steps:
+      - name: 檢查密碼
+        if: env.DESK_PASSWORD == ''
+        run: echo "::error::未設定 Secret DESK_PASSWORD，無法重建。" && exit 1
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install cryptography
+      - run: python desk/desk.py build
+      - name: 儲存結果
+        run: |
+          git config user.name "desk-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add docs/desk/data/public.json
+          git diff --cached --quiet || { git commit -m "更新創業情報站頁面權限"; git pull --rebase; git push; }
