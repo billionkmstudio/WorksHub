@@ -33,3 +33,12 @@
 - 國際：BBC、Guardian、NPR、Al Jazeera、DW；財經：CNBC、MarketWatch、Yahoo Finance、BBC Business、Guardian Business。來源清單在 `update_news.py` 頂部的 `FEEDS`。
 - 排名 = 各媒體頭條位置 + 多少媒體同時報道，再由 Gemini 選出 10 篇。這不是真實閱讀量。
 - 摘要只根據 RSS 的標題和簡介寫成，連結和來源名稱直接取自 RSS。
+
+## 痛點與靈惑
+
+- `scripts/update_insights.py` 讀取 Reddit 各版熱門帖和 Hacker News，由 Gemini 選出 5 個痛點和 5 個靈惑。X、Facebook、Threads、IG 沒有公開接口，所以沒有讀取。
+- Reddit 有時會擋 GitHub 的伺服器；這一步失敗不會影響新聞更新。
+
+## 1 年前對比
+
+`update_monitor.py` 現在保留 560 個交易日。第一次執行時會自動回補較舊的約 160 天（約 35 分鐘），之後「1 年前」才會出現。
