@@ -97,6 +97,15 @@ h3 { font-size: 16px; line-height: 1.45; margin: 0 0 4px; font-weight: 700; text
 .tag { display: inline-block; font-family: var(--mono); font-size: 11px; letter-spacing: .04em; padding: 1px 8px; border-radius: 3px; background: var(--accent-soft); color: var(--accent); margin-right: 6px; vertical-align: 2px; }
 .tag.sample { background: var(--warn-soft); color: var(--warn); }
 .archive { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 0 0 20px; }
+.archive.bottom { margin: 28px 0 8px; padding-top: 16px; border-top: 1px solid var(--line); }
+.actions { margin-top: 10px; }
+.savebtn { font: inherit; font-size: 13px; padding: 4px 12px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); color: var(--ink); cursor: pointer; }
+.savebtn:hover { border-color: var(--accent); }
+.savebtn.on { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+.savetools { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; margin: 0 0 16px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { font: inherit; font-size: 13px; padding: 4px 12px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); color: var(--ink); cursor: pointer; }
+.chip.on { background: var(--ink); color: var(--bg); border-color: var(--ink); }
 .archive .lab { font-size: 13px; color: var(--muted); margin-right: 4px; }
 .archive a { font-family: var(--mono); font-size: 13px; padding: 3px 10px; border: 1px solid var(--line); border-radius: 4px; background: var(--surface); color: var(--ink); }
 .archive a[aria-current="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
@@ -201,7 +210,7 @@ footer.f { color: var(--muted); font-size: 12px; margin-top: 28px; }
 <footer class="sitefoot">
   <div class="wrap row">
     <span>© <span id="yr">2026</span> Billion Studio　僅供個人使用，保留所有權利。</span>
-    <span class="mono">Works Hub v1.2.0</span>
+    <span><a href="mailto:info@billionstudio.app">info@billionstudio.app</a>　<span class="mono">Works Hub v1.3.0</span></span>
   </div>
 </footer>
 
@@ -209,7 +218,7 @@ footer.f { color: var(--muted); font-size: 12px; margin-top: 28px; }
 (function () {
   var PAGES = [
     ["today", "今日"], ["intl", "國際新聞"], ["finance", "財經新聞"],
-    ["monitor", "美股風險監測"], ["pain", "痛點"], ["spark", "靈惑"], ["weekly", "每週總結"]
+    ["monitor", "美股風險監測"], ["pain", "痛點"], ["spark", "靈感"], ["saved", "收藏"], ["weekly", "每週總結"]
   ];
   var WD = ["日", "一", "二", "三", "四", "五", "六"];
   var DATA = null;
@@ -323,9 +332,10 @@ footer.f { color: var(--muted); font-size: 12px; margin-top: 28px; }
   }
 
   /* ---------- page renderers ---------- */
-  function archiveBar(page, cur, key) {
+  function archiveBar(page, cur, key, limit) {
     var ds = days(key);
-    var h = '<div class="archive"><span class="lab">日期存檔</span>';
+    if (limit) { var cut = ds.slice(0, limit); if (cut.indexOf(cur) < 0) cut.push(cur); ds = cut; }
+    var h = '<div class="archive' + (limit ? " bottom" : "") + '"><span class="lab">日期存檔（最近 7 日）</span>';
     ds.forEach(function (d, i) {
       h += '<a href="#' + page + (i === 0 ? "" : "-" + d) + '"' + (d === cur ? ' aria-current="true"' : "") + ">" + dmy(d) + (i === 0 ? "（最新）" : "") + "</a>";
     });
@@ -342,17 +352,95 @@ footer.f { color: var(--muted); font-size: 12px; margin-top: 28px; }
     return h + "</div>";
   }
 
+  var FIELDS = {
+    pain: [["why", "為何是痛點"], ["idea", "可做的方向"]],
+    spark: [["angle", "切入角度"], ["idea", "內容或產品點子"]]
+  };
+  var KIND_NAME = { pain: "痛點", spark: "靈感" };
+
+  /* ---------- saved items (kept in this browser only) ---------- */
+  var memSaved = null;
+  function loadSaved() {
+    if (memSaved) return memSaved;
+    try { memSaved = JSON.parse(localStorage.getItem("wh_saved") || "[]"); } catch (e) { memSaved = []; }
+    if (!Array.isArray(memSaved)) memSaved = [];
+    return memSaved;
+  }
+  function storeSaved() { try { localStorage.setItem("wh_saved", JSON.stringify(memSaved || [])); } catch (e) { /* private mode: stays in memory */ } }
+  function sid(kind, it) { return kind + "|" + (it.url || it.t); }
+  function isSaved(kind, it) { var id = sid(kind, it); return loadSaved().some(function (x) { return x.id === id; }); }
+  function saveBtn(kind, day, idx, on) {
+    return '<button class="savebtn' + (on ? " on" : "") + '" data-save="' + kind + "|" + day + "|" + idx + '" aria-pressed="' + (on ? "true" : "false") + '">' + (on ? "★ 已收藏" : "☆ 收藏") + "</button>";
+  }
+  function insightCard(it, kind, n, sample, extra) {
+    var h = '<article class="card"><div class="n">' + String(n).padStart(2, "0") + "</div><div><h3>" + (sample ? '<span class="tag sample">示範</span>' : "") + '<span class="tag">' + esc(it.slot) + "</span>" + esc(it.t) + "</h3><dl>";
+    FIELDS[kind].forEach(function (f) { h += "<dt>" + f[1] + "</dt><dd>" + esc(it[f[0]]) + "</dd>"; });
+    return h + "</dl>" + src(it) + extra + "</div></article>";
+  }
+
   function insightPage(page, title, sub, key, subArg, fields) {
-    var d = pickDay(subArg, key), day = DATA.days[d], items = day[key] || [];
-    var h = "<h1>" + title + "</h1><p class='sub'>" + esc(sub) + "　" + zhDate(d) + "</p>" + archiveBar(page, d, key);
-    if (day.sample && day.sample[key]) h += '<div class="notice">此日為版面示範內容，並非實際社交平台貼文。每日自動任務執行後，會由 Reddit 與 Hacker News 的真實討論取代。</div>';
+    var d = pickDay(subArg, key), day = DATA.days[d], items = day[key] || [], sample = !!(day.sample && day.sample[key]);
+    var h = "<h1>" + title + "</h1><p class='sub'>" + esc(sub) + "　" + zhDate(d) + "</p>";
+    if (sample) h += '<div class="notice">此日為版面示範內容，並非實際社交平台貼文。每日自動任務執行後，會由 Reddit 與 Hacker News 的真實討論取代。</div>';
     h += '<div class="cards">';
-    items.forEach(function (it, i) {
-      h += '<article class="card"><div class="n">' + String(i + 1).padStart(2, "0") + "</div><div><h3>" + (day.sample && day.sample[key] ? '<span class="tag sample">示範</span>' : "") + '<span class="tag">' + esc(it.slot) + "</span>" + esc(it.t) + "</h3><dl>";
-      fields.forEach(function (f) { h += "<dt>" + f[1] + "</dt><dd>" + esc(it[f[0]]) + "</dd>"; });
-      h += "</dl>" + src(it) + "</div></article>";
+    items.forEach(function (it, i) { h += insightCard(it, key, i + 1, sample, '<div class="actions">' + saveBtn(key, d, i, isSaved(key, it)) + "</div>"); });
+    return h + "</div>" + archiveBar(page, d, key, 7);
+  }
+
+  var savedFilter = "all";
+  function savedPage() {
+    var all = loadSaved().slice().sort(function (a, b) { return (b.savedAt || "").localeCompare(a.savedAt || ""); });
+    var list = all.filter(function (x) { return savedFilter === "all" || x.kind === savedFilter; });
+    var h = "<h1>收藏</h1><p class='sub'>你在痛點和靈感頁按 ☆ 收藏的內容，不會隨每日更新消失。</p>";
+    h += '<div class="notice">收藏只存在這部裝置的這個瀏覽器，換電腦或清除瀏覽資料後不會跟著走。要搬到另一部裝置，先按「匯出」，再在另一部按「匯入」。</div>';
+    h += '<div class="savetools"><div class="chips">';
+    [["all", "全部"], ["pain", "痛點"], ["spark", "靈感"]].forEach(function (f) {
+      var c = all.filter(function (x) { return f[0] === "all" || x.kind === f[0]; }).length;
+      h += '<button class="chip' + (savedFilter === f[0] ? " on" : "") + '" data-filter="' + f[0] + '">' + f[1] + " " + c + "</button>";
+    });
+    h += '</div><div class="chips"><button class="chip" data-export="1">匯出</button><label class="chip">匯入<input type="file" accept="application/json,.json" data-import="1" hidden></label></div></div>';
+    if (!list.length) return h + '<p class="empty">' + (all.length ? "這個分類沒有收藏。" : "還沒有收藏。到痛點或靈感頁，按卡片底部的「☆ 收藏」。") + "</p>";
+    h += '<div class="cards">';
+    list.forEach(function (x, i) {
+      h += insightCard(x.item, x.kind, i + 1, false, '<div class="meta">' + KIND_NAME[x.kind] + "　來自 " + dmy(x.day) + "　收藏於 " + esc((x.savedAt || "").slice(0, 10)) + '</div><div class="actions"><button class="savebtn on" data-del="' + esc(x.id) + '">移除收藏</button></div>');
     });
     return h + "</div>";
+  }
+  function onClick(e) {
+    var t = e.target.closest ? e.target.closest("button") : null;
+    if (!t) return;
+    if (t.dataset.save) {
+      var p = t.dataset.save.split("|"), kind = p[0], day = p[1], it = DATA.days[day] && DATA.days[day][kind] && DATA.days[day][kind][+p[2]];
+      if (!it) return;
+      var arr = loadSaved(), id = sid(kind, it), k = -1;
+      arr.forEach(function (x, n) { if (x.id === id) k = n; });
+      if (k >= 0) arr.splice(k, 1);
+      else arr.push({ id: id, kind: kind, day: day, savedAt: new Date().toISOString(), item: it });
+      storeSaved();
+      var on = k < 0;
+      t.className = "savebtn" + (on ? " on" : ""); t.textContent = on ? "★ 已收藏" : "☆ 收藏"; t.setAttribute("aria-pressed", on ? "true" : "false");
+    } else if (t.dataset.del) {
+      memSaved = loadSaved().filter(function (x) { return x.id !== t.dataset.del; }); storeSaved(); route();
+    } else if (t.dataset.filter) {
+      savedFilter = t.dataset.filter; route(true);
+    } else if (t.dataset.export) {
+      var blob = new Blob([JSON.stringify(loadSaved(), null, 1)], { type: "application/json" }), a = document.createElement("a");
+      a.href = URL.createObjectURL(blob); a.download = "workshub-saved-" + new Date().toISOString().slice(0, 10) + ".json";
+      document.body.appendChild(a); a.click(); a.remove();
+    }
+  }
+  function onChange(e) {
+    var f = e.target; if (!f.dataset || !f.dataset.import || !f.files[0]) return;
+    var rd = new FileReader();
+    rd.onload = function () {
+      try {
+        var inc = JSON.parse(rd.result), arr = loadSaved(), have = {};
+        arr.forEach(function (x) { have[x.id] = 1; });
+        inc.forEach(function (x) { if (x && x.id && x.kind && x.item && !have[x.id]) { arr.push(x); have[x.id] = 1; } });
+        storeSaved(); route(true);
+      } catch (err) { alert("匯入失敗：檔案格式不正確。"); }
+    };
+    rd.readAsText(f.files[0]);
   }
 
   function monitorPage() {
@@ -423,7 +511,7 @@ footer.f { color: var(--muted); font-size: 12px; margin-top: 28px; }
   }
 
   /* ---------- router ---------- */
-  function route() {
+  function route(keepScroll) {
     var raw = (location.hash || "#today").slice(1), i = raw.indexOf("-");
     var page = i < 0 ? raw : raw.slice(0, i), sub = i < 0 ? "" : raw.slice(i + 1);
     if (!PAGES.some(function (p) { return p[0] === page; })) { page = "today"; sub = ""; }
@@ -434,10 +522,11 @@ footer.f { color: var(--muted); font-size: 12px; margin-top: 28px; }
     else if (page === "finance") h = newsPage("finance", "財經新聞", "每日 10 則", "finance", sub);
     else if (page === "monitor") h = monitorPage();
     else if (page === "pain") h = insightPage("pain", "痛點", "每日 5 個，來自 Reddit 與 Hacker News 的熱門討論", "pain", sub, [["why", "為何是痛點"], ["idea", "可做的方向"]]);
-    else if (page === "spark") h = insightPage("spark", "靈惑", "每日 5 個，來自 Reddit 與 Hacker News 的熱門討論", "spark", sub, [["angle", "切入角度"], ["idea", "內容或產品點子"]]);
+    else if (page === "spark") h = insightPage("spark", "靈感", "每日 5 個，來自 Reddit 與 Hacker News 的熱門討論", "spark", sub, [["angle", "切入角度"], ["idea", "內容或產品點子"]]);
+    else if (page === "saved") h = savedPage();
     else h = weeklyPage(sub);
     app.innerHTML = h;
-    window.scrollTo(0, 0);
+    if (keepScroll !== true) window.scrollTo(0, 0);
   }
 
   var y = new Date().getFullYear(); if (y > 2026) document.getElementById("yr").textContent = "2026–" + y;
@@ -445,7 +534,9 @@ footer.f { color: var(--muted); font-size: 12px; margin-top: 28px; }
   fetch("data.json").then(function (r) { return r.json(); }).then(function (j) {
     DATA = j;
     document.getElementById("stamp").textContent = "更新 " + dmy(j.updated.slice(0, 10)) + " " + j.updated.slice(11);
-    window.addEventListener("hashchange", route);
+    window.addEventListener("hashchange", function () { route(); });
+    document.addEventListener("click", onClick);
+    document.addEventListener("change", onChange);
     route();
   }).catch(function () {
     document.getElementById("app").innerHTML = '<p class="empty">資料載入失敗，請重新整理頁面。</p>';
