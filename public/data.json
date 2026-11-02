@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-01T00:50",
+ "updated": "2026-11-02 00:31",
  "days": {
   "2026-10-31": {
    "note": "新聞資料日期：2026-10-30（美股收市）至 2026-10-31",
@@ -195,6 +195,132 @@
     "pain": true,
     "spark": true
    }
+  },
+  "2026-11-02": {
+   "intl": [
+    {
+     "t": "霍爾木茲海峽兩油輪中雷 特朗普稱伊美衝突將結束",
+     "s": "伊朗伊斯蘭革命衛隊稱兩艘油輪在霍爾木茲海峽觸雷起火。美國總統特朗普警告伊朗達成協議，並再次表示衝突將很快結束。",
+     "src": "Al Jazeera",
+     "url": "https://www.aljazeera.com/news/liveblog/2026/11/2/iran-war-live-tankers-hit-in-hormuz-trump-again-says-conflict-to-end-soon?traffic_source=rss"
+    },
+    {
+     "t": "俄空襲致烏克蘭數千人停電 赫爾松局部停火結束",
+     "s": "烏克蘭赫爾松允許平民撤離的罕見人道停火結束。俄羅斯隨後發動空襲，造成烏克蘭數千人電力中斷。",
+     "src": "BBC News",
+     "url": "https://www.bbc.co.uk/news/articles/c64g1y90p71eo?at_medium=RSS&at_campaign=rss"
+    },
+    {
+     "t": "俄羅斯在加里寧格勒建巨型雷達 引發北約警戒",
+     "s": "俄羅斯即將建成位於加里寧格勒的巨型雷達設施，專家指其能監測歐洲大部分地區，恐加劇莫斯科與北約的軍事對峙。",
+     "src": "DW",
+     "url": "https://www.dw.com/en/russia-s-giant-new-radar-in-kaliningrad-raises-alarm-in-nato/a-79797815?maca=en-rss-en-world-4025-rdf"
+    },
+    {
+     "t": "非洲埃博拉疫情未見緩和 衛生官員警告恐波及英國",
+     "s": "非洲埃博拉疫情累計達萬宗確診及近五千人死亡。非洲疾控中心官員警告，若無法獲取更多資金加強防範，疫情恐擴散至英國等地。",
+     "src": "The Guardian",
+     "url": "https://www.theguardian.com/global-development/2026/oct/28/africa-ebola-outbreak-could-reach-uk-says-top-health-official"
+    },
+    {
+     "t": "聯邦調查局指朝鮮涉及幣安平台60億美元竊案",
+     "s": "美國聯邦調查局表示，加密貨幣交易所幣安發生的60億美元盜竊案，與名為TraderTraitor的朝鮮惡意網絡活動有關。",
+     "src": "DW",
+     "url": "https://www.dw.com/en/fbi-says-north-korea-behind-6-billion-binance-crypto-theft/a-79819998?maca=en-rss-en-world-4025-rdf"
+    },
+    {
+     "t": "加拿大與歐盟建立新聯盟 應對地緣政治動盪",
+     "s": "加拿大與歐洲在蒙特利爾峰會上宣布成立「未來聯盟」，開放理念相近國家加入，以應對動盪的地緣政治局勢。",
+     "src": "The Guardian",
+     "url": "https://www.theguardian.com/world/2026/oct/30/canada-european-union-alliance"
+    },
+    {
+     "t": "美民主黨前參選人倒戈支持共和黨 密歇根選戰起內訌",
+     "s": "民主黨人史蒂文斯在失落密歇根州參議院候選人提名後，宣布支持共和黨對手，遭黨內高層譴責為背叛。",
+     "src": "BBC News",
+     "url": "https://www.bbc.co.uk/news/articles/c95ynzv88n68o?at_medium=RSS&at_campaign=rss"
+    },
+    {
+     "t": "塞爾維亞及巴西大選失利 特朗普指控選舉舞弊",
+     "s": "塞爾維亞總統武契奇落選，巴西的弗拉維奧·博索納羅亦未能奪權。失去盟友的美國總統特朗普對此不滿，並指控選舉舞弊。",
+     "src": "DW",
+     "url": "https://www.dw.com/en/donald-trump-loses-allies-after-elections-in-serbia-and-brazil/a-79812075?maca=en-rss-en-world-4025-rdf"
+    },
+    {
+     "t": "青年抗議浪潮席捲歐洲 法國約32萬人上街示威",
+     "s": "青年領導的抗議浪潮席捲歐洲，法國全國約有32萬人走上街頭，內政部長警告入夜後出現混亂的風險極高。",
+     "src": "NPR",
+     "url": "https://www.npr.org/2026/10/31/g-s1-151121/france-seethes-again-as-youth-led-protests-sweep-europe"
+    },
+    {
+     "t": "一架私人噴射機在佛羅里達州墜毀 釀九人死亡",
+     "s": "一架由德克薩斯州奧斯汀飛往巴哈馬的利爾噴射機，在佛羅里達州西棕櫚灘附近的格林納克斯墜毀，造成九人喪生。",
+     "src": "Al Jazeera",
+     "url": "https://www.aljazeera.com/video/newsfeed/2026/11/1/nine-people-dead-after-learjet-crashes-in-florida?traffic_source=rss"
+    }
+   ],
+   "finance": [
+    {
+     "t": "幣安遭黑客攻擊後恢復提款　錄得36.4億美元資金淨流出",
+     "s": "幣安在遭遇63億美元黑客攻擊後恢復提款，錄得36.4億美元淨流出，佔其總資產2.1%。",
+     "src": "CNBC",
+     "url": "https://www.cnbc.com/2026/11/02/binance-outflow-hack-bitcoin.html"
+    },
+    {
+     "t": "科技股業績欠佳觸發拋售　納斯達克市值蒸發近1萬億美元",
+     "s": "受大型科技公司業績欠佳及人工智能回報受質疑影響，美股科技股遭大幅拋售，納斯達克指數市值蒸發近1萬億美元。",
+     "src": "The Guardian Business",
+     "url": "https://www.theguardian.com/technology/2026/oct/30/tech-stocks-drop-earnings-report"
+    },
+    {
+     "t": "美國第三季經濟增長超預期　9月通脹率升至3.7%",
+     "s": "美國商務部最新數據顯示，第三季經濟增長快於預期，但9月份通脹加速升至3.7%。",
+     "src": "The Guardian Business",
+     "url": "https://www.theguardian.com/business/2026/oct/29/economy-growth-third-quarter"
+    },
+    {
+     "t": "DoorDash擬以170億美元收購雜貨配送平台Instacart",
+     "s": "DoorDash宣布斥資170億美元收購Instacart以拓展雜貨配送業務，收購後將保留Instacart品牌與應用程式。",
+     "src": "The Guardian Business",
+     "url": "https://www.theguardian.com/business/2026/oct/29/doordash-buys-instacart-grocery-delivery"
+    },
+    {
+     "t": "蘋果罕見於周一公布業績　市場關注新CEO應對成本挑戰",
+     "s": "蘋果公司罕見於周一公布業績，投資者關注新任行政總裁John Ternus如何應對記憶體價格上漲及疲弱的消費環境。",
+     "src": "MarketWatch",
+     "url": "https://www.marketwatch.com/story/apples-new-earnings-era-begins-at-a-critical-time-for-big-tech-2236a44e?mod=mw_rss_topstories"
+    },
+    {
+     "t": "中美貿易戰表面降溫　分析指潛在摩擦風險依然未除",
+     "s": "儘管中美達成休戰協議令貿易衝突緩和，但雙方均未建立防範機制，美國可能再以貿易逆差威脅開徵新關稅。",
+     "src": "The Guardian Business",
+     "url": "https://www.theguardian.com/world/2026/nov/01/us-china-trade-war-trump-xi"
+    },
+    {
+     "t": "人工智能推動Meta廣告業務　與Google搜索差距擴至三年最大",
+     "s": "最新季度數據顯示，人工智能帶動Meta廣告收入增長，而Google搜索業務受壓，兩者增長差距創2021年以來最闊。",
+     "src": "CNBC",
+     "url": "https://www.cnbc.com/2026/11/01/ai-meta-ads-google-search.html"
+    },
+    {
+     "t": "美國FTC要求Uber及達美航空等交出算法定價數據",
+     "s": "美國聯邦貿易委員會要求達美航空、聯合航空及Uber等9家公司，交出利用算法和會員計劃向用戶制定不同價格及薪酬的資料。",
+     "src": "The Guardian Business",
+     "url": "https://www.theguardian.com/us-news/2026/oct/29/delta-uber-ftc-pricing"
+    },
+    {
+     "t": "英國電訊商Virgin Media O2宣布裁員數千人",
+     "s": "寬頻服務供應商Virgin Media O2計劃裁減數千名員工，裁員規模料佔其員工總數相當大比例。",
+     "src": "BBC Business",
+     "url": "https://www.bbc.co.uk/news/articles/c6rry8x9d9qko?at_medium=RSS&at_campaign=rss"
+    },
+    {
+     "t": "馬斯克向美國期中選舉注資4.46億美元創歷史紀錄",
+     "s": "科技富豪馬斯克在本次期中選舉向共和黨候選人捐款4.46億美元，成為美國現代史上單屆選舉捐款最多的政治金主。",
+     "src": "The Guardian Business",
+     "url": "https://www.theguardian.com/us-news/ng-interactive/2026/oct/31/elon-musk-midterms-spending-visualized"
+    }
+   ]
   }
  },
  "monitor": {
