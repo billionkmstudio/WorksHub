@@ -168,51 +168,130 @@ def pick_models():
     return names[:4] or ["gemini-flash-latest"]
 
 
-def ask_gemini(cat, cands, n=10):
-    lines = []
-    for i, c in enumerate(cands):
-        lines.append(json.dumps({"id": i, "title": c["t"], "description": c["d"],
-                                 "outlets": c["srcs"], "rank": round(c["score"], 1)}, ensure_ascii=False))
-    body = {
-        "contents": [{"parts": [{"text": PROMPT.format(label=LABEL[cat], n=n, cands="\n".join(lines))}]}],
-        "generationConfig": {"temperature": 0.2, "responseMimeType": "application/json"},
-    }
+_MODELS = None
+
+
+def call_gemini(prompt, check):
+    """Send prompt, parse JSON, run check(parsed) -> result or raise. Tries other models on 404/403."""
+    global _MODELS
+    if _MODELS is None:
+        _MODELS = pick_models()
+    body = {"contents": [{"parts": [{"text": prompt}]}],
+            "generationConfig": {"temperature": 0.2, "responseMimeType": "application/json"}}
     last = None
-    for model in pick_models():
+    for model in list(_MODELS):
         url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
         for attempt in range(3):
             try:
-                r = requests.post(url, json=body, headers={"x-goog-api-key": KEY}, timeout=120)
+                r = requests.post(url, json=body, headers={"x-goog-api-key": KEY}, timeout=180)
                 if r.status_code in (404, 403):
                     raise LookupError(f"{model}: HTTP {r.status_code} {r.text[:200]}")
                 if r.status_code in (429, 500, 503):
                     raise RuntimeError(f"{model}: HTTP {r.status_code}")
                 r.raise_for_status()
                 txt = r.json()["candidates"][0]["content"]["parts"][0]["text"]
-                arr = json.loads(txt)
-                res, seen = [], set()
-                for o in arr:
-                    i = int(o["id"])
-                    if i in seen or not (0 <= i < len(cands)):
-                        continue
-                    t, s = str(o["t"]).strip(), str(o["s"]).strip()
-                    if t and s:
-                        seen.add(i)
-                        c = cands[i]
-                        res.append({"t": t, "s": s, "src": " / ".join(c["srcs"]), "url": c["url"]})
-                if len(res) >= min(n, 5):
-                    print(f"  model used: {model}")
-                    return res[:n]
-                raise RuntimeError(f"{model}: only {len(res)} usable items")
+                out = check(json.loads(txt))
+                _MODELS = [model] + [m for m in _MODELS if m != model]
+                return out
             except LookupError as e:
                 last = e
                 print(f"  {e}", file=sys.stderr)
-                break  # try next model
+                break
             except Exception as e:  # noqa: BLE001
                 last = e
                 print(f"  gemini attempt {attempt + 1} failed: {e}", file=sys.stderr)
                 time.sleep(10 * (attempt + 1))
-    raise RuntimeError(f"Gemini failed for {cat}: {last}")
+    raise RuntimeError(f"Gemini failed: {last}")
+
+
+def ask_gemini(cat, cands, n=10):
+    lines = [json.dumps({"id": i, "title": c["t"], "description": c["d"], "outlets": c["srcs"],
+                         "rank": round(c["score"], 1)}, ensure_ascii=False) for i, c in enumerate(cands)]
+
+    def check(arr):
+        res, seen = [], set()
+        for o in arr:
+            i = int(o["id"])
+            if i in seen or not (0 <= i < len(cands)):
+                continue
+            t, s = str(o["t"]).strip(), str(o["s"]).strip()
+            if t and s:
+                seen.add(i)
+                c = cands[i]
+                res.append({"t": t, "s": s, "src": " / ".join(c["srcs"]), "url": c["url"],
+                            "_en": c["t"], "_d": c["d"]})
+        if len(res) < min(n, 5):
+            raise RuntimeError(f"only {len(res)} usable items")
+        return res[:n]
+
+    return call_gemini(PROMPT.format(label=LABEL[cat], n=n, cands="\n".join(lines)), check)
+
+
+# ---------- full-article summaries ----------
+def fetch_text(url, limit=7000):
+    """Article body text, or "" if the page is blocked, paywalled or unreadable."""
+    try:
+        import trafilatura
+        r = requests.get(url, headers={**UA, "Accept-Language": "en"}, timeout=30)
+        if r.status_code != 200:
+            return ""
+        txt = trafilatura.extract(r.text, include_comments=False, include_tables=False) or ""
+        return txt[:limit]
+    except Exception as e:  # noqa: BLE001
+        print(f"  no full text for {url}: {e}", file=sys.stderr)
+        return ""
+
+
+ENRICH = """You write a private Traditional Chinese (Hong Kong style) daily briefing for a reader who will NOT
+open the original English article. For each article below, write from the "text" field (if "text" is empty,
+use only the title and description, keep it shorter, and set "full" to false).
+
+For each article return:
+  "t": Traditional Chinese headline, under 32 characters, factual.
+  "h": ONE sentence (under 50 characters) for the front page.
+  "s": a Traditional Chinese summary of 4 to 6 sentences (about 200-320 characters): what happened, who is
+       involved, key numbers, why it matters, what happens next if the article says so.
+  "k": an array of 3 to 4 short key points (each under 40 characters), such as numbers, dates, names, consequences.
+  "full": true if you used the article text, else false.
+Rules: use ONLY facts in the given material. Never invent numbers, quotes, names or causes. Keep proper nouns
+accurate (common Hong Kong Chinese names, or the English name if unsure). Paraphrase in your own words; do not
+translate the article sentence by sentence and do not quote long passages.
+
+Return JSON only: an array with one object per article, in the same order, each with the same "id" as given.
+
+Articles:
+{items}
+"""
+
+
+def enrich(picked):
+    texts = []
+    for p in picked:
+        txt = fetch_text(p["url"])
+        print(f"  text {len(txt):5d} chars  {p['src']}  {p['_en'][:60]}")
+        texts.append(txt)
+    lines = [json.dumps({"id": i, "title": p["_en"], "description": p["_d"], "text": texts[i]}, ensure_ascii=False)
+             for i, p in enumerate(picked)]
+
+    def check(arr):
+        by = {int(o["id"]): o for o in arr}
+        out = []
+        for i, p in enumerate(picked):
+            o = by.get(i)
+            if not o or not str(o.get("s", "")).strip():
+                raise RuntimeError(f"missing summary for item {i}")
+            k = [str(x).strip() for x in o.get("k", []) if str(x).strip()][:4]
+            out.append({"t": str(o.get("t") or p["t"]).strip(), "h": str(o.get("h") or p["s"]).strip(),
+                        "s": str(o["s"]).strip(), "k": k, "full": bool(o.get("full")) and bool(texts[i]),
+                        "src": p["src"], "url": p["url"]})
+        return out
+
+    try:
+        return call_gemini(ENRICH.format(items="\n".join(lines)), check)
+    except Exception as e:  # noqa: BLE001
+        print(f"  enrich failed, keeping short summaries: {e}", file=sys.stderr)
+        return [{"t": p["t"], "h": p["s"], "s": p["s"], "k": [], "full": False, "src": p["src"], "url": p["url"]}
+                for p in picked]
 
 
 def main():
@@ -226,7 +305,7 @@ def main():
         cands = collect(cat)
         if len(cands) < 10:
             sys.exit(f"too few candidates for {cat}: {len(cands)} (feeds blocked?) - data.json left unchanged")
-        result[cat] = ask_gemini(cat, cands)
+        result[cat] = enrich(ask_gemini(cat, cands))
         print(f"  -> {len(result[cat])} stories")
     day = data.setdefault("days", {}).setdefault(today, {})
     day.update(result)

@@ -31,7 +31,7 @@ STATE_DIR = Path(os.environ.get("WH_STATE", "state"))
 SLEEP = float(os.environ.get("WH_SLEEP", "12.5"))
 
 ROWS_KEEP = 120          # rows shown in the daily record table
-HISTORY_DAYS = 400       # trading days kept in state (252 for the 52-week window + rows shown)
+HISTORY_DAYS = 560       # trading days kept: 252 warm-up + 252 for the "1 年前" comparison + slack
 BENCH = ["SPY", "QQQ", "SOXX"]
 MIN_PRICE = 5.0          # universe: close >= $5
 MIN_AVG_VOL = 300_000    # universe: 20-day average volume >= 300k shares
@@ -306,6 +306,32 @@ def main():
     if new_c:
         closes = pd.concat([closes, pd.DataFrame(new_c).T]).sort_index()
         vols = pd.concat([vols, pd.DataFrame(new_v).T]).sort_index()
+    # older history: extend backwards when the saved history is shorter than HISTORY_DAYS (one-off)
+    need_start = target - dt.timedelta(days=int(HISTORY_DAYS * 1.45))
+    if not closes.empty and len(closes) < HISTORY_DAYS and closes.index.min().date() > need_start + dt.timedelta(days=12):
+        old_c, old_v, calls = {}, {}, 0
+        d = need_start
+        log(f"extending history back to {need_start}")
+        try:
+            while d < closes.index.min().date():
+                if d.weekday() < 5:
+                    df = fetch_grouped(d)
+                    calls += 1
+                    if df is not None:
+                        old_c[pd.Timestamp(d)], old_v[pd.Timestamp(d)] = df["close"], df["volume"]
+                        log(f"{d}: {len(df)} tickers")
+                    time.sleep(SLEEP)
+                    if calls % 40 == 0 and old_c:
+                        closes = pd.concat([pd.DataFrame(old_c).T, closes]).sort_index()
+                        vols = pd.concat([pd.DataFrame(old_v).T, vols]).sort_index()
+                        old_c, old_v = {}, {}
+                        save_state({"closes": closes, "vols": vols})
+                d += dt.timedelta(days=1)
+        except NotAvailable as e:
+            log(f"older data for {d} not available ({e}); skipping the rest")
+        if old_c:
+            closes = pd.concat([pd.DataFrame(old_c).T, closes]).sort_index()
+            vols = pd.concat([pd.DataFrame(old_v).T, vols]).sort_index()
     closes = closes[~closes.index.duplicated(keep="last")]
     vols = vols[~vols.index.duplicated(keep="last")]
     save_state({"closes": closes, "vols": vols})
@@ -317,7 +343,7 @@ def main():
     frame = compute_frame(closes.tail(HISTORY_DAYS), vols.tail(HISTORY_DAYS), vix, cs_set)
     if frame.empty:
         sys.exit("not enough history to compute indicators yet")
-    rows = to_rows(frame.tail(ROWS_KEEP))
+    rows = to_rows(frame)  # all rows; update_data keeps ROWS_KEEP for the table but compares against the full history
     data = json.loads(DATA_PATH.read_text(encoding="utf-8"))
     data = update_data(data, rows, closes, int(frame["n_univ"].iloc[-1]), now)
     DATA_PATH.write_text(json.dumps(data, ensure_ascii=False, indent=1), encoding="utf-8")
