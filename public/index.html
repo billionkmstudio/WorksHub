@@ -4,7 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Works Hub</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;700&display=swap">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%278%27 fill=%27%231b4fd6%27/%3E%3Cpath d=%27M6 10.5 11.2 22 16 13 20.8 22 26 10.5%27 fill=%27none%27 stroke=%27%23fff%27 stroke-width=%272.6%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27/%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Unbounded:wght@500;600&family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;700&display=swap">
 <style>
 /* Layout: sticky masthead + tab rail; one page at a time; dense ledger-style lists, a gauge and bullet charts for the monitor */
 :root {
@@ -55,10 +56,12 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
 .wrap { max-width: 1080px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
 header.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: var(--surface); border-bottom: 1px solid var(--line); }
 .mast { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding-top: 12px; }
-.brand { font-family: var(--mono); font-weight: 500; letter-spacing: .18em; font-size: 15px; text-transform: uppercase; }
+.brand { font-family: "Unbounded", var(--mono); font-weight: 600; letter-spacing: -.01em; font-size: 17px; line-height: 1; }
+.brand a { display: inline-flex; align-items: center; gap: 9px; }
+.brand svg { width: 30px; height: 30px; flex: none; }
 .brand a { color: inherit; text-decoration: none; }
 .brand a:hover { text-decoration: none; opacity: .8; }
-.brand b { color: var(--accent); font-weight: 500; }
+.brand b { color: var(--accent); font-weight: 600; }
 .stamp { font-family: var(--mono); font-size: 12px; color: var(--muted); }
 nav.tabs { display: flex; gap: 2px; overflow-x: auto; scrollbar-width: none; margin-top: 6px; }
 nav.tabs::-webkit-scrollbar { display: none; }
@@ -85,6 +88,8 @@ h3 { font-size: 16px; line-height: 1.45; margin: 0 0 4px; font-weight: 700; text
 .cards { display: grid; gap: 12px; }
 .card { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 16px 18px; display: grid; grid-template-columns: 36px minmax(0, 1fr); gap: 12px; }
 .card p { margin: 0 0 6px; }
+.kpts { margin: 8px 0 6px; padding-left: 18px; font-size: 14px; color: var(--ink); }
+.kpts li { margin: 2px 0; }
 .card .n { font-family: var(--mono); color: var(--muted); font-size: 13px; padding-top: 3px; }
 .card dl { margin: 8px 0 0; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 12px; font-size: 14px; }
 .card dt { color: var(--muted); }
@@ -100,6 +105,7 @@ h3 { font-size: 16px; line-height: 1.45; margin: 0 0 4px; font-weight: 700; text
 .band { display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 20px; align-items: center; margin-bottom: 20px; }
 @media (max-width: 560px) { .band { grid-template-columns: minmax(0, 1fr); justify-items: center; text-align: center; } }
 .gauge { width: 200px; max-width: 100%; }
+.gauge.big { width: min(360px, 100%); }
 .gauge text { fill: var(--ink); }
 .pill { display: inline-block; padding: 1px 10px; border-radius: 999px; font-size: 13px; font-weight: 700; }
 .pill.good { background: var(--good-soft); color: var(--good); }
@@ -184,7 +190,7 @@ footer.f { color: var(--muted); font-size: 12px; margin-top: 28px; }
 <header class="top">
   <div class="wrap">
     <div class="mast">
-      <div class="brand"><a href="#today" aria-label="Works Hub 首頁">Works<b>Hub</b></a></div>
+      <div class="brand"><a href="#today" aria-label="Works Hub 首頁"><svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" style="fill:var(--accent)"/><path d="M6 10.5 L11.2 22 L16 13 L20.8 22 L26 10.5" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="6" cy="10.5" r="2.2" fill="#fff"/><circle cx="26" cy="10.5" r="2.2" fill="#fff"/><circle cx="16" cy="13" r="2.2" fill="#fff"/></svg><span>Works<b>Hub</b></span></a></div>
       <div class="stamp" id="stamp">載入中</div>
     </div>
     <nav class="tabs" id="tabs" aria-label="主選單"></nav>
@@ -195,7 +201,7 @@ footer.f { color: var(--muted); font-size: 12px; margin-top: 28px; }
 <footer class="sitefoot">
   <div class="wrap row">
     <span>© <span id="yr">2026</span> Billion Studio　僅供個人使用，保留所有權利。</span>
-    <span class="mono">Works Hub v1.1.0</span>
+    <span class="mono">Works Hub v1.2.0</span>
   </div>
 </footer>
 
@@ -220,7 +226,7 @@ footer.f { color: var(--muted); font-size: 12px; margin-top: 28px; }
 
   /* ---------- monitor helpers ---------- */
   function scoreStatus(s) { return s >= 10 ? "bad" : s >= 5 ? "warn" : "good"; }
-  function gauge(score, max) {
+  function gauge(score, max, big) {
     var cx = 120, cy = 118, r = 88;
     function pt(s, rr) { var t = Math.PI * (1 - s / max); return [cx + (rr || r) * Math.cos(t), cy - (rr || r) * Math.sin(t)]; }
     function arc(a, b, color, w) {
@@ -228,7 +234,7 @@ footer.f { color: var(--muted); font-size: 12px; margin-top: 28px; }
       return '<path d="M' + p0[0].toFixed(1) + " " + p0[1].toFixed(1) + " A" + r + " " + r + " 0 0 1 " + p1[0].toFixed(1) + " " + p1[1].toFixed(1) + '" fill="none" stroke="' + color + '" stroke-width="' + w + '" stroke-linecap="butt"/>';
     }
     var st = scoreStatus(score), col = "var(--" + st + ")", end = pt(score);
-    var svg = '<svg class="gauge" viewBox="0 0 240 150" role="img" aria-label="風險分數 ' + score + ' / ' + max + '">';
+    var svg = '<svg class="gauge' + (big ? " big" : "") + '" viewBox="0 0 240 150" role="img" aria-label="風險分數 ' + score + ' / ' + max + '">';
     svg += arc(0, 5, "var(--good-soft)", 16) + arc(5, 10, "var(--warn-soft)", 16) + arc(10, max, "var(--bad-soft)", 16);
     if (score > 0) svg += arc(0, score, col, 16);
     svg += '<circle cx="' + end[0].toFixed(1) + '" cy="' + end[1].toFixed(1) + '" r="7" fill="var(--surface)" stroke="' + col + '" stroke-width="3"/>';
@@ -331,7 +337,7 @@ footer.f { color: var(--muted); font-size: 12px; margin-top: 28px; }
     var d = pickDay(subArg, key), items = DATA.days[d][key] || [];
     var h = "<h1>" + title + "</h1><p class='sub'>" + esc(sub) + "　" + zhDate(d) + "</p>" + archiveBar(page, d, key) + '<div class="cards">';
     items.forEach(function (it, i) {
-      h += '<article class="card"><div class="n">' + String(i + 1).padStart(2, "0") + "</div><div><h3>" + esc(it.t) + "</h3><p>" + esc(it.s) + "</p>" + src(it) + "</div></article>";
+      h += '<article class="card"><div class="n">' + String(i + 1).padStart(2, "0") + "</div><div><h3>" + esc(it.t) + "</h3><p>" + esc(it.s) + "</p>" + (it.k && it.k.length ? '<ul class="kpts">' + it.k.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul>" : "") + src(it) + (it.s && it.k && it.k.length ? '<div class="meta">' + (it.full ? "AI 根據原文整理，" : "AI 根據標題及簡介整理，") + "詳情請看原文</div>" : "") + "</div></article>";
     });
     return h + "</div>";
   }
@@ -339,12 +345,12 @@ footer.f { color: var(--muted); font-size: 12px; margin-top: 28px; }
   function insightPage(page, title, sub, key, subArg, fields) {
     var d = pickDay(subArg, key), day = DATA.days[d], items = day[key] || [];
     var h = "<h1>" + title + "</h1><p class='sub'>" + esc(sub) + "　" + zhDate(d) + "</p>" + archiveBar(page, d, key);
-    if (day.sample && day.sample[key]) h += '<div class="notice">此日為版面示範內容，並非實際社交平台貼文。每日自動任務開始後，會由 X、Facebook、Threads、IG、Reddit 的真實討論取代。</div>';
+    if (day.sample && day.sample[key]) h += '<div class="notice">此日為版面示範內容，並非實際社交平台貼文。每日自動任務執行後，會由 Reddit 與 Hacker News 的真實討論取代。</div>';
     h += '<div class="cards">';
     items.forEach(function (it, i) {
       h += '<article class="card"><div class="n">' + String(i + 1).padStart(2, "0") + "</div><div><h3>" + (day.sample && day.sample[key] ? '<span class="tag sample">示範</span>' : "") + '<span class="tag">' + esc(it.slot) + "</span>" + esc(it.t) + "</h3><dl>";
       fields.forEach(function (f) { h += "<dt>" + f[1] + "</dt><dd>" + esc(it[f[0]]) + "</dd>"; });
-      h += "</dl></div></article>";
+      h += "</dl>" + src(it) + "</div></article>";
     });
     return h + "</div>";
   }
@@ -366,11 +372,11 @@ footer.f { color: var(--muted); font-size: 12px; margin-top: 28px; }
     /* thermometer */
     h += "<h2>0–16 分市況溫度計</h2>";
     h += '<div class="panel" style="border-left:4px solid var(--' + st + ');margin-bottom:16px"><p style="margin:0"><span class="pill ' + st + '" style="margin-right:8px">' + esc(m.status) + "</span><b>今日 Score " + m.score + "／" + m.max + "，" + esc(m.summary) + '</b></p><div class="meta">數據日期 ' + m.date + "（美股收市）· " + esc(m.stamp.replace("更新：", "")) + "</div></div>";
-    h += '<div class="grid2" style="margin-bottom:20px"><div class="panel"><div style="display:flex;justify-content:center">' + gauge(m.score, m.max) + '</div><div class="legendrow" style="justify-content:center"><span' + (st === "good" ? ' class="cur"' : "") + '><i class="dot good" style="margin:0 6px 0 0"></i>健康 0–4</span><span' + (st === "warn" ? ' class="cur"' : "") + '><i class="dot warn" style="margin:0 6px 0 0"></i>警示 5–9</span><span' + (st === "bad" ? ' class="cur"' : "") + '><i class="dot bad" style="margin:0 6px 0 0"></i>Meltdown 10–16</span></div></div>';
+    h += '<div class="grid2" style="margin-bottom:20px"><div class="panel"><div style="display:flex;justify-content:center">' + gauge(m.score, m.max, true) + '</div><div class="legendrow" style="justify-content:center"><span' + (st === "good" ? ' class="cur"' : "") + '><i class="dot good" style="margin:0 6px 0 0"></i>健康 0–4</span><span' + (st === "warn" ? ' class="cur"' : "") + '><i class="dot warn" style="margin:0 6px 0 0"></i>警示 5–9</span><span' + (st === "bad" ? ' class="cur"' : "") + '><i class="dot bad" style="margin:0 6px 0 0"></i>Meltdown 10–16</span></div></div>';
     h += '<div class="panel"><h2>同過去比較</h2><div class="cmp">';
     m.compare.forEach(function (c) {
       var diff = m.score - c.score;
-      h += "<div><small>" + esc(c.label) + " " + c.date.slice(5) + '</small><b><span class="dot ' + scoreStatus(c.score) + '"></span>' + c.score + '</b><span class="up2" style="display:block">' + (diff > 0 ? "▲ 今日高 " + diff + " 分" : diff < 0 ? "▼ 今日低 " + (-diff) + " 分" : "持平") + "</span></div>";
+      h += "<div><small>" + esc(c.label) + " " + (c.label === "1 年前" ? c.date : c.date.slice(5)) + '</small><b><span class="dot ' + scoreStatus(c.score) + '"></span>' + c.score + '</b><span class="up2" style="display:block">' + (diff > 0 ? "▲ 今日高 " + diff + " 分" : diff < 0 ? "▼ 今日低 " + (-diff) + " 分" : "持平") + "</span></div>";
     });
     h += "</div></div></div>";
     h += '<div class="panel how" style="margin-bottom:24px"><h2 style="font-size:16px">燈點樣得出？</h2><ol>';
@@ -408,11 +414,11 @@ footer.f { color: var(--muted); font-size: 12px; margin-top: 28px; }
     h += '<a href="#monitor" style="color:inherit;text-decoration:none"><div class="panel band" style="margin-bottom:20px"><div>' + gauge(m.score, m.max) + '</div><div><p style="margin:0 0 6px"><span class="pill ' + st + '">美股風險 · ' + esc(m.status) + "</span></p><h2 style='margin:0 0 4px'>分數 " + m.score + " / " + m.max + "，前日 " + m.compare[0].score + "</h2><p style='margin:0;color:var(--muted)'>" + esc(m.summary) + " 數據日期 " + dmy(m.date) + '。<span style="color:var(--accent)"> 查看 8 個指標 →</span></p></div></div></a>';
     function top5(items, page, title) {
       var s = '<div class="panel"><h2>' + title + '<a href="#' + page + '">全部 10 則 →</a></h2><ol class="list">';
-      items.slice(0, 5).forEach(function (it, i) { s += '<li><span class="rank">' + (i + 1) + "</span><div><h3>" + esc(it.t) + "</h3><p>" + esc(it.s) + "</p>" + "</div></li>"; });
+      items.slice(0, 5).forEach(function (it, i) { s += '<li><span class="rank">' + (i + 1) + "</span><div><h3>" + esc(it.t) + "</h3><p>" + esc(it.h || it.s) + "</p>" + "</div></li>"; });
       return s + "</ol></div>";
     }
     h += '<div class="grid2">' + top5(day.intl, "intl", "國際新聞 Top 5") + top5(day.finance, "finance", "財經新聞 Top 5") + "</div>";
-    h += '<footer class="f">Top 5 目前按重要性編排。待每日任務接上瀏覽數據後，會改為按閱讀量排序。</footer>';
+    h += '<footer class="f">Top 5 按各媒體頭條位置及有多少家媒體同時報道排序，並非實際閱讀量。摘要由 AI 整理，詳情請看原文。</footer>';
     return h;
   }
 
@@ -427,8 +433,8 @@ footer.f { color: var(--muted); font-size: 12px; margin-top: 28px; }
     else if (page === "intl") h = newsPage("intl", "國際新聞", "每日 10 則", "intl", sub);
     else if (page === "finance") h = newsPage("finance", "財經新聞", "每日 10 則", "finance", sub);
     else if (page === "monitor") h = monitorPage();
-    else if (page === "pain") h = insightPage("pain", "痛點", "每日 5 個，來自 X、Facebook、Threads、IG、Reddit", "pain", sub, [["why", "為何是痛點"], ["idea", "可做的方向"]]);
-    else if (page === "spark") h = insightPage("spark", "靈惑", "每日 5 個，來自 X、Facebook、Threads、IG、Reddit", "spark", sub, [["angle", "切入角度"], ["idea", "內容或產品點子"]]);
+    else if (page === "pain") h = insightPage("pain", "痛點", "每日 5 個，來自 Reddit 與 Hacker News 的熱門討論", "pain", sub, [["why", "為何是痛點"], ["idea", "可做的方向"]]);
+    else if (page === "spark") h = insightPage("spark", "靈惑", "每日 5 個，來自 Reddit 與 Hacker News 的熱門討論", "spark", sub, [["angle", "切入角度"], ["idea", "內容或產品點子"]]);
     else h = weeklyPage(sub);
     app.innerHTML = h;
     window.scrollTo(0, 0);
