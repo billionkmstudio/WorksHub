@@ -210,7 +210,7 @@ footer.f { color: var(--muted); font-size: 12px; margin-top: 28px; }
 <footer class="sitefoot">
   <div class="wrap row">
     <span>© <span id="yr">2026</span> Billion Studio　僅供個人使用，保留所有權利。</span>
-    <span><a href="mailto:info@billionstudio.app">info@billionstudio.app</a>　<span class="mono">Works Hub v1.3.0</span></span>
+    <span><a href="mailto:info@billionstudio.app">info@billionstudio.app</a>　<span class="mono">Works Hub v1.3.1</span></span>
   </div>
 </footer>
 
@@ -345,11 +345,11 @@ footer.f { color: var(--muted); font-size: 12px; margin-top: 28px; }
 
   function newsPage(page, title, sub, key, subArg) {
     var d = pickDay(subArg, key), items = DATA.days[d][key] || [];
-    var h = "<h1>" + title + "</h1><p class='sub'>" + esc(sub) + "　" + zhDate(d) + "</p>" + archiveBar(page, d, key) + '<div class="cards">';
+    var h = "<h1>" + title + "</h1><p class='sub'>" + esc(sub) + "　" + zhDate(d) + "</p>" + '<div class="cards">';
     items.forEach(function (it, i) {
       h += '<article class="card"><div class="n">' + String(i + 1).padStart(2, "0") + "</div><div><h3>" + esc(it.t) + "</h3><p>" + esc(it.s) + "</p>" + (it.k && it.k.length ? '<ul class="kpts">' + it.k.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul>" : "") + src(it) + (it.s && it.k && it.k.length ? '<div class="meta">' + (it.full ? "AI 根據原文整理，" : "AI 根據標題及簡介整理，") + "詳情請看原文</div>" : "") + "</div></article>";
     });
-    return h + "</div>";
+    return h + "</div>" + archiveBar(page, d, key, 7);
   }
 
   var FIELDS = {
