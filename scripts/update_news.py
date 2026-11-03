@@ -31,6 +31,9 @@ KEY = os.environ.get("GEMINI_API_KEY", "")
 MODEL = os.environ.get("GEMINI_MODEL", "")  # empty = pick automatically from the models your key can use
 TZ = ZoneInfo(os.environ.get("WH_TZ", "Europe/London"))
 KEEP_NEWS_ONLY_DAYS = 90
+GEMINI_BUDGET_S = int(os.environ.get("GEMINI_BUDGET_S", "420"))  # longest one request may keep retrying
+GEMINI_ROUNDS = int(os.environ.get("GEMINI_ROUNDS", "5"))
+FORCE = os.environ.get("FORCE") == "1"  # redo today even if it is already complete
 PER_FEED = 15
 CANDIDATES = 40
 UA = {"User-Agent": "WorksHub/1.0 (+https://workshub.me)"}
@@ -179,28 +182,35 @@ def call_gemini(prompt, check):
     body = {"contents": [{"parts": [{"text": prompt}]}],
             "generationConfig": {"temperature": 0.2, "responseMimeType": "application/json"}}
     last = None
-    for model in list(_MODELS):
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
-        for attempt in range(3):
+    usable = list(_MODELS)
+    deadline = time.time() + GEMINI_BUDGET_S
+    # Round after round: every model once, then wait longer. A busy Gemini (HTTP 503/429) usually
+    # recovers within a few minutes, so waiting is better than giving up and losing the whole day.
+    for rnd in range(GEMINI_ROUNDS):
+        for model in list(usable):
+            if time.time() > deadline:
+                break
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
             try:
                 r = requests.post(url, json=body, headers={"x-goog-api-key": KEY}, timeout=180)
                 if r.status_code in (404, 403):
+                    usable.remove(model)  # this key cannot use this model at all
                     raise LookupError(f"{model}: HTTP {r.status_code} {r.text[:200]}")
-                if r.status_code in (429, 500, 503):
+                if r.status_code == 429 or r.status_code >= 500:
                     raise RuntimeError(f"{model}: HTTP {r.status_code}")
                 r.raise_for_status()
                 txt = r.json()["candidates"][0]["content"]["parts"][0]["text"]
                 out = check(json.loads(txt))
                 _MODELS = [model] + [m for m in _MODELS if m != model]
                 return out
-            except LookupError as e:
-                last = e
-                print(f"  {e}", file=sys.stderr)
-                break
             except Exception as e:  # noqa: BLE001
                 last = e
-                print(f"  gemini attempt {attempt + 1} failed: {e}", file=sys.stderr)
-                time.sleep(10 * (attempt + 1))
+                print(f"  gemini round {rnd + 1} failed: {e}", file=sys.stderr)
+        if not usable or time.time() > deadline or rnd == GEMINI_ROUNDS - 1:
+            break
+        wait = min(30 * 2 ** rnd, 240)
+        print(f"  waiting {wait}s before the next round", file=sys.stderr)
+        time.sleep(wait)
     raise RuntimeError(f"Gemini failed: {last}")
 
 
@@ -299,15 +309,27 @@ def main():
         sys.exit("GEMINI_API_KEY is not set")
     data = json.loads(DATA_PATH.read_text(encoding="utf-8"))
     today = dt.datetime.now(TZ).strftime("%Y-%m-%d")
-    result = {}
-    for cat in ("intl", "finance"):
-        print(f"[{cat}]")
-        cands = collect(cat)
-        if len(cands) < 10:
-            sys.exit(f"too few candidates for {cat}: {len(cands)} (feeds blocked?) - data.json left unchanged")
-        result[cat] = enrich(ask_gemini(cat, cands))
-        print(f"  -> {len(result[cat])} stories")
     day = data.setdefault("days", {}).setdefault(today, {})
+    # The workflow runs several times a day as a safety net; a category that is already done is left alone.
+    todo = [c for c in ("intl", "finance") if FORCE or not (isinstance(day.get(c), list) and len(day[c]) >= 10)]
+    if not todo:
+        print(f"{today}: news already complete, nothing to do")
+        return
+    result, failed = {}, []
+    for cat in todo:
+        print(f"[{cat}]")
+        try:
+            cands = collect(cat)
+            if len(cands) < 10:
+                raise RuntimeError(f"too few candidates for {cat}: {len(cands)} (feeds blocked?)")
+            result[cat] = enrich(ask_gemini(cat, cands))
+            print(f"  -> {len(result[cat])} stories")
+        except Exception as e:  # noqa: BLE001
+            # keep going: one failed category must not throw away the other one
+            print(f"  {cat} failed: {e}", file=sys.stderr)
+            failed.append(cat)
+    if not result:
+        sys.exit(f"no news updated for {today}; failed: {', '.join(failed)}")
     day.update(result)
     day.pop("note", None)
     if isinstance(day.get("sample"), dict):
@@ -319,7 +341,10 @@ def main():
         del data["days"][d]
     data["updated"] = dt.datetime.now(TZ).strftime("%Y-%m-%d %H:%M")
     DATA_PATH.write_text(json.dumps(data, ensure_ascii=False, indent=1), encoding="utf-8")
-    print("updated", today)
+    print("updated", today, ", ".join(result))
+    if failed:
+        # data for the other category is saved above; exit non-zero so the run shows red and a later retry fills the gap
+        sys.exit(f"still missing for {today}: {', '.join(failed)}")
 
 
 if __name__ == "__main__":

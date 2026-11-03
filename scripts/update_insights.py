@@ -157,6 +157,10 @@ def main():
         sys.exit("GEMINI_API_KEY is not set")
     data = json.loads(un.DATA_PATH.read_text(encoding="utf-8"))
     today = dt.datetime.now(un.TZ).strftime("%Y-%m-%d")
+    done = data.get("days", {}).get(today, {})
+    if not un.FORCE and len(done.get("pain") or []) >= 3 and len(done.get("spark") or []) >= 3:
+        print(f"{today}: pain points and sparks already complete, nothing to do")
+        return
     print("[sources]")
     hn = hackernews()
     pain_pool = reddit(PAIN_SUBS) + [p for p in hn if p["where"] == "Ask HN"]

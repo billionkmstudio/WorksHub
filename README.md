@@ -39,6 +39,14 @@
 - `scripts/update_insights.py` 讀取 Reddit 各版熱門帖和 Hacker News，由 Gemini 選出 5 個痛點和 5 個靈惑。X、Facebook、Threads、IG 沒有公開接口，所以沒有讀取。
 - Reddit 有時會擋 GitHub 的伺服器；這一步失敗不會影響新聞更新。
 
+## 自動重試與每週總結
+
+- 新聞每日跑 3 次（05:40、09:40、13:40 UTC）。已完成的部分會跳過，所以後面兩次只係補返 Gemini 繁忙（HTTP 503）或者來源失敗留下嘅空位。
+- Gemini 繁忙時，腳本會逐輪重試（每輪試晒所有模型，等待時間逐步加長），唔會一次失敗就放棄。國際同財經分開處理，其中一個失敗唔會丟棄另一個。
+- 新聞失敗時，痛點同靈感仍然會更新，已成功嘅資料亦會照常 commit。
+- `scripts/update_weekly.py` + `.github/workflows/weekly.yml`：逢星期日 18:00 UTC（之後 21:30 同星期一 07:00 各重試一次）自動寫每週總結，內容只根據當週已收集嘅新聞、痛點、靈感同風險分數。當週新聞少過 3 日就唔寫。
+- 手動重做某日或某週：Actions → 揀 workflow → Run workflow，`FORCE=1` 可喺 workflow 檔案加入 env。
+
 ## 1 年前對比
 
 `update_monitor.py` 現在保留 560 個交易日。第一次執行時會自動回補較舊的約 160 天（約 35 分鐘），之後「1 年前」才會出現。

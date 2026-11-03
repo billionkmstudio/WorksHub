@@ -2,8 +2,11 @@ name: Daily news
 
 on:
   schedule:
-    # 05:40 UTC every day
+    # 05:40 UTC every day, plus two safety-net runs. The scripts skip whatever is already done,
+    # so the later runs only fill gaps left by a busy Gemini or a blocked feed.
     - cron: "40 5 * * *"
+    - cron: "40 9 * * *"
+    - cron: "40 13 * * *"
   workflow_dispatch:
 
 permissions:
@@ -16,7 +19,7 @@ concurrency:
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 50
     env:
       CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
     steps:
@@ -31,18 +34,20 @@ jobs:
         run: python scripts/update_news.py
       # a failure here (for example Reddit blocking the server) must not stop the news from being published
       - name: Update pain points and sparks
+        if: ${{ always() }}
         continue-on-error: true
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: python scripts/update_insights.py
       - name: Commit data.json
+        if: ${{ always() }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add public/data.json
           git diff --staged --quiet || (git commit -m "Update news" && git pull --rebase && git push)
       - name: Deploy to Cloudflare
-        if: ${{ env.CF_TOKEN != '' }}
+        if: ${{ always() && env.CF_TOKEN != '' }}
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
