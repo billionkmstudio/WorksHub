@@ -31,6 +31,7 @@ STATE_DIR = Path(os.environ.get("WH_STATE", "state"))
 SLEEP = float(os.environ.get("WH_SLEEP", "12.5"))
 
 ROWS_KEEP = 120          # rows shown in the daily record table
+SCORE_HIST_KEEP = 260    # trading days of [date, score] kept for the 12-month score chart
 HISTORY_DAYS = 560       # trading days kept: 252 warm-up + 252 for the "1 年前" comparison + slack
 BENCH = ["SPY", "QQQ", "SOXX"]
 MIN_PRICE = 5.0          # universe: close >= $5
@@ -200,6 +201,8 @@ def status_of(score):
 def update_data(data, rows, closes, n_univ, now_utc):
     m = data["monitor"]
     m["rows"] = rows[:ROWS_KEEP]
+    # compact score-only history (oldest first) for the 12-month line chart; rows is newest first
+    m["scoreHistory"] = [[r[0], r[1]] for r in reversed(rows[:SCORE_HIST_KEEP])]
     latest, prev = rows[0], rows[1] if len(rows) > 1 else rows[0]
     score = latest[1]
     flags = [f(latest[k]) for k, f in FLAG_COLS.items()]

@@ -283,6 +283,52 @@ footer.f { color: var(--muted); font-size: 12px; margin-top: 28px; }
     return svg + "</svg>";
   }
 
+  /* 12-month score line chart: x is time-scaled, so gaps and month ticks stay honest */
+  function yearChart(m) {
+    var hist = (m.scoreHistory && m.scoreHistory.length > 1) ? m.scoreHistory.slice() : m.rows.slice().reverse().map(function (r) { return [r[0], r[1]]; });
+    hist.sort(function (a, b) { return a[0] < b[0] ? -1 : 1; });
+    var last = hist[hist.length - 1], cutoff = new Date(last[0] + "T00:00:00Z"); cutoff.setUTCFullYear(cutoff.getUTCFullYear() - 1);
+    hist = hist.filter(function (p) { return new Date(p[0] + "T00:00:00Z") >= cutoff; });
+    var W = 720, H = 230, L = 34, R = 14, T = 14, B = 30, max = m.max;
+    function ts(d) { return new Date(d + "T00:00:00Z").getTime(); }
+    var t0 = ts(hist[0][0]), t1 = ts(last[0]); if (t1 === t0) t1 = t0 + 864e5;
+    function X(d) { return L + (ts(d) - t0) / (t1 - t0) * (W - L - R); }
+    function Y(v) { return T + (1 - v / max) * (H - T - B); }
+    var svg = '<svg viewBox="0 0 ' + W + " " + H + '" width="100%" style="min-width:480px;display:block" role="img" aria-label="過去 12 個月風險分數走勢">';
+    svg += '<rect x="' + L + '" y="' + Y(5) + '" width="' + (W - L - R) + '" height="' + (Y(0) - Y(5)) + '" fill="var(--good-soft)"/>';
+    svg += '<rect x="' + L + '" y="' + Y(10) + '" width="' + (W - L - R) + '" height="' + (Y(5) - Y(10)) + '" fill="var(--warn-soft)"/>';
+    svg += '<rect x="' + L + '" y="' + Y(max) + '" width="' + (W - L - R) + '" height="' + (Y(10) - Y(max)) + '" fill="var(--bad-soft)"/>';
+    [0, 5, 10, max].forEach(function (t) { svg += '<text x="' + (L - 6) + '" y="' + (Y(t) + 4) + '" font-size="11" text-anchor="end" style="fill:var(--muted)">' + t + "</text>"; });
+    /* month ticks: first trading day of each month */
+    var seen = {};
+    hist.forEach(function (p, i) {
+      var ym = p[0].slice(0, 7); if (seen[ym]) return; seen[ym] = 1;
+      if (i === 0 && ts(last[0]) - ts(p[0]) > 0 && p[0].slice(8) > "10") return; /* skip a partial first month label */
+      var x = X(p[0]), mo = +p[0].slice(5, 7), label = mo === 1 ? p[0].slice(0, 4) + "年1月" : mo + "月";
+      svg += '<line x1="' + x.toFixed(1) + '" x2="' + x.toFixed(1) + '" y1="' + Y(max) + '" y2="' + Y(0) + '" stroke="var(--line)" stroke-dasharray="2 3"/>';
+      svg += '<text x="' + x.toFixed(1) + '" y="' + (H - 10) + '" font-size="11" text-anchor="middle" style="fill:var(--muted)">' + label + "</text>";
+    });
+    svg += '<polyline fill="none" stroke="var(--accent)" stroke-width="2" stroke-linejoin="round" points="' + hist.map(function (p) { return X(p[0]).toFixed(1) + "," + Y(p[1]).toFixed(1); }).join(" ") + '"/>';
+    /* highest / lowest labels */
+    var hi = hist[0], lo = hist[0];
+    hist.forEach(function (p) { if (p[1] > hi[1]) hi = p; if (p[1] < lo[1]) lo = p; });
+    function tag(p, dy, txt) {
+      var x = X(p[0]), anchor = x > W - 70 ? "end" : x < L + 40 ? "start" : "middle";
+      return '<circle cx="' + x.toFixed(1) + '" cy="' + Y(p[1]).toFixed(1) + '" r="3.5" fill="var(--surface)" stroke="var(--accent)" stroke-width="2"/><text x="' + x.toFixed(1) + '" y="' + (Y(p[1]) + dy).toFixed(1) + '" font-size="11" text-anchor="' + anchor + '" style="fill:var(--ink)">' + txt + "</text>";
+    }
+    if (hi[1] !== lo[1]) { svg += tag(hi, -8, "最高 " + hi[1] + "（" + hi[0].slice(5) + "）"); svg += tag(lo, 16, "最低 " + lo[1] + "（" + lo[0].slice(5) + "）"); }
+    var lx = X(last[0]), ly = Y(last[1]), st = scoreStatus(last[1]);
+    svg += '<circle cx="' + lx.toFixed(1) + '" cy="' + ly.toFixed(1) + '" r="5.5" fill="var(--surface)" stroke="var(--' + st + ')" stroke-width="3"/>';
+    /* hover targets: one invisible bar per trading day with a native tooltip */
+    var bw = Math.max(3, (W - L - R) / hist.length);
+    hist.forEach(function (p) { svg += '<rect x="' + (X(p[0]) - bw / 2).toFixed(1) + '" y="' + T + '" width="' + bw.toFixed(1) + '" height="' + (H - T - B) + '" fill="transparent"><title>' + p[0] + "：" + p[1] + " / " + max + "</title></rect>"; });
+    svg += "</svg>";
+    setTimeout(function () { var e = document.getElementById("ycwrap"); if (e) e.scrollLeft = e.scrollWidth; }, 0);
+    var days = hist.length, span = Math.round((t1 - t0) / 864e5 / 30.4);
+    var note = span < 11 ? "目前圖上有 " + days + " 個交易日（約 " + span + " 個月，由 " + hist[0][0] + " 起）；每日更新時歷史會慢慢補到滿 12 個月。" : "共 " + days + " 個交易日，由 " + hist[0][0] + " 至 " + last[0] + "。";
+    return { svg: svg, note: note };
+  }
+
   function recordTable(m) {
     var h = '<div class="tbl"><table><thead><tr><th rowspan="2" style="top:0">日期</th><th colspan="3">0–16 分</th><th colspan="8">8 個指標（黃 = 1 分，紅 = 2 分）</th><th colspan="5">美股升跌家數</th></tr><tr>';
     ["分數", "SPY", "QQQ"].forEach(function (t) { h += "<th>" + t + "</th>"; });
@@ -467,6 +513,8 @@ footer.f { color: var(--muted); font-size: 12px; margin-top: 28px; }
       h += "<div><small>" + esc(c.label) + " " + (c.label === "1 年前" ? c.date : c.date.slice(5)) + '</small><b><span class="dot ' + scoreStatus(c.score) + '"></span>' + c.score + '</b><span class="up2" style="display:block">' + (diff > 0 ? "▲ 今日高 " + diff + " 分" : diff < 0 ? "▼ 今日低 " + (-diff) + " 分" : "持平") + "</span></div>";
     });
     h += "</div></div></div>";
+    var yc = yearChart(m);
+    h += '<div class="panel" style="margin-bottom:20px"><h2>過去 12 個月分數走勢</h2><div id="ycwrap" style="overflow-x:auto">' + yc.svg + '</div><div class="meta" style="margin-top:6px">背景色：綠 = 健康 0–4、黃 = 警示 5–9、紅 = Meltdown 10–16。滑鼠移到圖上可看每日分數。' + esc(yc.note) + '</div></div>';
     h += '<div class="panel how" style="margin-bottom:24px"><h2 style="font-size:16px">燈點樣得出？</h2><ol>';
     ["<b>固定參數，每日由電腦自動篩。</b>每個交易日收市後，用同一套預先定好的條件檢查大市和個股數據，全部符合才亮燈，沒有人手挑選。", "<b>參數由頭到尾沒有改過。</b>從回測開始到今日都用同一套參數，沒有因為某次跌市或升市而事後調整，也沒有只挑好看的日子展示。", "<b>假警號照樣列出，用紫色標示。</b>固定參數一定有中有不中，每個燈都把之後的結果計進去，不中的照樣列出，讓你自己判斷指標有幾可信。", "<b>具體數據和參數屬內部研究，不公開。</b>只顯示亮燈日子和之後的結果。"].forEach(function (t, i) { h += "<li><i>" + (i + 1) + "</i><div>" + t + "</div></li>"; });
     h += "</ol></div>";
