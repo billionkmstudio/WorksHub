@@ -155,6 +155,13 @@ h3 { font-size: 16px; line-height: 1.45; margin: 0 0 4px; font-weight: 700; text
 .gloss { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 6px 14px; font-size: 13px; margin: 0; }
 .gloss dt { font-weight: 700; white-space: nowrap; }
 .gloss dd { margin: 0; color: var(--muted); }
+.ths { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 10px; }
+.ths th, .ths td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); }
+.ths th { color: var(--muted); font-weight: 500; }
+details.thd summary { cursor: pointer; color: var(--accent); font-size: 13px; margin-top: 8px; }
+.ycsvg { cursor: crosshair; user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent; }
+.ycread { font-size: 14px; margin: 0 0 6px; min-height: 22px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.ycread b { font-family: var(--mono); font-weight: 500; font-size: 16px; }
 .pillx { font-size: 12px; font-weight: 700; padding: 3px 12px; border-radius: 999px; background: var(--line); color: var(--muted); white-space: nowrap; }
 .pillx.on { background: var(--bad-soft); color: var(--bad); box-shadow: inset 0 0 0 1px var(--bad); }
 .how ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
@@ -236,7 +243,7 @@ footer.f { color: var(--muted); font-size: 12px; margin-top: 28px; }
 <footer class="sitefoot">
   <div class="wrap row">
     <span>© <span id="yr">2026</span> Billion Studio　僅供個人使用，保留所有權利。</span>
-    <span><a href="mailto:info@billionstudio.app">info@billionstudio.app</a>　<span class="mono">Works Hub v1.6.0</span></span>
+    <span><a href="mailto:info@billionstudio.app">info@billionstudio.app</a>　<span class="mono">Works Hub v1.7.0</span></span>
   </div>
 </footer>
 
@@ -281,14 +288,14 @@ footer.f { color: var(--muted); font-size: 12px; margin-top: 28px; }
 
   /* flag rules: 0 normal, 1 yellow (+1), 2 red (+2). Cutoffs chosen so every recorded day reproduces its published score. */
   var COLS = [
-    { k: 6, id: "vix", name: "1. VIX 5 日均", unit: "", d: "恐慌指數 5 日平均", f: function (v) { return v >= 25 ? 2 : v >= 17 ? 1 : 0; } },
-    { k: 7, id: "idx", name: "2. 指數 vs 50 日線", unit: "%", d: "SPY 同 QQQ 平均偏離 50 日線", f: function (v) { return v < -2.5 ? 2 : v < 0 ? 1 : 0; } },
-    { k: 8, id: "p50", name: "3. % 股 > 50 日線", unit: "%", d: "成份股在 50 日線之上的比例", f: function (v) { return v < 30 ? 2 : v < 50 ? 1 : 0; } },
-    { k: 9, id: "d52", name: "4. 個股距 52 週高", unit: "%", d: "成份股平均離 52 週高點幾遠", f: function (v) { return v <= -20 ? 2 : v <= -19 ? 1 : 0; } },
-    { k: 10, id: "p200", name: "5. % 股 > 200 日線", unit: "%", d: "成份股在 200 日線之上的比例", f: function (v) { return v < 45 ? 2 : v <= 61 ? 1 : 0; } },
-    { k: 11, id: "ma", name: "6. 50 日 vs 200 日", unit: "%", d: "小於 0 即死亡交叉", f: function (v) { return v < 0 ? 2 : v < 2 ? 1 : 0; } },
-    { k: 12, id: "vol", name: "7. 21 日波幅", unit: "%", d: "SPY 21 日年化實現波幅", f: function (v) { return v >= 22 ? 2 : v >= 14 ? 1 : 0; } },
-    { k: 13, id: "spx", name: "8. 標普距 52 週高", unit: "%", d: "SPY 收市價離 52 週高點", f: function (v) { return v <= -8 ? 2 : v <= -3 ? 1 : 0; } }
+    { k: 6, id: "vix", name: "1. VIX 5 日均", unit: "", y: "≥ 17", r: "≥ 25", d: "恐慌指數 5 日平均", f: function (v) { return v >= 25 ? 2 : v >= 17 ? 1 : 0; } },
+    { k: 7, id: "idx", name: "2. 指數 vs 50 日線", unit: "%", y: "< 0%", r: "< −2.5%", d: "SPY 同 QQQ 平均偏離 50 日線", f: function (v) { return v < -2.5 ? 2 : v < 0 ? 1 : 0; } },
+    { k: 8, id: "p50", name: "3. % 股 > 50 日線", unit: "%", y: "< 50%", r: "< 30%", d: "成份股在 50 日線之上的比例", f: function (v) { return v < 30 ? 2 : v < 50 ? 1 : 0; } },
+    { k: 9, id: "d52", name: "4. 個股距 52 週高", unit: "%", y: "≤ −19%", r: "≤ −20%", d: "成份股平均離 52 週高點幾遠", f: function (v) { return v <= -20 ? 2 : v <= -19 ? 1 : 0; } },
+    { k: 10, id: "p200", name: "5. % 股 > 200 日線", unit: "%", y: "≤ 61%", r: "< 45%", d: "成份股在 200 日線之上的比例", f: function (v) { return v < 45 ? 2 : v <= 61 ? 1 : 0; } },
+    { k: 11, id: "ma", name: "6. 50 日 vs 200 日", unit: "%", y: "< 2%", r: "< 0%", d: "小於 0 即死亡交叉", f: function (v) { return v < 0 ? 2 : v < 2 ? 1 : 0; } },
+    { k: 12, id: "vol", name: "7. 21 日波幅", unit: "%", y: "≥ 14%", r: "≥ 22%", d: "SPY 21 日年化實現波幅", f: function (v) { return v >= 22 ? 2 : v >= 14 ? 1 : 0; } },
+    { k: 13, id: "spx", name: "8. 標普距 52 週高", unit: "%", y: "≤ −3%", r: "≤ −8%", d: "SPY 收市價離 52 週高點", f: function (v) { return v <= -8 ? 2 : v <= -3 ? 1 : 0; } }
   ];
   function fmt(v, n, plus) { var t = Math.abs(v).toFixed(n); return (v < 0 ? "−" : plus ? "+" : "") + t; }
   function band(s) { return s >= 10 ? "r" : s >= 5 ? "w" : "g"; }
@@ -309,6 +316,7 @@ footer.f { color: var(--muted); font-size: 12px; margin-top: 28px; }
     return svg + "</svg>";
   }
 
+  var YC = null;
   /* 12-month score line chart: x is time-scaled, so gaps and month ticks stay honest */
   function yearChart(m) {
     var hist = (m.scoreHistory && m.scoreHistory.length > 1) ? m.scoreHistory.slice() : m.rows.slice().reverse().map(function (r) { return [r[0], r[1]]; });
@@ -320,7 +328,7 @@ footer.f { color: var(--muted); font-size: 12px; margin-top: 28px; }
     var t0 = ts(hist[0][0]), t1 = ts(last[0]); if (t1 === t0) t1 = t0 + 864e5;
     function X(d) { return L + (ts(d) - t0) / (t1 - t0) * (W - L - R); }
     function Y(v) { return T + (1 - v / max) * (H - T - B); }
-    var svg = '<svg viewBox="0 0 ' + W + " " + H + '" width="100%" style="min-width:480px;display:block" role="img" aria-label="過去 12 個月風險分數走勢">';
+    var svg = '<svg id="ycsvg" class="ycsvg" viewBox="0 0 ' + W + " " + H + '" width="100%" style="min-width:480px;display:block" role="img" aria-label="過去 12 個月風險分數走勢">';
     svg += '<rect x="' + L + '" y="' + Y(5) + '" width="' + (W - L - R) + '" height="' + (Y(0) - Y(5)) + '" fill="var(--good-soft)"/>';
     svg += '<rect x="' + L + '" y="' + Y(10) + '" width="' + (W - L - R) + '" height="' + (Y(5) - Y(10)) + '" fill="var(--warn-soft)"/>';
     svg += '<rect x="' + L + '" y="' + Y(max) + '" width="' + (W - L - R) + '" height="' + (Y(10) - Y(max)) + '" fill="var(--bad-soft)"/>';
@@ -345,14 +353,82 @@ footer.f { color: var(--muted); font-size: 12px; margin-top: 28px; }
     if (hi[1] !== lo[1]) { svg += tag(hi, -8, "最高 " + hi[1] + "（" + hi[0].slice(5) + "）"); svg += tag(lo, 16, "最低 " + lo[1] + "（" + lo[0].slice(5) + "）"); }
     var lx = X(last[0]), ly = Y(last[1]), st = scoreStatus(last[1]);
     svg += '<circle cx="' + lx.toFixed(1) + '" cy="' + ly.toFixed(1) + '" r="5.5" fill="var(--surface)" stroke="var(--' + st + ')" stroke-width="3"/>';
-    /* hover targets: one invisible bar per trading day with a native tooltip */
-    var bw = Math.max(3, (W - L - R) / hist.length);
-    hist.forEach(function (p) { svg += '<rect x="' + (X(p[0]) - bw / 2).toFixed(1) + '" y="' + T + '" width="' + bw.toFixed(1) + '" height="' + (H - T - B) + '" fill="transparent"><title>' + p[0] + "：" + p[1] + " / " + max + "</title></rect>"; });
+    /* hover / tap marker: a guide line, a dot and a small box, moved by ycShow() */
+    svg += '<g id="yctip" style="display:none;pointer-events:none"><line id="yctl" y1="' + T + '" y2="' + (H - B) + '" stroke="var(--muted)" stroke-dasharray="3 3"/><circle id="yctc" r="5" fill="var(--surface)" stroke="var(--ink)" stroke-width="2"/><rect id="yctr" width="124" height="42" rx="6" fill="var(--surface)" stroke="var(--line)"/><text id="yct1" font-size="12" style="fill:var(--muted)"></text><text id="yct2" font-size="15" font-weight="700" style="fill:var(--ink)"></text></g>';
+    YC = { hist: hist, W: W, T: T, R: R, H: H, B: B, max: max, xs: hist.map(function (p) { return X(p[0]); }), ys: hist.map(function (p) { return Y(p[1]); }) };
     svg += "</svg>";
     setTimeout(function () { var e = document.getElementById("ycwrap"); if (e) e.scrollLeft = e.scrollWidth; }, 0);
     var days = hist.length, span = Math.round((t1 - t0) / 864e5 / 30.4);
     var note = span < 11 ? "目前圖上有 " + days + " 個交易日（約 " + span + " 個月，由 " + hist[0][0] + " 起）；每日更新時歷史會慢慢補到滿 12 個月。" : "共 " + days + " 個交易日，由 " + hist[0][0] + " 至 " + last[0] + "。";
-    return { svg: svg, note: note };
+    return { svg: svg, note: note, read: ycReadout(last, max, true) };
+  }
+
+
+  function stLabel(v) { return v >= 10 ? "Meltdown" : v >= 5 ? "警示" : "健康"; }
+  function ycReadout(p, max, latest) {
+    return '<i class="dot ' + scoreStatus(p[1]) + '" style="margin:0"></i><span>' + p[0] + (latest ? "（最新）" : "") + "</span><b>" + p[1] + "／" + max + "</b><span>" + stLabel(p[1]) + "</span>";
+  }
+  function ycHide() {
+    var g = document.getElementById("yctip"); if (!g || !YC) return;
+    g.style.display = "none";
+    var r = document.getElementById("ycread"); if (r) r.innerHTML = ycReadout(YC.hist[YC.hist.length - 1], YC.max, true);
+  }
+  function ycShow(i) {
+    var svg = document.getElementById("ycsvg"); if (!svg || !YC) return;
+    var p = YC.hist[i], x = YC.xs[i], y = YC.ys[i], w = 124, h = 42;
+    var bx = x + 12; if (bx + w > YC.W - 4) bx = x - 12 - w; if (bx < 2) bx = 2;
+    var by = y - h - 10; if (by < 2) by = y + 12;
+    function $(id) { return document.getElementById(id); }
+    $("yctip").style.display = "";
+    $("yctl").setAttribute("x1", x.toFixed(1)); $("yctl").setAttribute("x2", x.toFixed(1));
+    $("yctc").setAttribute("cx", x.toFixed(1)); $("yctc").setAttribute("cy", y.toFixed(1));
+    $("yctc").setAttribute("stroke", "var(--" + scoreStatus(p[1]) + ")");
+    $("yctr").setAttribute("x", bx.toFixed(1)); $("yctr").setAttribute("y", by.toFixed(1));
+    $("yct1").setAttribute("x", (bx + 10).toFixed(1)); $("yct1").setAttribute("y", (by + 16).toFixed(1)); $("yct1").textContent = p[0];
+    $("yct2").setAttribute("x", (bx + 10).toFixed(1)); $("yct2").setAttribute("y", (by + 34).toFixed(1)); $("yct2").textContent = p[1] + "／" + YC.max + " " + stLabel(p[1]);
+    $("ycread").innerHTML = ycReadout(p, YC.max, false);
+  }
+  function ycMove(e) {
+    var svg = document.getElementById("ycsvg"); if (!svg || !YC) return;
+    if (!svg.contains(e.target)) { ycHide(); return; }
+    var r = svg.getBoundingClientRect(), sx = (e.clientX - r.left) / r.width * YC.W, best = 0, bd = 1e9;
+    for (var i = 0; i < YC.xs.length; i++) { var d = Math.abs(YC.xs[i] - sx); if (d < bd) { bd = d; best = i; } }
+    ycShow(best);
+  }
+
+
+  function thermoExplain(m) {
+    var row = m.rows[0], red = [], yel = [], ok = 0;
+    COLS.forEach(function (c) { var f = c.f(row[c.k]); if (f === 2) red.push(c.name); else if (f === 1) yel.push(c.name); else ok++; });
+    var sc = m.score, lab = stLabel(sc);
+    var gap = sc >= 10 ? "" : sc >= 5 ? "（再高 " + (10 - sc) + " 分就會進入 Meltdown 區）" : "（再高 " + (5 - sc) + " 分就會進入警示區）";
+    var ref = null; (m.compare || []).forEach(function (c) { if (c.label === "1 個月前") ref = c; }); if (!ref) (m.compare || []).forEach(function (c) { if (c.label === "1 週前") ref = c; });
+    var trend = "";
+    if (ref) { var d = sc - ref.score; trend = d >= 2 ? "和 " + ref.label + "（" + ref.score + " 分）比，高了 " + d + " 分，市況比之前緊張。" : d <= -2 ? "和 " + ref.label + "（" + ref.score + " 分）比，低了 " + (-d) + " 分，市況比之前緩和。" : "和 " + ref.label + "（" + ref.score + " 分）差不多。"; }
+    function dot(c) { return '<i class="dot ' + c + '" style="margin:0 6px 0 0"></i>'; }
+    var h = '<div class="panel" style="margin-bottom:20px"><h2 style="margin-top:0">用人話點睇？</h2>';
+    h += '<p style="margin:0 0 12px">溫度計把 8 個市況指標加起來：每個指標正常 0 分、黃燈 1 分、紅燈 2 分，滿分 16。<b>分數愈高，代表市場愈緊張、愈不穩定</b>。它描述的是「今日市況有幾緊張」，不是預測之後會不會跌。</p>';
+    h += '<dl class="gloss" style="margin-bottom:14px">'
+      + "<dt>" + dot("good") + "健康 0–4</dt><dd>大部分指標正常，市場整體穩定。</dd>"
+      + "<dt>" + dot("warn") + "警示 5–9</dt><dd>有不少指標轉黃或轉紅，市場開始不穩或正在調整，值得多留意風險。</dd>"
+      + "<dt>" + dot("bad") + "Meltdown 10–16</dt><dd>大部分指標亮黃或亮紅，市場壓力很大，狀態類似明顯下跌或恐慌時期。</dd></dl>";
+    h += '<p style="margin:0 0 8px"><b>今日：</b>' + sc + "／" + m.max + "，落在「" + lab + "」區" + gap + "。8 個指標當中，" + red.length + " 個紅燈、" + yel.length + " 個黃燈、" + ok + " 個正常。" + (red.length ? "紅燈：" + red.map(esc).join("、") + "。" : "") + trend + "</p>";
+    h += '<p style="margin:0 0 8px"><b>留意：</b>分數高時，市場可能已經跌了一段，之後既可能繼續跌，也可能反彈；分數低也不保證安全。連續幾日上升，代表壓力在累積；回落，代表壓力在減退。看走勢比看單一日更有用。</p>';
+    h += '<p style="margin:0"><b>和上面三盞統計燈的分別：</b>溫度計看「現在有幾緊張」；三盞燈看「某個信號出現後，歷史上通常怎樣發展」。兩者獨立計算。</p></div>';
+    return h;
+  }
+
+  function howPanel() {
+    var items = [
+      "<b>每日收市後自動計算。</b>每個交易日收市後，電腦用同一套界線檢查大市和個股數據，每個指標打 0、1 或 2 分，加起來就是當日分數，每日分數沒有人手改動。",
+      "<b>界線是本站的推算值，未經獨立回測。</b>黃燈、紅燈的界線是推算出來的，並沒有用長期歷史獨立驗證過，所以和其他網站的分數可能不同；請把它當作市況溫度的參考，不是準確的預測工具。",
+      "<b>數據全部公開。</b>8 個指標每日的原始數值，都列在下面的「每日記錄」表，可以自己核對。"
+    ];
+    var h = '<div class="panel how" style="margin-bottom:24px"><h2 style="font-size:16px">分數點樣計？</h2><ol>';
+    items.forEach(function (t, i) { h += "<li><i>" + (i + 1) + "</i><div>" + t + "</div></li>"; });
+    h += '</ol><details class="thd"><summary>展開看 8 個指標的黃燈／紅燈界線</summary><table class="ths"><thead><tr><th>指標</th><th>黃燈（+1）</th><th>紅燈（+2）</th></tr></thead><tbody>';
+    COLS.forEach(function (c) { h += "<tr><td>" + esc(c.name) + "</td><td>" + esc(c.y) + "</td><td>" + esc(c.r) + "</td></tr>"; });
+    return h + "</tbody></table></details></div>";
   }
 
   function recordTable(m) {
@@ -580,11 +656,10 @@ footer.f { color: var(--muted); font-size: 12px; margin-top: 28px; }
       h += "<div><small>" + esc(c.label) + " " + (c.label === "1 年前" ? c.date : c.date.slice(5)) + '</small><b><span class="dot ' + scoreStatus(c.score) + '"></span>' + c.score + '</b><span class="up2" style="display:block">' + (diff > 0 ? "▲ 今日高 " + diff + " 分" : diff < 0 ? "▼ 今日低 " + (-diff) + " 分" : "持平") + "</span></div>";
     });
     h += "</div></div></div>";
+    h += thermoExplain(m);
     var yc = yearChart(m);
-    h += '<div class="panel" style="margin-bottom:20px"><h2>過去 12 個月分數走勢</h2><div id="ycwrap" style="overflow-x:auto">' + yc.svg + '</div><div class="meta" style="margin-top:6px">背景色：綠 = 健康 0–4、黃 = 警示 5–9、紅 = Meltdown 10–16。滑鼠移到圖上可看每日分數。' + esc(yc.note) + '</div></div>';
-    h += '<div class="panel how" style="margin-bottom:24px"><h2 style="font-size:16px">燈點樣得出？</h2><ol>';
-    ["<b>固定參數，每日由電腦自動篩。</b>每個交易日收市後，用同一套預先定好的條件檢查大市和個股數據，全部符合才亮燈，沒有人手挑選。", "<b>參數由頭到尾沒有改過。</b>從回測開始到今日都用同一套參數，沒有因為某次跌市或升市而事後調整，也沒有只挑好看的日子展示。", "<b>假警號照樣列出，用紫色標示。</b>固定參數一定有中有不中，每個燈都把之後的結果計進去，不中的照樣列出，讓你自己判斷指標有幾可信。", "<b>具體數據和參數屬內部研究，不公開。</b>只顯示亮燈日子和之後的結果。"].forEach(function (t, i) { h += "<li><i>" + (i + 1) + "</i><div>" + t + "</div></li>"; });
-    h += "</ol></div>";
+    h += '<div class="panel" style="margin-bottom:20px"><h2>過去 12 個月分數走勢</h2><div id="ycread" class="ycread">' + yc.read + '</div><div id="ycwrap" style="overflow-x:auto">' + yc.svg + '</div><div class="meta" style="margin-top:6px">線愈高 = 市場愈緊張。背景色：綠 = 健康 0–4、黃 = 警示 5–9、紅 = Meltdown 10–16。滑鼠移到圖上（手機：點一下圖）可看每日分數。' + esc(yc.note) + '</div></div>';
+    h += howPanel();
     /* per-indicator charts */
     h += "<h2>8 個指標，各自獨立圖表</h2><p class='sub'>每個點是一個交易日，顏色代表當日燈號：綠 = 正常，黃 = 1 分，紅 = 2 分。大圓點是表內最新一日（" + m.rows[0][0] + "）。</p><div class='ind'>";
     COLS.forEach(function (c) {
@@ -709,6 +784,8 @@ footer.f { color: var(--muted); font-size: 12px; margin-top: 28px; }
     window.addEventListener("hashchange", function () { route(); });
     document.addEventListener("click", onClick);
     document.addEventListener("change", onChange);
+    document.addEventListener("pointermove", ycMove);
+    document.addEventListener("pointerdown", ycMove);
     route();
   }).catch(function () {
     document.getElementById("app").innerHTML = '<p class="empty">資料載入失敗，請重新整理頁面。</p>';
