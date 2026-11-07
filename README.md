@@ -23,6 +23,7 @@
 ## 說明
 
 - 股票池：美國普通股，收市 ≥ $5、20 日平均成交 ≥ 30 萬股（每月更新名單一次）。
+- 溫度計共 9 個指標（滿分 18）；第 9 個是 SMH（半導體 ETF）距自己 50 日線的百分比，黃燈 < 0%、紅燈 < −5%（本站自訂起始值，在 `update_monitor.py` 的 `f_smh`）。
 - 黃紅燈界線（`update_monitor.py` 頂部的 `f_*` 函數）是由 cashmate 18 日可見分數反推，可以自行調整。
 - `state/`（價格歷史）不會 commit，只存在 GitHub Actions 的快取。快取失效時，下次執行會自動重新回補。
 - 三個統計燈（早期跌、見底、升浪確認）由 `scripts/update_lights.py` 自行計算：只用標普 500 指數 1950 年起的每日收市價（Yahoo → Stooq → FRED，快取在 `data/spx_history.csv`），定義寫在腳本的 `META_DEFS`，並顯示在網頁。排程：`.github/workflows/lights.yml`（週二至週六 07:30 UTC，也可手動 Run workflow）。

@@ -33,7 +33,7 @@ SLEEP = float(os.environ.get("WH_SLEEP", "12.5"))
 ROWS_KEEP = 120          # rows shown in the daily record table
 SCORE_HIST_KEEP = 260    # trading days of [date, score] kept for the 12-month score chart
 HISTORY_DAYS = 560       # trading days kept: 252 warm-up + 252 for the "1 年前" comparison + slack
-BENCH = ["SPY", "QQQ", "SOXX"]
+BENCH = ["SPY", "QQQ", "SOXX", "SMH"]
 MIN_PRICE = 5.0          # universe: close >= $5
 MIN_AVG_VOL = 300_000    # universe: 20-day average volume >= 300k shares
 STOCK_TYPES = ("CS",)    # common stock; add "ADRC" to include ADRs
@@ -48,8 +48,13 @@ def f_p200(v): return 2 if v < 45 else 1 if v <= 61 else 0
 def f_ma(v):   return 2 if v < 0 else 1 if v < 2 else 0
 def f_vol(v):  return 2 if v >= 22 else 1 if v >= 14 else 0
 def f_spx(v):  return 2 if v <= -8 else 1 if v <= -3 else 0
+# 9th indicator: SMH (semiconductor ETF) vs its own 50-day average. Semis swing about twice as much as the
+# S&P 500, so the red line is -5% (the index-vs-50-day indicator above uses -2.5%). These two cut-offs are
+# our own starting values, not back-fitted; tune them here.
+def f_smh(v):  return 0 if v is None else 2 if v < -5 else 1 if v < 0 else 0
 # row index -> rule (matches the layout of data.json monitor.rows)
-FLAG_COLS = {6: f_vix, 7: f_idx, 8: f_p50, 9: f_d52, 10: f_p200, 11: f_ma, 12: f_vol, 13: f_spx}
+FLAG_COLS = {6: f_vix, 7: f_idx, 8: f_p50, 9: f_d52, 10: f_p200, 11: f_ma, 12: f_vol, 13: f_spx, 19: f_smh}
+MAX_SCORE = 2 * len(FLAG_COLS)  # 18
 
 
 def log(*a):
@@ -176,7 +181,10 @@ def compute_frame(closes, vols, vix, cs_set):
     out["r10"] = up.rolling(10).sum() / dn.rolling(10).sum().replace(0, np.nan)
     out["r40"] = pct_above(sma40)
     out["n_univ"] = U.sum(axis=1)
-    return out.dropna()
+    smh = c["SMH"] if "SMH" in c.columns else pd.Series(np.nan, index=c.index)
+    out["smh50"] = (smh / smh.rolling(50, min_periods=50).mean() - 1) * 100
+    # a missing SMH value must not drop the whole day: it shows as "—" and scores 0 for that indicator
+    return out.dropna(subset=[col for col in out.columns if col != "smh50"])
 
 
 def to_rows(frame):
@@ -186,7 +194,8 @@ def to_rows(frame):
                round(r.spy, 2), round(r.spy_chg, 1), round(r.qqq, 2), round(r.qqq_chg, 1),
                round(r.vix5, 2), round(r.idx50, 2), round(r.p50, 1), round(r.d52, 2), round(r.p200, 1),
                round(r.ma, 2), round(r.vol21, 1), round(r.spx, 2),
-               int(r.up), int(r.dn), round(r.r5, 2), round(r.r10, 2), round(r.r40, 1)]
+               int(r.up), int(r.dn), round(r.r5, 2), round(r.r10, 2), round(r.r40, 1),
+               None if pd.isna(r.smh50) else round(r.smh50, 2)]
         row = [x.item() if hasattr(x, "item") else x for x in row]
         row[1] = sum(f(row[k]) for k, f in FLAG_COLS.items())
         rows.append(row)
@@ -210,7 +219,7 @@ def update_data(data, rows, closes, n_univ, now_utc):
     diff = score - prev[1]
     word = "升" if diff > 0 else "降" if diff < 0 else "持平"
     m.update({
-        "date": latest[0], "score": score, "max": 16, "status": status_of(score),
+        "date": latest[0], "score": score, "max": 2 * sum(1 for k in FLAG_COLS if latest[k] is not None), "status": status_of(score),
         "summary": ("較前日" + (f"{word} {abs(diff)} 分：" if diff else "持平：") +
                     f"{reds} 個紅燈、{yellows} 個黃燈。"),
         "source": "本站自行計算",
@@ -349,7 +358,7 @@ def main():
     data = json.loads(DATA_PATH.read_text(encoding="utf-8"))
     data = update_data(data, rows, closes, int(frame["n_univ"].iloc[-1]), now)
     DATA_PATH.write_text(json.dumps(data, ensure_ascii=False, indent=1), encoding="utf-8")
-    log(f"done: {rows[0][0]} score {rows[0][1]}/16, {len(rows)} rows")
+    log(f"done: {rows[0][0]} score {rows[0][1]}/{2 * sum(1 for k in FLAG_COLS if rows[0][k] is not None)}, {len(rows)} rows")
 
 
 if __name__ == "__main__":

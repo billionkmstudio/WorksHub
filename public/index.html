@@ -243,7 +243,7 @@ footer.f { color: var(--muted); font-size: 12px; margin-top: 28px; }
 <footer class="sitefoot">
   <div class="wrap row">
     <span>© <span id="yr">2026</span> Billion Studio　僅供個人使用，保留所有權利。</span>
-    <span><a href="mailto:info@billionstudio.app">info@billionstudio.app</a>　<span class="mono">Works Hub v1.7.0</span></span>
+    <span><a href="mailto:info@billionstudio.app">info@billionstudio.app</a>　<span class="mono">Works Hub v1.8.0</span></span>
   </div>
 </footer>
 
@@ -295,13 +295,16 @@ footer.f { color: var(--muted); font-size: 12px; margin-top: 28px; }
     { k: 10, id: "p200", name: "5. % 股 > 200 日線", unit: "%", y: "≤ 61%", r: "< 45%", d: "成份股在 200 日線之上的比例", f: function (v) { return v < 45 ? 2 : v <= 61 ? 1 : 0; } },
     { k: 11, id: "ma", name: "6. 50 日 vs 200 日", unit: "%", y: "< 2%", r: "< 0%", d: "小於 0 即死亡交叉", f: function (v) { return v < 0 ? 2 : v < 2 ? 1 : 0; } },
     { k: 12, id: "vol", name: "7. 21 日波幅", unit: "%", y: "≥ 14%", r: "≥ 22%", d: "SPY 21 日年化實現波幅", f: function (v) { return v >= 22 ? 2 : v >= 14 ? 1 : 0; } },
-    { k: 13, id: "spx", name: "8. 標普距 52 週高", unit: "%", y: "≤ −3%", r: "≤ −8%", d: "SPY 收市價離 52 週高點", f: function (v) { return v <= -8 ? 2 : v <= -3 ? 1 : 0; } }
+    { k: 13, id: "spx", name: "8. 標普距 52 週高", unit: "%", y: "≤ −3%", r: "≤ −8%", d: "SPY 收市價離 52 週高點", f: function (v) { return v <= -8 ? 2 : v <= -3 ? 1 : 0; } },
+    { k: 19, id: "smh", name: "9. SMH vs 50 日線", unit: "%", y: "< 0%", r: "< −5%", d: "半導體 ETF（SMH）偏離自己 50 日線", f: function (v) { return v == null ? 0 : v < -5 ? 2 : v < 0 ? 1 : 0; } }
   ];
+  var ACT = COLS;
+  function activeCols(m) { var r = m.rows && m.rows[0]; return COLS.filter(function (c) { return r && r.length > c.k && r[c.k] != null; }); }
   function fmt(v, n, plus) { var t = Math.abs(v).toFixed(n); return (v < 0 ? "−" : plus ? "+" : "") + t; }
   function band(s) { return s >= 10 ? "r" : s >= 5 ? "w" : "g"; }
 
   function lineChart(col, rows) {
-    var asc = rows.slice().sort(function (a, b) { return a[0] < b[0] ? -1 : 1; });
+    var asc = rows.filter(function (r) { return r[col.k] != null; }).sort(function (a, b) { return a[0] < b[0] ? -1 : 1; });
     var W = 260, H = 78, P = 8, vals = asc.map(function (r) { return r[col.k]; });
     var lo = Math.min.apply(null, vals), hi = Math.max.apply(null, vals); if (hi === lo) { hi += 1; lo -= 1; }
     function X(i) { return P + i * (W - 2 * P) / (asc.length - 1); }
@@ -399,7 +402,7 @@ footer.f { color: var(--muted); font-size: 12px; margin-top: 28px; }
 
   function thermoExplain(m) {
     var row = m.rows[0], red = [], yel = [], ok = 0;
-    COLS.forEach(function (c) { var f = c.f(row[c.k]); if (f === 2) red.push(c.name); else if (f === 1) yel.push(c.name); else ok++; });
+    ACT.forEach(function (c) { var f = c.f(row[c.k]); if (f === 2) red.push(c.name); else if (f === 1) yel.push(c.name); else ok++; });
     var sc = m.score, lab = stLabel(sc);
     var gap = sc >= 10 ? "" : sc >= 5 ? "（再高 " + (10 - sc) + " 分就會進入 Meltdown 區）" : "（再高 " + (5 - sc) + " 分就會進入警示區）";
     var ref = null; (m.compare || []).forEach(function (c) { if (c.label === "1 個月前") ref = c; }); if (!ref) (m.compare || []).forEach(function (c) { if (c.label === "1 週前") ref = c; });
@@ -407,12 +410,12 @@ footer.f { color: var(--muted); font-size: 12px; margin-top: 28px; }
     if (ref) { var d = sc - ref.score; trend = d >= 2 ? "和 " + ref.label + "（" + ref.score + " 分）比，高了 " + d + " 分，市況比之前緊張。" : d <= -2 ? "和 " + ref.label + "（" + ref.score + " 分）比，低了 " + (-d) + " 分，市況比之前緩和。" : "和 " + ref.label + "（" + ref.score + " 分）差不多。"; }
     function dot(c) { return '<i class="dot ' + c + '" style="margin:0 6px 0 0"></i>'; }
     var h = '<div class="panel" style="margin-bottom:20px"><h2 style="margin-top:0">用人話點睇？</h2>';
-    h += '<p style="margin:0 0 12px">溫度計把 8 個市況指標加起來：每個指標正常 0 分、黃燈 1 分、紅燈 2 分，滿分 16。<b>分數愈高，代表市場愈緊張、愈不穩定</b>。它描述的是「今日市況有幾緊張」，不是預測之後會不會跌。</p>';
+    h += '<p style="margin:0 0 12px">溫度計把 ' + ACT.length + ' 個市況指標加起來：每個指標正常 0 分、黃燈 1 分、紅燈 2 分，滿分 ' + m.max + '。<b>分數愈高，代表市場愈緊張、愈不穩定</b>。它描述的是「今日市況有幾緊張」，不是預測之後會不會跌。</p>';
     h += '<dl class="gloss" style="margin-bottom:14px">'
       + "<dt>" + dot("good") + "健康 0–4</dt><dd>大部分指標正常，市場整體穩定。</dd>"
       + "<dt>" + dot("warn") + "警示 5–9</dt><dd>有不少指標轉黃或轉紅，市場開始不穩或正在調整，值得多留意風險。</dd>"
-      + "<dt>" + dot("bad") + "Meltdown 10–16</dt><dd>大部分指標亮黃或亮紅，市場壓力很大，狀態類似明顯下跌或恐慌時期。</dd></dl>";
-    h += '<p style="margin:0 0 8px"><b>今日：</b>' + sc + "／" + m.max + "，落在「" + lab + "」區" + gap + "。8 個指標當中，" + red.length + " 個紅燈、" + yel.length + " 個黃燈、" + ok + " 個正常。" + (red.length ? "紅燈：" + red.map(esc).join("、") + "。" : "") + trend + "</p>";
+      + "<dt>" + dot("bad") + "Meltdown 10–" + m.max + "</dt><dd>大部分指標亮黃或亮紅，市場壓力很大，狀態類似明顯下跌或恐慌時期。</dd></dl>";
+    h += '<p style="margin:0 0 8px"><b>今日：</b>' + sc + "／" + m.max + "，落在「" + lab + "」區" + gap + "。" + ACT.length + " 個指標當中，" + red.length + " 個紅燈、" + yel.length + " 個黃燈、" + ok + " 個正常。" + (red.length ? "紅燈：" + red.map(esc).join("、") + "。" : "") + trend + "</p>";
     h += '<p style="margin:0 0 8px"><b>留意：</b>分數高時，市場可能已經跌了一段，之後既可能繼續跌，也可能反彈；分數低也不保證安全。連續幾日上升，代表壓力在累積；回落，代表壓力在減退。看走勢比看單一日更有用。</p>';
     h += '<p style="margin:0"><b>和上面三盞統計燈的分別：</b>溫度計看「現在有幾緊張」；三盞燈看「某個信號出現後，歷史上通常怎樣發展」。兩者獨立計算。</p></div>';
     return h;
@@ -422,19 +425,19 @@ footer.f { color: var(--muted); font-size: 12px; margin-top: 28px; }
     var items = [
       "<b>每日收市後自動計算。</b>每個交易日收市後，電腦用同一套界線檢查大市和個股數據，每個指標打 0、1 或 2 分，加起來就是當日分數，每日分數沒有人手改動。",
       "<b>界線是本站的推算值，未經獨立回測。</b>黃燈、紅燈的界線是推算出來的，並沒有用長期歷史獨立驗證過，所以和其他網站的分數可能不同；請把它當作市況溫度的參考，不是準確的預測工具。",
-      "<b>數據全部公開。</b>8 個指標每日的原始數值，都列在下面的「每日記錄」表，可以自己核對。"
+      "<b>數據全部公開。</b>" + ACT.length + " 個指標每日的原始數值，都列在下面的「每日記錄」表，可以自己核對。"
     ];
     var h = '<div class="panel how" style="margin-bottom:24px"><h2 style="font-size:16px">分數點樣計？</h2><ol>';
     items.forEach(function (t, i) { h += "<li><i>" + (i + 1) + "</i><div>" + t + "</div></li>"; });
-    h += '</ol><details class="thd"><summary>展開看 8 個指標的黃燈／紅燈界線</summary><table class="ths"><thead><tr><th>指標</th><th>黃燈（+1）</th><th>紅燈（+2）</th></tr></thead><tbody>';
-    COLS.forEach(function (c) { h += "<tr><td>" + esc(c.name) + "</td><td>" + esc(c.y) + "</td><td>" + esc(c.r) + "</td></tr>"; });
+    h += '</ol><details class="thd"><summary>展開看 ' + ACT.length + ' 個指標的黃燈／紅燈界線</summary><table class="ths"><thead><tr><th>指標</th><th>黃燈（+1）</th><th>紅燈（+2）</th></tr></thead><tbody>';
+    ACT.forEach(function (c) { h += "<tr><td>" + esc(c.name) + "</td><td>" + esc(c.y) + "</td><td>" + esc(c.r) + "</td></tr>"; });
     return h + "</tbody></table></details></div>";
   }
 
   function recordTable(m) {
-    var h = '<div class="tbl"><table><thead><tr><th rowspan="2" style="top:0">日期</th><th colspan="3">0–16 分</th><th colspan="8">8 個指標（黃 = 1 分，紅 = 2 分）</th><th colspan="5">美股升跌家數</th></tr><tr>';
+    var h = '<div class="tbl"><table><thead><tr><th rowspan="2" style="top:0">日期</th><th colspan="3">0–' + m.max + ' 分</th><th colspan="' + ACT.length + '">' + ACT.length + ' 個指標（黃 = 1 分，紅 = 2 分）</th><th colspan="5">美股升跌家數</th></tr><tr>';
     ["分數", "SPY", "QQQ"].forEach(function (t) { h += "<th>" + t + "</th>"; });
-    COLS.forEach(function (c) { h += "<th>" + esc(c.name) + "</th>"; });
+    ACT.forEach(function (c) { h += "<th>" + esc(c.name) + "</th>"; });
     ["升 ≥4%<br>隻", "跌 ≥4%<br>隻", "5 日<br>比率", "10 日<br>比率", "企穩 40 日<br>線 %"].forEach(function (t) { h += "<th>" + t + "</th>"; });
     h += "</tr></thead><tbody>";
     m.rows.forEach(function (r) {
@@ -442,9 +445,9 @@ footer.f { color: var(--muted); font-size: 12px; margin-top: 28px; }
       h += "<tr><td>" + r[0] + '</td><td class="sc ' + b + '">' + r[1] + "</td>";
       h += '<td class="' + b + '">' + r[2].toFixed(2) + "<small>" + fmt(r[3], 1, true) + "%</small></td>";
       h += '<td class="' + b + '">' + r[4].toFixed(2) + "<small>" + fmt(r[5], 1, true) + "%</small></td>";
-      COLS.forEach(function (c) {
+      ACT.forEach(function (c) {
         var v = r[c.k], f = c.f(v), cls = f === 2 ? "r" : f === 1 ? "w" : "";
-        h += '<td class="' + cls + '">' + (c.id === "idx" || c.id === "ma" ? fmt(v, 2, true) : c.id === "vix" || c.id === "p50" || c.id === "p200" || c.id === "vol" ? v.toFixed(c.id === "vix" ? 2 : 1) : fmt(v, 2)) + "</td>";
+        h += '<td class="' + cls + '">' + (v == null ? "—" : c.id === "idx" || c.id === "ma" || c.id === "smh" ? fmt(v, 2, true) : c.id === "vix" || c.id === "p50" || c.id === "p200" || c.id === "vol" ? v.toFixed(c.id === "vix" ? 2 : 1) : fmt(v, 2)) + "</td>";
       });
       var up = r[14], dn = r[15], upWin = up >= dn;
       function bc(n, win) { return win ? (upWin ? (n >= 300 ? "gg" : "g") : (n >= 300 ? "rr" : "r")) : (upWin ? "g" : "r"); }
@@ -624,9 +627,10 @@ footer.f { color: var(--muted); font-size: 12px; margin-top: 28px; }
   }
 
   function monitorPage() {
-    var m = DATA.monitor, st = scoreStatus(m.score);
+    var m = DATA.monitor; ACT = activeCols(m);
+    var st = scoreStatus(m.score);
     var h = '<div class="meta" style="margin:0 0 4px;letter-spacing:.08em;color:var(--accent);font-weight:700">MARKET MONITOR · 每個美股交易日更新</div><h1>美股風險監測</h1>';
-    h += "<p class='sub' style='max-width:62ch'>三個歷史統計燈，加一個 0–16 分的市況溫度計，以及每日記錄。只描述市況，不構成買賣建議。燈號狀態：截至 " + m.date + " 收市。</p>";
+    h += "<p class='sub' style='max-width:62ch'>三個歷史統計燈，加一個 0–" + m.max + " 分的市況溫度計，以及每日記錄。只描述市況，不構成買賣建議。燈號狀態：截至 " + m.date + " 收市。</p>";
     h += '<div class="notice">' + esc(m.notice || m.source) + "</div>";
     /* experimental lights */
     h += '<div class="exp">';
@@ -647,9 +651,9 @@ footer.f { color: var(--muted); font-size: 12px; margin-top: 28px; }
       + '<dt>未亮</dt><dd>沒有訊號，不等於好或壞，只是這個情況暫時沒有出現。</dd>'
       + '</dl>' + defsHtml(m) + '</div>';
     /* thermometer */
-    h += "<h2>0–16 分市況溫度計</h2>";
+    h += "<h2>0–" + m.max + " 分市況溫度計</h2>";
     h += '<div class="panel" style="border-left:4px solid var(--' + st + ');margin-bottom:16px"><p style="margin:0"><span class="pill ' + st + '" style="margin-right:8px">' + esc(m.status) + "</span><b>今日 Score " + m.score + "／" + m.max + "，" + esc(m.summary) + '</b></p><div class="meta">數據日期 ' + m.date + "（美股收市）· " + esc(m.stamp.replace("更新：", "")) + "</div></div>";
-    h += '<div class="grid2" style="margin-bottom:20px"><div class="panel"><div style="display:flex;justify-content:center">' + gauge(m.score, m.max, true) + '</div><div class="legendrow" style="justify-content:center"><span' + (st === "good" ? ' class="cur"' : "") + '><i class="dot good" style="margin:0 6px 0 0"></i>健康 0–4</span><span' + (st === "warn" ? ' class="cur"' : "") + '><i class="dot warn" style="margin:0 6px 0 0"></i>警示 5–9</span><span' + (st === "bad" ? ' class="cur"' : "") + '><i class="dot bad" style="margin:0 6px 0 0"></i>Meltdown 10–16</span></div></div>';
+    h += '<div class="grid2" style="margin-bottom:20px"><div class="panel"><div style="display:flex;justify-content:center">' + gauge(m.score, m.max, true) + '</div><div class="legendrow" style="justify-content:center"><span' + (st === "good" ? ' class="cur"' : "") + '><i class="dot good" style="margin:0 6px 0 0"></i>健康 0–4</span><span' + (st === "warn" ? ' class="cur"' : "") + '><i class="dot warn" style="margin:0 6px 0 0"></i>警示 5–9</span><span' + (st === "bad" ? ' class="cur"' : "") + '><i class="dot bad" style="margin:0 6px 0 0"></i>Meltdown 10–' + m.max + '</span></div></div>';
     h += '<div class="panel"><h2>同過去比較</h2><div class="cmp">';
     m.compare.forEach(function (c) {
       var diff = m.score - c.score;
@@ -658,19 +662,19 @@ footer.f { color: var(--muted); font-size: 12px; margin-top: 28px; }
     h += "</div></div></div>";
     h += thermoExplain(m);
     var yc = yearChart(m);
-    h += '<div class="panel" style="margin-bottom:20px"><h2>過去 12 個月分數走勢</h2><div id="ycread" class="ycread">' + yc.read + '</div><div id="ycwrap" style="overflow-x:auto">' + yc.svg + '</div><div class="meta" style="margin-top:6px">線愈高 = 市場愈緊張。背景色：綠 = 健康 0–4、黃 = 警示 5–9、紅 = Meltdown 10–16。滑鼠移到圖上（手機：點一下圖）可看每日分數。' + esc(yc.note) + '</div></div>';
+    h += '<div class="panel" style="margin-bottom:20px"><h2>過去 12 個月分數走勢</h2><div id="ycread" class="ycread">' + yc.read + '</div><div id="ycwrap" style="overflow-x:auto">' + yc.svg + '</div><div class="meta" style="margin-top:6px">線愈高 = 市場愈緊張。背景色：綠 = 健康 0–4、黃 = 警示 5–9、紅 = Meltdown 10–' + m.max + '。滑鼠移到圖上（手機：點一下圖）可看每日分數。' + esc(yc.note) + '</div></div>';
     h += howPanel();
     /* per-indicator charts */
-    h += "<h2>8 個指標，各自獨立圖表</h2><p class='sub'>每個點是一個交易日，顏色代表當日燈號：綠 = 正常，黃 = 1 分，紅 = 2 分。大圓點是表內最新一日（" + m.rows[0][0] + "）。</p><div class='ind'>";
-    COLS.forEach(function (c) {
-      var v = m.rows[0][c.k], f = c.f(v), vtxt = (c.id === "idx" || c.id === "ma") ? fmt(v, 2, true) : (c.id === "d52" || c.id === "spx") ? fmt(v, 2) : v;
+    h += "<h2>" + ACT.length + " 個指標，各自獨立圖表</h2><p class='sub'>每個點是一個交易日，顏色代表當日燈號：綠 = 正常，黃 = 1 分，紅 = 2 分。大圓點是表內最新一日（" + m.rows[0][0] + "）。</p><div class='ind'>";
+    ACT.forEach(function (c) {
+      var v = m.rows[0][c.k], f = c.f(v), vtxt = (c.id === "idx" || c.id === "ma" || c.id === "smh") ? fmt(v, 2, true) : (c.id === "d52" || c.id === "spx") ? fmt(v, 2) : v;
       h += '<div class="panel f' + f + '"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><b>' + esc(c.name) + '</b><span class="pill ' + (f === 2 ? "bad" : f === 1 ? "warn" : "good") + '">' + (f === 2 ? "紅燈" : f === 1 ? "黃燈" : "正常") + '</span></div><div class="val">' + vtxt + "<small>" + c.unit + '</small></div><div class="d">' + esc(c.d) + "</div>" + lineChart(c, m.rows) + "</div>";
     });
     h += "</div>";
     /* record table */
-    h += '<h2 style="margin-top:28px">每日記錄：0–16 分同美股升跌家數</h2><p class="sub">最新一日在最上面。升跌家數計約 2,500 隻活躍美股（收市 ≥ $5、20 日平均成交 ≥ 30 萬股）。表可橫向和直向捲動。</p>';
+    h += '<h2 style="margin-top:28px">每日記錄：0–' + m.max + ' 分同美股升跌家數</h2><p class="sub">最新一日在最上面。升跌家數計約 2,500 隻活躍美股（收市 ≥ $5、20 日平均成交 ≥ 30 萬股）。表可橫向和直向捲動。</p>';
     h += recordTable(m);
-    h += '<div class="legend"><div><span class="sw" style="background:var(--good-soft)"></span><span class="sw" style="background:var(--warn-soft)"></span><span class="sw" style="background:var(--bad-soft)"></span>分數、SPY、QQQ：綠 = 健康 0–4、黃 = 警示 5–9、紅 = Meltdown 10–16</div><div><span class="sw" style="background:var(--warn-soft)"></span><span class="sw" style="background:var(--bad-soft)"></span>8 個指標：黃 = 1 分、紅 = 2 分，加起來就是當日分數</div><div><span class="sw" style="background:color-mix(in srgb, var(--good) 38%, var(--surface))"></span>單日升／跌 ≥4%：≥ 300 隻為深色；升多過跌 = 綠，跌多過升 = 紅。5／10 日比率 = 期內升 ≥4% 隻數 ÷ 跌 ≥4% 隻數：10 日 &lt; 1、5 日 &lt; 0.5 為紅，≥ 2 為綠</div><div><span class="sw" style="background:color-mix(in srgb, var(--good) 38%, var(--surface))"></span>企穩 40 日線 &lt; 20% = 深綠（市況極度超賣）。只是歷史數據的描述，不是買賣建議。</div></div>';
+    h += '<div class="legend"><div><span class="sw" style="background:var(--good-soft)"></span><span class="sw" style="background:var(--warn-soft)"></span><span class="sw" style="background:var(--bad-soft)"></span>分數、SPY、QQQ：綠 = 健康 0–4、黃 = 警示 5–9、紅 = Meltdown 10–' + m.max + '</div><div><span class="sw" style="background:var(--warn-soft)"></span><span class="sw" style="background:var(--bad-soft)"></span>' + ACT.length + ' 個指標：黃 = 1 分、紅 = 2 分，加起來就是當日分數</div><div><span class="sw" style="background:color-mix(in srgb, var(--good) 38%, var(--surface))"></span>單日升／跌 ≥4%：≥ 300 隻為深色；升多過跌 = 綠，跌多過升 = 紅。5／10 日比率 = 期內升 ≥4% 隻數 ÷ 跌 ≥4% 隻數：10 日 &lt; 1、5 日 &lt; 0.5 為紅，≥ 2 為綠</div><div><span class="sw" style="background:color-mix(in srgb, var(--good) 38%, var(--surface))"></span>企穩 40 日線 &lt; 20% = 深綠（市況極度超賣）。只是歷史數據的描述，不是買賣建議。</div></div>';
     return h;
   }
 
@@ -745,7 +749,7 @@ footer.f { color: var(--muted); font-size: 12px; margin-top: 28px; }
   function todayPage() {
     var d = days("intl")[0] || days()[0], day = DATA.days[d], m = DATA.monitor, st = scoreStatus(m.score);
     var h = "<h1>" + zhDate(d) + "</h1><p class='sub'>每日最重要的國際與財經消息，以及美股風險分數。</p>";
-    h += '<a href="#monitor" style="color:inherit;text-decoration:none"><div class="panel band" style="margin-bottom:20px"><div>' + gauge(m.score, m.max) + '</div><div><p style="margin:0 0 6px"><span class="pill ' + st + '">美股風險 · ' + esc(m.status) + "</span></p><h2 style='margin:0 0 4px'>分數 " + m.score + " / " + m.max + "，前日 " + m.compare[0].score + "</h2><p style='margin:0;color:var(--muted)'>" + esc(m.summary) + " 數據日期 " + dmy(m.date) + '。<span style="color:var(--accent)"> 查看 8 個指標 →</span></p></div></div></a>';
+    h += '<a href="#monitor" style="color:inherit;text-decoration:none"><div class="panel band" style="margin-bottom:20px"><div>' + gauge(m.score, m.max) + '</div><div><p style="margin:0 0 6px"><span class="pill ' + st + '">美股風險 · ' + esc(m.status) + "</span></p><h2 style='margin:0 0 4px'>分數 " + m.score + " / " + m.max + "，前日 " + m.compare[0].score + "</h2><p style='margin:0;color:var(--muted)'>" + esc(m.summary) + " 數據日期 " + dmy(m.date) + '。<span style="color:var(--accent)"> 查看 ' + activeCols(DATA.monitor).length + ' 個指標 →</span></p></div></div></a>';
     function top5(items, page, title) {
       var s = '<div class="panel"><h2>' + title + '<a href="#' + page + '">全部 10 則 →</a></h2><ol class="list">';
       items.slice(0, 5).forEach(function (it, i) { s += '<li><span class="rank">' + (i + 1) + "</span><div><h3>" + esc(it.t) + "</h3><p>" + esc(it.h || it.s) + "</p>" + "</div></li>"; });
