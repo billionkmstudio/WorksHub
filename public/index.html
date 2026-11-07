@@ -217,7 +217,7 @@ footer.f { color: var(--muted); font-size: 12px; margin-top: 28px; }
 <footer class="sitefoot">
   <div class="wrap row">
     <span>© <span id="yr">2026</span> Billion Studio　僅供個人使用，保留所有權利。</span>
-    <span><a href="mailto:info@billionstudio.app">info@billionstudio.app</a>　<span class="mono">Works Hub v1.5.0</span></span>
+    <span><a href="mailto:info@billionstudio.app">info@billionstudio.app</a>　<span class="mono">Works Hub v1.5.1</span></span>
   </div>
 </footer>
 
@@ -602,10 +602,11 @@ footer.f { color: var(--muted); font-size: 12px; margin-top: 28px; }
       if (!box) return;
       if (!ds.length) { box.innerHTML = '<p class="empty">暫時未有報表。</p>'; return; }
       var cur = sub && ds.indexOf(sub) >= 0 ? sub : ds[0];
-      var b = '<div class="archive"><span class="lab">日期存檔（最近 7 日）</span>';
-      ds.forEach(function (d, i) { b += '<a href="#report' + (i === 0 ? "" : "-" + d) + '"' + (d === cur ? ' aria-current="true"' : "") + ">" + dmy(d) + (i === 0 ? "（最新）" : "") + "</a>"; });
-      b += '</div><p class="sub"><a href="reports/' + cur + '.html" target="_blank" rel="noopener">在新分頁開啟完整報表 →</a></p>';
+      var b = '<p class="sub"><a href="reports/' + cur + '.html" target="_blank" rel="noopener">在新分頁開啟完整報表 →</a></p>';
       b += '<iframe title="美股日報 ' + cur + '" src="reports/' + cur + '.html" sandbox="" loading="lazy" style="width:100%;height:80vh;min-height:520px;border:1px solid var(--line);border-radius:6px;background:#fff"></iframe>';
+      b += '<div class="archive bottom"><span class="lab">日期存檔（最近 7 日）</span>';
+      ds.forEach(function (d, i) { b += '<a href="#report' + (i === 0 ? "" : "-" + d) + '"' + (d === cur ? ' aria-current="true"' : "") + ">" + dmy(d) + (i === 0 ? "（最新）" : "") + "</a>"; });
+      b += "</div>";
       box.innerHTML = b;
     }).catch(function () {
       var box = document.getElementById("rpt");
