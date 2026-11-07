@@ -194,6 +194,25 @@ svg text { font-family: var(--mono); }
 .weekbox section p { margin: 0; max-width: 68ch; }
 .empty { color: var(--muted); padding: 24px 0; }
 footer.f { color: var(--muted); font-size: 12px; margin-top: 28px; }
+
+/* 美股日報 */
+.rp-sum { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 20px; }
+.rp-sum .pill { font-size: 14px; padding: 3px 14px; }
+.rp-sum .pill.neutral { background: var(--line); color: var(--muted); }
+.rp-grp { margin: 0 0 20px; }
+.rp-grp h2 { display: flex; align-items: baseline; gap: 8px; }
+.rp-grp h2 small { font: 400 13px var(--body); color: var(--muted); }
+.rp-it { display: grid; grid-template-columns: 92px minmax(0, 1fr); gap: 12px; padding: 12px 0; border-top: 1px solid var(--line); }
+.rp-it:first-child { border-top: 0; padding-top: 4px; }
+.rp-it .tk { font-family: var(--mono); font-weight: 700; font-size: 15px; }
+.rp-it .tk small { display: block; font-weight: 400; font-size: 12px; color: var(--muted); }
+.rp-it p { margin: 0; font-size: 14px; }
+.rp-it .fl { margin: 4px 0 0; font-size: 13px; color: var(--bad); }
+.rp-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.rp-chips span { font-family: var(--mono); font-size: 13px; padding: 3px 10px; border: 1px solid var(--line); border-radius: 4px; background: var(--surface); }
+.rp-tbl .tbl { max-height: none; }
+.rp-tbl .fl { white-space: normal; min-width: 220px; text-align: left; font-size: 12px; color: var(--bad); }
+.rp-ai { white-space: pre-wrap; font-size: 14px; margin: 0; }
 .sitefoot { border-top: 1px solid var(--line); margin-top: 8px; }
 .sitefoot .row { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 16px; padding-block: 16px 28px; font-size: 12px; color: var(--muted); }
 .sitefoot .mono { font-size: 12px; }
@@ -217,7 +236,7 @@ footer.f { color: var(--muted); font-size: 12px; margin-top: 28px; }
 <footer class="sitefoot">
   <div class="wrap row">
     <span>© <span id="yr">2026</span> Billion Studio　僅供個人使用，保留所有權利。</span>
-    <span><a href="mailto:info@billionstudio.app">info@billionstudio.app</a>　<span class="mono">Works Hub v1.5.1</span></span>
+    <span><a href="mailto:info@billionstudio.app">info@billionstudio.app</a>　<span class="mono">Works Hub v1.6.0</span></span>
   </div>
 </footer>
 
@@ -592,9 +611,38 @@ footer.f { color: var(--muted); font-size: 12px; margin-top: 28px; }
     return h + "</div>";
   }
 
-  /* ---------- 美股日報: standalone HTML reports pushed daily to public/reports/ ---------- */
+  /* ---------- 美股日報: daily report JSON pushed to public/reports/ ---------- */
+  var RP_GROUPS = [["crit", "🔴 需注意", "bad"], ["entry", "🚀 進場訊號", "good"], ["watch", "🟡 觀察", "warn"], ["ipo", "🆕 IPO 新股", ""], ["stale", "⚠️ 資料異常／過期", ""]];
+  function sgn(v, d) { return v == null ? "—" : (v > 0 ? "+" : "") + v.toFixed(d == null ? 1 : d) + "%"; }
+  function rpBody(r) {
+    var c = r.counts, h = '<div class="rp-sum">';
+    h += '<span class="pill bad">🔴 需注意 ' + c.crit + '</span><span class="pill good">🚀 進場 ' + c.entry + '</span><span class="pill warn">🟡 觀察 ' + c.watch + '</span><span class="pill neutral">🟢 正常 ' + c.normal + "</span>";
+    if (c.ipo) h += '<span class="pill neutral">🆕 新股 ' + c.ipo + "</span>";
+    if (c.stale) h += '<span class="pill neutral">⚠️ 資料異常 ' + c.stale + "</span>";
+    h += "</div>";
+    if (r.commentary) h += '<div class="panel" style="margin-bottom:20px"><h2>AI 解讀</h2><p class="rp-ai">' + esc(r.commentary) + "</p></div>";
+    RP_GROUPS.forEach(function (g) {
+      var grp = (r.groups || []).filter(function (x) { return x.k === g[0]; })[0];
+      if (!grp || !grp.items.length) return;
+      h += '<section class="rp-grp panel"><h2>' + g[1] + " <small>" + grp.items.length + " 隻</small></h2>";
+      grp.items.forEach(function (it) {
+        h += '<div class="rp-it"><div class="tk">' + esc(it.t) + "<small>" + it.px.toFixed(2) + "</small></div><div><p>" + esc(it.r) + "</p>" +
+          (it.f && it.f.length ? '<div class="fl">' + it.f.map(esc).join("<br>") + "</div>" : "") + "</div></div>";
+      });
+      h += "</section>";
+    });
+    if (r.normal && r.normal.length) h += '<section class="rp-grp panel"><h2>🟢 正常 <small>' + r.normal.length + ' 隻</small></h2><div class="rp-chips">' + r.normal.map(function (t) { return "<span>" + esc(t) + "</span>"; }).join("") + "</div></section>";
+    h += '<div class="rp-tbl"><h2>完整明細</h2><div class="tbl"><table><thead><tr><th>Ticker</th><th>收盤</th><th>日 %</th><th>週 %</th><th>量比</th><th>MA20/50/200</th><th>RSI</th><th>BSPS</th><th>Breakout</th><th>旗標</th></tr></thead><tbody>';
+    (r.rows || []).forEach(function (x) {
+      var sc = x.g === "crit" ? "r" : x.b ? "ww" : x.g === "watch" ? "w" : "";
+      h += "<tr><td>" + esc(x.t) + "</td><td>" + x.px.toFixed(2) + '</td><td class="' + (x.d == null ? "" : x.d >= 0 ? "up" : "dn") + '">' + sgn(x.d) + "</td><td>" + sgn(x.w) + "</td><td>" + (x.v == null ? "—" : x.v.toFixed(1) + "×") + '</td><td style="text-align:center">' + esc(x.ma) + "</td><td>" + (x.rsi == null ? "—" : Math.round(x.rsi)) + '</td><td class="sc ' + sc + '">' + x.s + '</td><td style="text-align:center">' + (x.b ? "✅" : "—") + '</td><td class="fl">' + (x.f || []).map(esc).join("<br>") + "</td></tr>";
+    });
+    h += "</tbody></table></div></div>";
+    h += '<footer class="f" style="margin-top:16px;font-size:12px;color:var(--muted)">BSPS-lite 為報表用近似評分，非 v2.3.1 parity 版；進場以 TradingView BSPS-HC + Breakout Fired 為準。分數高不等於進場，本報表僅供研究參考，並非投資建議。</footer>';
+    return h;
+  }
   function reportPage(sub) {
-    var h = "<h1>美股日報</h1><p class='sub'>每日 Telegram 報表的網頁版，只供參考，並非投資建議。</p>";
+    var h = "<h1>美股日報</h1><p class='sub' id='rpsub'>每日 Telegram 報表的網頁版，只供參考，並非投資建議。</p>";
     h += '<div id="rpt"><p class="empty">載入中…</p></div>';
     fetch("reports/index.json?t=" + Date.now()).then(function (r) { return r.json(); }).then(function (j) {
       var ds = (j.dates || []).slice().sort().reverse().slice(0, 7);
@@ -602,12 +650,16 @@ footer.f { color: var(--muted); font-size: 12px; margin-top: 28px; }
       if (!box) return;
       if (!ds.length) { box.innerHTML = '<p class="empty">暫時未有報表。</p>'; return; }
       var cur = sub && ds.indexOf(sub) >= 0 ? sub : ds[0];
-      var b = '<p class="sub"><a href="reports/' + cur + '.html" target="_blank" rel="noopener">在新分頁開啟完整報表 →</a></p>';
-      b += '<iframe title="美股日報 ' + cur + '" src="reports/' + cur + '.html" sandbox="" loading="lazy" style="width:100%;height:80vh;min-height:520px;border:1px solid var(--line);border-radius:6px;background:#fff"></iframe>';
-      b += '<div class="archive bottom"><span class="lab">日期存檔（最近 7 日）</span>';
-      ds.forEach(function (d, i) { b += '<a href="#report' + (i === 0 ? "" : "-" + d) + '"' + (d === cur ? ' aria-current="true"' : "") + ">" + dmy(d) + (i === 0 ? "（最新）" : "") + "</a>"; });
-      b += "</div>";
-      box.innerHTML = b;
+      var arch = '<div class="archive bottom"><span class="lab">日期存檔（最近 7 日）</span>';
+      ds.forEach(function (d, i) { arch += '<a href="#report' + (i === 0 ? "" : "-" + d) + '"' + (d === cur ? ' aria-current="true"' : "") + ">" + dmy(d) + (i === 0 ? "（最新）" : "") + "</a>"; });
+      arch += "</div>";
+      var sb = document.getElementById("rpsub"); if (sb) sb.textContent = "資料日期 " + zhDate(cur) + "　每日 Telegram 報表的網頁版";
+      fetch("reports/" + cur + ".json?t=" + Date.now()).then(function (r) { if (!r.ok) throw 0; return r.json(); }).then(function (r) {
+        box.innerHTML = rpBody(r) + arch;
+      }).catch(function () {
+        /* older reports without JSON: fall back to the original HTML */
+        box.innerHTML = '<p class="sub"><a href="reports/' + cur + '.html" target="_blank" rel="noopener">在新分頁開啟完整報表 →</a></p><iframe title="美股日報 ' + cur + '" src="reports/' + cur + '.html" sandbox="" loading="lazy" style="width:100%;height:80vh;min-height:520px;border:1px solid var(--line);border-radius:6px;background:#fff"></iframe>' + arch;
+      });
     }).catch(function () {
       var box = document.getElementById("rpt");
       if (box) box.innerHTML = '<p class="empty">報表載入失敗，請重新整理頁面。</p>';
