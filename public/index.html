@@ -217,7 +217,7 @@ footer.f { color: var(--muted); font-size: 12px; margin-top: 28px; }
 <footer class="sitefoot">
   <div class="wrap row">
     <span>© <span id="yr">2026</span> Billion Studio　僅供個人使用，保留所有權利。</span>
-    <span><a href="mailto:info@billionstudio.app">info@billionstudio.app</a>　<span class="mono">Works Hub v1.4.0</span></span>
+    <span><a href="mailto:info@billionstudio.app">info@billionstudio.app</a>　<span class="mono">Works Hub v1.5.0</span></span>
   </div>
 </footer>
 
@@ -225,7 +225,7 @@ footer.f { color: var(--muted); font-size: 12px; margin-top: 28px; }
 (function () {
   var PAGES = [
     ["today", "今日"], ["intl", "國際新聞"], ["finance", "財經新聞"],
-    ["monitor", "美股風險監測"], ["pain", "痛點"], ["spark", "靈感"], ["saved", "收藏"], ["weekly", "每週總結"]
+    ["monitor", "美股風險監測"], ["report", "美股日報"], ["pain", "痛點"], ["spark", "靈感"], ["saved", "收藏"], ["weekly", "每週總結"]
   ];
   var WD = ["日", "一", "二", "三", "四", "五", "六"];
   var DATA = null;
@@ -592,6 +592,28 @@ footer.f { color: var(--muted); font-size: 12px; margin-top: 28px; }
     return h + "</div>";
   }
 
+  /* ---------- 美股日報: standalone HTML reports pushed daily to public/reports/ ---------- */
+  function reportPage(sub) {
+    var h = "<h1>美股日報</h1><p class='sub'>每日 Telegram 報表的網頁版，只供參考，並非投資建議。</p>";
+    h += '<div id="rpt"><p class="empty">載入中…</p></div>';
+    fetch("reports/index.json?t=" + Date.now()).then(function (r) { return r.json(); }).then(function (j) {
+      var ds = (j.dates || []).slice().sort().reverse().slice(0, 7);
+      var box = document.getElementById("rpt");
+      if (!box) return;
+      if (!ds.length) { box.innerHTML = '<p class="empty">暫時未有報表。</p>'; return; }
+      var cur = sub && ds.indexOf(sub) >= 0 ? sub : ds[0];
+      var b = '<div class="archive"><span class="lab">日期存檔（最近 7 日）</span>';
+      ds.forEach(function (d, i) { b += '<a href="#report' + (i === 0 ? "" : "-" + d) + '"' + (d === cur ? ' aria-current="true"' : "") + ">" + dmy(d) + (i === 0 ? "（最新）" : "") + "</a>"; });
+      b += '</div><p class="sub"><a href="reports/' + cur + '.html" target="_blank" rel="noopener">在新分頁開啟完整報表 →</a></p>';
+      b += '<iframe title="美股日報 ' + cur + '" src="reports/' + cur + '.html" sandbox="" loading="lazy" style="width:100%;height:80vh;min-height:520px;border:1px solid var(--line);border-radius:6px;background:#fff"></iframe>';
+      box.innerHTML = b;
+    }).catch(function () {
+      var box = document.getElementById("rpt");
+      if (box) box.innerHTML = '<p class="empty">報表載入失敗，請重新整理頁面。</p>';
+    });
+    return h;
+  }
+
   function todayPage() {
     var d = days("intl")[0] || days()[0], day = DATA.days[d], m = DATA.monitor, st = scoreStatus(m.score);
     var h = "<h1>" + zhDate(d) + "</h1><p class='sub'>每日最重要的國際與財經消息，以及美股風險分數。</p>";
@@ -617,6 +639,7 @@ footer.f { color: var(--muted); font-size: 12px; margin-top: 28px; }
     else if (page === "intl") h = newsPage("intl", "國際新聞", "每日 10 則", "intl", sub);
     else if (page === "finance") h = newsPage("finance", "財經新聞", "每日 10 則", "finance", sub);
     else if (page === "monitor") h = monitorPage();
+    else if (page === "report") h = reportPage(sub);
     else if (page === "pain") h = insightPage("pain", "痛點", "每日 5 個，來自 Reddit 與 Hacker News 的熱門討論", "pain", sub, [["why", "為何是痛點"], ["idea", "可做的方向"]]);
     else if (page === "spark") h = insightPage("spark", "靈感", "每日 5 個，來自 Reddit 與 Hacker News 的熱門討論", "spark", sub, [["angle", "切入角度"], ["idea", "內容或產品點子"]]);
     else if (page === "saved") h = savedPage();
