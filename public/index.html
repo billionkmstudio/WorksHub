@@ -148,6 +148,13 @@ h3 { font-size: 16px; line-height: 1.45; margin: 0 0 4px; font-weight: 700; text
 .exp td.v small { display: block; font-weight: 400; font-size: 11px; color: var(--muted); }
 .exp td.c { color: var(--muted); font-size: 15px; }
 .exp .fa { margin-top: auto; font-size: 13px; font-weight: 700; color: var(--purple); }
+.exp .plain { font-size: 13px; line-height: 1.6; border-top: 1px dashed var(--line); padding-top: 10px; display: grid; gap: 6px; }
+.exp .plain p { margin: 0; }
+.exp .plain b { color: var(--ink); }
+.exp .plain .k { display: inline-block; font-size: 11px; font-weight: 700; padding: 0 7px; margin-right: 6px; border-radius: 999px; background: var(--line); color: var(--muted); }
+.gloss { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 6px 14px; font-size: 13px; margin: 0; }
+.gloss dt { font-weight: 700; white-space: nowrap; }
+.gloss dd { margin: 0; color: var(--muted); }
 .pillx { font-size: 12px; font-weight: 700; padding: 3px 12px; border-radius: 999px; background: var(--line); color: var(--muted); white-space: nowrap; }
 .pillx.on { background: var(--bad-soft); color: var(--bad); box-shadow: inset 0 0 0 1px var(--bad); }
 .how ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
@@ -489,6 +496,27 @@ footer.f { color: var(--muted); font-size: 12px; margin-top: 28px; }
     rd.readAsText(f.files[0]);
   }
 
+
+  function plainLight(e) {
+    var r = e.rows, mm = String(e.big).match(/(\d+)\s*[／\/]\s*(\d+)/), k = mm ? mm[1] : "?", n = mm ? mm[2] : "?", out = [];
+    var on = !!e.pillOn;
+    if (e.name === "早期跌") {
+      out.push(["意思", "過去這盞燈亮過 " + n + " 次，其中 " + k + " 次在之後半年內，標普 500 跌了 5% 或以上。"]);
+      out.push(["現況", on ? "燈現在亮著（" + e.pill + "）。意思是未來約半年內，風險比平時高，值得多留意。" : "燈未亮，暫時沒有這個警號。"]);
+      out.push(["不代表", "<b>不等於大市即將大跌。</b>亮燈只是說「跌 5% 以上」的機會提高了（" + r[0][1] + "，平時也有 " + r[0][3] + "）；跌 10% 以上的機會是 " + r[1][1] + "（平時 " + r[1][3] + "）。也就是說，亮燈後仍然有不少時候不會跌得很深。"]);
+    } else if (e.name === "見底") {
+      out.push(["意思", "過去這盞燈亮過 " + n + " 次，其中 " + k + " 次在一年後標普比亮燈當日高。"]);
+      out.push(["現況", on ? "燈現在亮著，歷史上這常是大跌之後的轉折訊號。" : "燈未亮，只是暫時沒有出現「見底」的情況，<b>不代表市況差</b>。"]);
+      out.push(["數字", "亮燈後 60 日標普 " + r[0][1] + "、一年後 " + r[1][1] + "；同一時間長度下，平時分別只有 " + r[0][3] + " 和 " + r[1][3] + "。"]);
+    } else if (e.name === "升浪確認") {
+      out.push(["意思", "過去這盞燈亮過 " + n + " 次，其中 " + k + " 次在一年後標普上升。"]);
+      out.push(["現況", on ? "燈現在亮著，代表升勢較有可能已經站穩。" : "燈未亮，只是暫時未出現「升勢已確認」的情況，<b>不代表一定會跌</b>。"]);
+      out.push(["數字", "亮燈後 120 日標普 " + r[0][1] + "、一年後 " + r[1][1] + "；平時分別是 " + r[0][3] + " 和 " + r[1][3] + "。這盞燈是「確認」型，用來看升勢是否穩固，不是預測頂部。"]);
+    }
+    out.push(["留意", "歷史只有 " + n + " 次左右，樣本少，只作參考；紫色「假警號」是亮了燈但結果落空的次數。"]);
+    return '<div class="plain">' + out.map(function (x) { return '<p><span class="k">' + x[0] + "</span>" + x[1] + "</p>"; }).join("") + "</div>";
+  }
+
   function monitorPage() {
     var m = DATA.monitor, st = scoreStatus(m.score);
     var h = '<div class="meta" style="margin:0 0 4px;letter-spacing:.08em;color:var(--accent);font-weight:700">MARKET MONITOR · 每個美股交易日更新</div><h1>美股風險監測</h1>';
@@ -500,9 +528,17 @@ footer.f { color: var(--muted); font-size: 12px; margin-top: 28px; }
       h += '<div class="panel"><div class="hd"><b><span class="dot" style="background:var(--' + e.color + ')"></span>' + esc(e.name) + '</b><span class="pillx' + (e.pillOn ? " on" : "") + '">' + esc(e.pill) + "</span></div>";
       h += '<div class="big">' + esc(e.big) + "<small>" + esc(e.bigNote) + "</small></div><table><thead><tr><th></th><th>亮燈後</th><th>對比</th></tr></thead><tbody>";
       e.rows.forEach(function (r) { h += '<tr><td class="l">' + esc(r[0]) + '</td><td class="v">' + esc(r[1]) + (r[2] ? "<small>" + esc(r[2]) + "</small>" : "") + '</td><td class="c">' + esc(r[3]) + "</td></tr>"; });
-      h += '</tbody></table><div class="fa">' + esc(e.false) + "</div></div>";
+      h += '</tbody></table>' + plainLight(e) + '<div class="fa">' + esc(e.false) + "</div></div>";
     });
     h += '</div><p class="meta" style="margin:-8px 0 24px">次數 = 已有結果的次數；以 SPY 價格計。對比 = 同樣市況下所有日子的表現，不論有沒有亮燈。' + (m.experimentalSource ? " 三個統計燈：" + esc(m.experimentalSource) + "。" : "") + '</p>';
+    h += '<div class="panel" style="margin-bottom:24px"><h2 style="margin-top:0">名詞解釋</h2><dl class="gloss">'
+      + '<dt>7／8 次</dt><dd>燈過去亮了 8 次，其中 7 次之後出現了標題所寫的結果。次數愈少，參考價值愈低。</dd>'
+      + '<dt>亮燈後 / 對比</dt><dd>「亮燈後」是燈亮起之後的表現；「對比」是同樣時間長度下，不論有沒有亮燈的一般表現。兩者差距愈大，這盞燈才愈有意義。</dd>'
+      + '<dt>副燈（空心）</dt><dd>主燈以外的輔助訊號，條件較寬鬆，所以出現次數較多，但準確度通常較低（例如早期跌副燈 53%，只比平時 48% 高一點）。具體條件參考 cashmate.hk，本站沒有自己計算。</dd>'
+      + '<dt>假警號</dt><dd>燈亮了，但之後沒有出現預期結果的次數。</dd>'
+      + '<dt>警戒期</dt><dd>「早期跌」亮燈後的觀察期，顯示現在是第幾個交易日。期間只代表風險較高，不是預告會跌。</dd>'
+      + '<dt>未亮</dt><dd>沒有訊號，不等於好或壞，只是這個情況暫時沒有出現。</dd>'
+      + '</dl></div>';
     /* thermometer */
     h += "<h2>0–16 分市況溫度計</h2>";
     h += '<div class="panel" style="border-left:4px solid var(--' + st + ');margin-bottom:16px"><p style="margin:0"><span class="pill ' + st + '" style="margin-right:8px">' + esc(m.status) + "</span><b>今日 Score " + m.score + "／" + m.max + "，" + esc(m.summary) + '</b></p><div class="meta">數據日期 ' + m.date + "（美股收市）· " + esc(m.stamp.replace("更新：", "")) + "</div></div>";
