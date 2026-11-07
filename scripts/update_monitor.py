@@ -245,7 +245,6 @@ def update_data(data, rows, closes, n_univ, now_utc):
     m["etf"] = etf
     hk, uk = now_utc.astimezone(ZoneInfo("Asia/Hong_Kong")), now_utc.astimezone(ZoneInfo("Europe/London"))
     m["stamp"] = f"更新：香港時間 {hk.month} 月 {hk.day} 日 {hk:%H:%M} · 英國時間 {uk.month} 月 {uk.day} 日 {uk:%H:%M}"
-    m.setdefault("experimentalSource", "參考數據：cashmate.hk（非本站計算）")
     data["updated"] = uk.strftime("%Y-%m-%dT%H:%M")
     return data
 

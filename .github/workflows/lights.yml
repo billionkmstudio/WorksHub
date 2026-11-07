@@ -1,0 +1,39 @@
+name: Update statistical lights
+
+on:
+  schedule:
+    # 07:30 UTC, Tuesday to Saturday: after the daily monitor
+    - cron: "30 7 * * 2-6"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: data-json
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: scripts/requirements.txt
+
+      - run: pip install -r scripts/requirements.txt
+
+      - name: Compute the three lights from S&P 500 history
+        run: python scripts/update_lights.py
+
+      - name: Commit data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/data.json data/spx_history.csv
+          git diff --staged --quiet || (git commit -m "Update statistical lights" && git pull --rebase && git push)
