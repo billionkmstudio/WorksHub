@@ -243,7 +243,7 @@ footer.f { color: var(--muted); font-size: 12px; margin-top: 28px; }
 <footer class="sitefoot">
   <div class="wrap row">
     <span>© <span id="yr">2026</span> Billion Studio　僅供個人使用，保留所有權利。</span>
-    <span><a href="mailto:info@billionstudio.app">info@billionstudio.app</a>　<span class="mono">Works Hub v1.8.0</span></span>
+    <span><a href="mailto:info@billionstudio.app">info@billionstudio.app</a>　<span class="mono">Works Hub v1.9.0</span></span>
   </div>
 </footer>
 
@@ -295,9 +295,9 @@ footer.f { color: var(--muted); font-size: 12px; margin-top: 28px; }
     { k: 10, id: "p200", name: "5. % 股 > 200 日線", unit: "%", y: "≤ 61%", r: "< 45%", d: "成份股在 200 日線之上的比例", f: function (v) { return v < 45 ? 2 : v <= 61 ? 1 : 0; } },
     { k: 11, id: "ma", name: "6. 50 日 vs 200 日", unit: "%", y: "< 2%", r: "< 0%", d: "小於 0 即死亡交叉", f: function (v) { return v < 0 ? 2 : v < 2 ? 1 : 0; } },
     { k: 12, id: "vol", name: "7. 21 日波幅", unit: "%", y: "≥ 14%", r: "≥ 22%", d: "SPY 21 日年化實現波幅", f: function (v) { return v >= 22 ? 2 : v >= 14 ? 1 : 0; } },
-    { k: 13, id: "spx", name: "8. 標普距 52 週高", unit: "%", y: "≤ −3%", r: "≤ −8%", d: "SPY 收市價離 52 週高點", f: function (v) { return v <= -8 ? 2 : v <= -3 ? 1 : 0; } },
-    { k: 19, id: "smh", name: "9. SMH vs 50 日線", unit: "%", y: "< 0%", r: "< −5%", d: "半導體 ETF（SMH）偏離自己 50 日線", f: function (v) { return v == null ? 0 : v < -5 ? 2 : v < 0 ? 1 : 0; } }
+    { k: 13, id: "spx", name: "8. 標普距 52 週高", unit: "%", y: "≤ −3%", r: "≤ −8%", d: "SPY 收市價離 52 週高點", f: function (v) { return v <= -8 ? 2 : v <= -3 ? 1 : 0; } }
   ];
+  var SMH = { k: 19, id: "smh", name: "半導體（SMH）vs 50 日線", unit: "%", y: "< 0%", r: "< −5%", d: "半導體 ETF（SMH）偏離自己 50 日線", f: function (v) { return v == null ? 0 : v < -5 ? 2 : v < 0 ? 1 : 0; } };
   var ACT = COLS;
   function activeCols(m) { var r = m.rows && m.rows[0]; return COLS.filter(function (c) { return r && r.length > c.k && r[c.k] != null; }); }
   function fmt(v, n, plus) { var t = Math.abs(v).toFixed(n); return (v < 0 ? "−" : plus ? "+" : "") + t; }
@@ -432,6 +432,18 @@ footer.f { color: var(--muted); font-size: 12px; margin-top: 28px; }
     h += '</ol><details class="thd"><summary>展開看 ' + ACT.length + ' 個指標的黃燈／紅燈界線</summary><table class="ths"><thead><tr><th>指標</th><th>黃燈（+1）</th><th>紅燈（+2）</th></tr></thead><tbody>';
     ACT.forEach(function (c) { h += "<tr><td>" + esc(c.name) + "</td><td>" + esc(c.y) + "</td><td>" + esc(c.r) + "</td></tr>"; });
     return h + "</tbody></table></details></div>";
+  }
+
+
+  function sectorPanel(m) {
+    var r0 = m.rows[0]; if (!r0 || r0.length <= SMH.k || r0[SMH.k] == null) return "";
+    var v = r0[SMH.k], f = SMH.f(v), lab = f === 2 ? "紅燈" : f === 1 ? "黃燈" : "正常", cls = f === 2 ? "bad" : f === 1 ? "warn" : "good";
+    var h = '<h2 style="margin-top:28px">板塊提示：半導體（不計入 0–' + m.max + ' 分）</h2>';
+    h += '<div class="grid2" style="margin-bottom:20px"><div class="panel f' + f + '"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><b>' + esc(SMH.name) + '</b><span class="pill ' + cls + '">' + lab + '</span></div><div class="val">' + fmt(v, 2, true) + '<small>%</small></div>' + lineChart(SMH, m.rows) + '</div>';
+    h += '<div class="panel"><p style="margin:0 0 8px"><b>意思：</b>半導體 ETF（SMH）收市價離自己 50 日平均線幾遠。低於 0% 是黃燈，低於 −5% 是紅燈（半導體波幅約大市兩倍，所以紅燈界線放闊）。</p>'
+      + '<p style="margin:0 0 8px"><b>今日：</b>' + (f === 2 ? "紅燈，半導體板塊明顯轉弱。" : f === 1 ? "黃燈，半導體跌穿 50 日線。" : "正常，半導體仍在 50 日線之上。") + '</p>'
+      + '<p style="margin:0"><b>點解不計分：</b>它和「指數 vs 50 日線」大幅重疊（SPY、QQQ 都有很多半導體股，2001–2026 的燈號相關約 0.77）。歷史測試顯示，加入總分只令預測力略升（AUC 約 +0.01 至 +0.02），而且不穩定，卻會令分數整體偏高，所以只當板塊提示。</p></div></div>';
+    return h;
   }
 
   function recordTable(m) {
@@ -671,6 +683,7 @@ footer.f { color: var(--muted); font-size: 12px; margin-top: 28px; }
       h += '<div class="panel f' + f + '"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><b>' + esc(c.name) + '</b><span class="pill ' + (f === 2 ? "bad" : f === 1 ? "warn" : "good") + '">' + (f === 2 ? "紅燈" : f === 1 ? "黃燈" : "正常") + '</span></div><div class="val">' + vtxt + "<small>" + c.unit + '</small></div><div class="d">' + esc(c.d) + "</div>" + lineChart(c, m.rows) + "</div>";
     });
     h += "</div>";
+    h += sectorPanel(m);
     /* record table */
     h += '<h2 style="margin-top:28px">每日記錄：0–' + m.max + ' 分同美股升跌家數</h2><p class="sub">最新一日在最上面。升跌家數計約 2,500 隻活躍美股（收市 ≥ $5、20 日平均成交 ≥ 30 萬股）。表可橫向和直向捲動。</p>';
     h += recordTable(m);

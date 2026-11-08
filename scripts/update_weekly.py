@@ -44,7 +44,7 @@ Return ONE JSON object, nothing else:
   {{"h": "下週留意", "p": "<2-3 things to watch next week, ending with: 以上為觀察項目，不構成買賣建議。>"}}
  ]}}
 
-Risk score scale: 0-18 points (9 indicators; before 2026-11-08 it was 0-16 with 8). 0-4 healthy, 5-9 caution, 10-18 meltdown.
+Risk score scale: 0-16 points. 0-4 healthy, 5-9 caution, 10-16 meltdown.
 
 DATA
 {data}

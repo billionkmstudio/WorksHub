@@ -23,7 +23,7 @@
 ## 說明
 
 - 股票池：美國普通股，收市 ≥ $5、20 日平均成交 ≥ 30 萬股（每月更新名單一次）。
-- 溫度計共 9 個指標（滿分 18）；第 9 個是 SMH（半導體 ETF）距自己 50 日線的百分比，黃燈 < 0%、紅燈 < −5%（本站自訂起始值，在 `update_monitor.py` 的 `f_smh`）。
+- 溫度計是 8 個指標、0–16 分。SMH（半導體 ETF）距自己 50 日線的百分比另外顯示為「板塊提示」，不計入總分（`update_monitor.py` 的 `f_smh`；數值存在每行第 19 欄）。原因見 `reports/indicator-compare.md`。
 - `scripts/compare_indicators.py`（workflow：Compare 8 vs 9 indicators，手動執行）：用 2000 年起的 SPY/QQQ/SMH/VIX 檢驗第 9 個指標有沒有額外資訊，結果寫入 `reports/indicator-compare.md`。
 - 黃紅燈界線（`update_monitor.py` 頂部的 `f_*` 函數）是由 cashmate 18 日可見分數反推，可以自行調整。
 - `state/`（價格歷史）不會 commit，只存在 GitHub Actions 的快取。快取失效時，下次執行會自動重新回補。

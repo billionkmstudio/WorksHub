@@ -48,13 +48,14 @@ def f_p200(v): return 2 if v < 45 else 1 if v <= 61 else 0
 def f_ma(v):   return 2 if v < 0 else 1 if v < 2 else 0
 def f_vol(v):  return 2 if v >= 22 else 1 if v >= 14 else 0
 def f_spx(v):  return 2 if v <= -8 else 1 if v <= -3 else 0
-# 9th indicator: SMH (semiconductor ETF) vs its own 50-day average. Semis swing about twice as much as the
-# S&P 500, so the red line is -5% (the index-vs-50-day indicator above uses -2.5%). These two cut-offs are
-# our own starting values, not back-fitted; tune them here.
+# Sector hint (NOT part of the 0-16 score): SMH (semiconductor ETF) vs its own 50-day average. Semis swing about
+# twice as much as the S&P 500, so the red line is -5% (the index-vs-50-day indicator above uses -2.5%). It
+# overlaps heavily with that indicator (long-run correlation about 0.77), so it is shown separately. The value is
+# stored in column 19 of every row; scripts/compare_indicators.py tests it. Cut-offs are our own, not back-fitted.
 def f_smh(v):  return 0 if v is None else 2 if v < -5 else 1 if v < 0 else 0
 # row index -> rule (matches the layout of data.json monitor.rows)
-FLAG_COLS = {6: f_vix, 7: f_idx, 8: f_p50, 9: f_d52, 10: f_p200, 11: f_ma, 12: f_vol, 13: f_spx, 19: f_smh}
-MAX_SCORE = 2 * len(FLAG_COLS)  # 18
+FLAG_COLS = {6: f_vix, 7: f_idx, 8: f_p50, 9: f_d52, 10: f_p200, 11: f_ma, 12: f_vol, 13: f_spx}
+MAX_SCORE = 2 * len(FLAG_COLS)  # 16
 
 
 def log(*a):
@@ -219,7 +220,7 @@ def update_data(data, rows, closes, n_univ, now_utc):
     diff = score - prev[1]
     word = "升" if diff > 0 else "降" if diff < 0 else "持平"
     m.update({
-        "date": latest[0], "score": score, "max": 2 * sum(1 for k in FLAG_COLS if latest[k] is not None), "status": status_of(score),
+        "date": latest[0], "score": score, "max": MAX_SCORE, "status": status_of(score),
         "summary": ("較前日" + (f"{word} {abs(diff)} 分：" if diff else "持平：") +
                     f"{reds} 個紅燈、{yellows} 個黃燈。"),
         "source": "本站自行計算",
@@ -358,7 +359,7 @@ def main():
     data = json.loads(DATA_PATH.read_text(encoding="utf-8"))
     data = update_data(data, rows, closes, int(frame["n_univ"].iloc[-1]), now)
     DATA_PATH.write_text(json.dumps(data, ensure_ascii=False, indent=1), encoding="utf-8")
-    log(f"done: {rows[0][0]} score {rows[0][1]}/{2 * sum(1 for k in FLAG_COLS if rows[0][k] is not None)}, {len(rows)} rows")
+    log(f"done: {rows[0][0]} score {rows[0][1]}/{MAX_SCORE}, {len(rows)} rows")
 
 
 if __name__ == "__main__":
