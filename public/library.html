@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>文章庫 · Works Hub</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Unbounded:wght@500;600&family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;700&display=swap">
+<style>
+:root { --bg:#eef1f4; --surface:#fff; --ink:#101820; --muted:#566370; --line:#d5dbe1; --accent:#1b4fd6; --accent-soft:#e3eafc; --bad:#d23b3b; --warn-soft:#f6ecc9;
+  --display:"Noto Serif TC","Songti TC","PMingLiU",serif; --body:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif; --mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,monospace; }
+@media (prefers-color-scheme: dark) { :root { --bg:#0c1117; --surface:#151c24; --ink:#e8edf2; --muted:#93a0ac; --line:#26313c; --accent:#7a9bff; --accent-soft:#1b2744; --bad:#f0605d; --warn-soft:#3a2f10; color-scheme:dark; } }
+* { box-sizing:border-box; }
+body { margin:0; background:var(--bg); color:var(--ink); font:15px/1.65 var(--body); }
+a { color:var(--accent); text-decoration:none; } a:hover { text-decoration:underline; }
+button, input, select, textarea { font:inherit; color:inherit; }
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+.wrap { max-width:1080px; margin:0 auto; padding:0 max(16px, env(safe-area-inset-left)); }
+header.top { background:var(--surface); border-bottom:1px solid var(--line); padding:calc(12px + env(safe-area-inset-top)) 0 12px; }
+header.top .wrap { display:flex; justify-content:space-between; align-items:baseline; gap:12px; }
+.brand { font-family:"Unbounded",var(--mono); font-weight:600; font-size:17px; color:var(--ink); }
+.brand b { color:var(--accent); font-weight:600; }
+main { padding-bottom:60px; }
+h1 { font-family:var(--display); font-size:30px; margin:28px 0 4px; }
+.sub { color:var(--muted); margin:0 0 20px; font-size:14px; }
+.panel { background:var(--surface); border:1px solid var(--line); border-radius:6px; padding:14px 16px; margin-bottom:16px; }
+.panel textarea, .panel input[type=text], .panel input[type=password], .tools input[type=search], select { width:100%; border:1px solid var(--line); border-radius:6px; background:var(--bg); padding:8px 10px; }
+.panel textarea { min-height:64px; resize:vertical; }
+.row { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-top:8px; }
+.row > input { flex:1 1 200px; width:auto !important; }
+.btn { border:1px solid var(--line); background:var(--surface); border-radius:999px; padding:4px 14px; font-size:13px; cursor:pointer; }
+.btn:hover { border-color:var(--accent); }
+.btn.primary { background:var(--accent); border-color:var(--accent); color:#fff; }
+.btn.danger:hover { border-color:var(--bad); color:var(--bad); }
+.btn[disabled] { opacity:.5; cursor:default; }
+.chips { display:flex; flex-wrap:wrap; gap:6px; margin:12px 0; }
+.chip { border:1px solid var(--line); background:var(--surface); border-radius:999px; padding:4px 12px; font-size:13px; cursor:pointer; }
+.chip.on { background:var(--ink); color:var(--bg); border-color:var(--ink); }
+.list { display:grid; gap:10px; }
+.card { background:var(--surface); border:1px solid var(--line); border-radius:6px; padding:14px 16px; }
+.card h3 { margin:4px 0; font-size:16px; line-height:1.45; word-break:break-word; }
+.card h3 a { color:var(--ink); } .card h3 a:hover { color:var(--accent); }
+.card p { margin:4px 0; font-size:14px; }
+.meta { display:flex; gap:8px; flex-wrap:wrap; align-items:center; font-size:12px; color:var(--muted); font-family:var(--mono); }
+.badge { background:var(--accent-soft); color:var(--accent); border-radius:4px; padding:1px 7px; font-family:var(--mono); font-size:12px; }
+.tag { color:var(--muted); font-size:13px; margin-right:8px; }
+.note { border-left:3px solid var(--line); padding-left:10px; color:var(--muted); font-size:14px; }
+.actions { display:flex; gap:6px; flex-wrap:wrap; align-items:center; margin-top:8px; }
+.actions select { width:auto; padding:3px 8px; font-size:13px; }
+.empty { color:var(--muted); padding:24px 0; }
+.msg { font-size:13px; color:var(--muted); min-height:1.4em; margin-top:6px; }
+.msg.err { color:var(--bad); }
+.notice { background:var(--warn-soft); border:1px solid var(--line); border-radius:6px; padding:10px 14px; font-size:14px; margin-bottom:16px; }
+.hide { display:none !important; }
+.tools { display:grid; grid-template-columns:1fr auto; gap:8px; }
+@media (max-width:520px) { h1 { font-size:26px; } .tools { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a class="brand" href="/">Works<b>Hub</b></a>
+  <span><a href="/">← 返回主頁</a></span>
+</div></header>
+
+<main class="wrap">
+  <h1>文章庫</h1>
+  <p class="sub">由 Threads、IG、Facebook 分享過嚟嘅文章，自動分類，方便搜尋同重溫。</p>
+
+  <section id="gate" class="panel hide">
+    <b>輸入存取密碼</b>
+    <p class="sub" style="margin:4px 0 8px">呢個頁面只得你自己用。密碼即係部署時設定嘅 <code>LIB_TOKEN</code>，只會記喺呢部裝置嘅瀏覽器。</p>
+    <div class="row"><input type="password" id="tok" placeholder="LIB_TOKEN" autocomplete="current-password"><button class="btn primary" id="tokGo">進入</button></div>
+    <div class="msg" id="gateMsg"></div>
+  </section>
+
+  <div id="lib" class="hide">
+    <section class="panel">
+      <b>手動加入</b>
+      <textarea id="addText" placeholder="貼上連結，或者貼上文章文字（社交平台貼文建議連文字一齊貼，AI 分類會準好多）"></textarea>
+      <div class="row"><input type="text" id="addNote" placeholder="備註（可選）：點解儲起、想點用"><button class="btn primary" id="addGo">儲存</button></div>
+      <div class="msg" id="addMsg"></div>
+    </section>
+
+    <div class="tools">
+      <input type="search" id="q" placeholder="搜尋標題、摘要、標籤、備註…">
+      <button class="btn" id="rand">🎲 隨機重溫 3 篇</button>
+    </div>
+    <div class="chips" id="chips"></div>
+    <div class="msg" id="listMsg"></div>
+    <div class="list" id="list"></div>
+  </div>
+</main>
+
+<script>
+(function () {
+  var KEY = "wh_lib_token", token = "", items = [], cats = [], cat = "all", mode = "all", randIds = [];
+  var $ = function (id) { return document.getElementById(id); };
+  var SRC = { threads: "Threads", instagram: "Instagram", facebook: "Facebook", x: "X", youtube: "YouTube", web: "網頁", text: "文字" };
+  try { token = localStorage.getItem(KEY) || ""; } catch (e) {}
+
+  function el(tag, props, kids) {
+    var n = document.createElement(tag);
+    Object.keys(props || {}).forEach(function (k) { if (k === "text") n.textContent = props[k]; else if (k === "class") n.className = props[k]; else n.setAttribute(k, props[k]); });
+    (kids || []).forEach(function (c) { if (c) n.appendChild(c); });
+    return n;
+  }
+  function api(method, path, body) {
+    return fetch(path, { method: method, headers: { "authorization": "Bearer " + token, "content-type": "application/json" }, body: body ? JSON.stringify(body) : undefined })
+      .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { if (!r.ok) { var e = new Error(j.error || r.status); e.status = r.status; throw e; } return j; }); });
+  }
+  function showGate(msg) { $("gate").classList.remove("hide"); $("lib").classList.add("hide"); $("gateMsg").textContent = msg || ""; $("gateMsg").className = "msg" + (msg ? " err" : ""); }
+
+  function load() {
+    api("GET", "/api/lib").then(function (j) {
+      cats = j.categories || []; items = j.items || [];
+      $("gate").classList.add("hide"); $("lib").classList.remove("hide"); render();
+    }).catch(function (e) {
+      if (e.status === 401) { try { localStorage.removeItem(KEY); } catch (x) {} showGate(token ? "密碼唔啱" : ""); }
+      else { $("lib").classList.remove("hide"); $("listMsg").textContent = "讀取失敗：" + e.message; $("listMsg").className = "msg err"; }
+    });
+  }
+
+  function visible() {
+    if (mode === "rand") return items.filter(function (i) { return randIds.indexOf(i.id) >= 0; });
+    var q = $("q").value.trim().toLowerCase();
+    return items.filter(function (i) {
+      if (cat !== "all" && i.category !== cat) return false;
+      if (!q) return true;
+      return [i.title, i.summary, i.note, i.tags.join(" "), i.text, i.url].join(" ").toLowerCase().indexOf(q) >= 0;
+    });
+  }
+
+  function chips() {
+    var box = $("chips"); box.textContent = "";
+    var counts = {}; items.forEach(function (i) { counts[i.category] = (counts[i.category] || 0) + 1; });
+    var order = ["all"].concat(cats, Object.keys(counts).filter(function (c) { return cats.indexOf(c) < 0; }));
+    order.forEach(function (c) {
+      var n = c === "all" ? items.length : (counts[c] || 0);
+      if (c !== "all" && !n) return;
+      var b = el("button", { class: "chip" + (mode === "all" && cat === c ? " on" : ""), text: (c === "all" ? "全部" : c) + " " + n });
+      b.onclick = function () { cat = c; mode = "all"; render(); };
+      box.appendChild(b);
+    });
+  }
+
+  function card(i) {
+    var link = i.url ? el("a", { href: i.url, target: "_blank", rel: "noopener noreferrer", text: i.title || i.url }) : document.createTextNode(i.title || "（無標題）");
+    var c = el("div", { class: "card" }, [
+      el("div", { class: "meta" }, [el("span", { class: "badge", text: SRC[i.source] || i.source }), el("span", { text: i.category }), el("span", { text: i.saved_at.slice(0, 10) })]),
+      el("h3", {}, [link])
+    ]);
+    if (i.summary) c.appendChild(el("p", { text: i.summary }));
+    if (i.note) c.appendChild(el("p", { class: "note", text: "備註：" + i.note }));
+    if (i.tags.length) c.appendChild(el("p", {}, i.tags.map(function (t) { return el("span", { class: "tag", text: "#" + t }); })));
+    var act = el("div", { class: "actions" });
+    var sel = el("select", { "aria-label": "改分類" });
+    cats.concat(["未分類"]).forEach(function (n) { var o = el("option", { value: n, text: n }); if (n === i.category) o.selected = true; sel.appendChild(o); });
+    sel.onchange = function () { api("PATCH", "/api/lib/" + i.id, { category: sel.value }).then(function () { i.category = sel.value; render(); }).catch(fail); };
+    act.appendChild(sel);
+    if (!i.ai) {
+      var re = el("button", { class: "btn", text: "AI 分類" });
+      re.onclick = function () { re.disabled = true; re.textContent = "分析中…"; api("POST", "/api/lib/" + i.id + "/ai").then(function (j) { Object.assign(i, j.item); render(); }).catch(function (e) { re.disabled = false; re.textContent = "AI 分類"; fail(e); }); };
+      act.appendChild(re);
+    }
+    var del = el("button", { class: "btn danger", text: "刪除" });
+    del.onclick = function () { if (!confirm("刪除呢篇？")) return; api("DELETE", "/api/lib/" + i.id).then(function () { items = items.filter(function (x) { return x.id !== i.id; }); render(); }).catch(fail); };
+    act.appendChild(del);
+    c.appendChild(act);
+    return c;
+  }
+  function fail(e) { if (e.status === 401) return showGate("密碼唔啱"); $("listMsg").textContent = "失敗：" + e.message; $("listMsg").className = "msg err"; }
+
+  function render() {
+    chips();
+    var list = visible(), box = $("list"); box.textContent = "";
+    $("listMsg").textContent = ""; $("listMsg").className = "msg";
+    if (!list.length) box.appendChild(el("p", { class: "empty", text: items.length ? "冇符合嘅文章。" : "仲未有文章。喺 Threads / IG / Facebook 撳分享，揀你嘅「儲去 WorksHub」捷徑，或者喺上面手動加入。" }));
+    list.forEach(function (i) { box.appendChild(card(i)); });
+  }
+
+  $("tokGo").onclick = function () { token = $("tok").value.trim(); if (!token) return; try { localStorage.setItem(KEY, token); } catch (e) {} load(); };
+  $("tok").onkeydown = function (e) { if (e.key === "Enter") $("tokGo").click(); };
+  $("q").oninput = function () { mode = "all"; render(); };
+  $("rand").onclick = function () {
+    var pool = items.slice(), pick = [];
+    while (pool.length && pick.length < 3) pick.push(pool.splice(Math.floor(Math.random() * pool.length), 1)[0].id);
+    randIds = pick; mode = "rand"; render();
+  };
+  $("addGo").onclick = function () {
+    var v = $("addText").value.trim(), msg = $("addMsg");
+    if (!v) return;
+    var body = /^https?:\/\/\S+$/.test(v) ? { url: v } : { text: v };
+    body.note = $("addNote").value.trim();
+    $("addGo").disabled = true; msg.className = "msg"; msg.textContent = "儲存同分析中…";
+    api("POST", "/api/lib", body).then(function (j) {
+      if (j.duplicate) { msg.textContent = "呢篇已經儲過。"; }
+      else { items.unshift(j.item); msg.textContent = "已儲存：" + j.item.category; $("addText").value = ""; $("addNote").value = ""; }
+      mode = "all"; render();
+    }).catch(function (e) { if (e.status === 401) return showGate("密碼唔啱"); msg.className = "msg err"; msg.textContent = "失敗：" + e.message; })
+      .then(function () { $("addGo").disabled = false; });
+  };
+
+  if (token) load(); else showGate();
+})();
+</script>
+</body>
+</html>

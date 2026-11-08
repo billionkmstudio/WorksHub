@@ -251,7 +251,7 @@ footer.f { color: var(--muted); font-size: 12px; margin-top: 28px; }
 (function () {
   var PAGES = [
     ["today", "今日"], ["intl", "國際新聞"], ["finance", "財經新聞"],
-    ["monitor", "美股風險監測"], ["report", "美股日報"], ["pain", "痛點"], ["spark", "靈感"], ["saved", "收藏"], ["weekly", "每週總結"]
+    ["monitor", "美股風險監測"], ["report", "美股日報"], ["pain", "痛點"], ["spark", "靈感"], ["saved", "收藏"], ["library", "文章庫", "/library"], ["weekly", "每週總結"]
   ];
   var WD = ["日", "一", "二", "三", "四", "五", "六"];
   var DATA = null;
@@ -777,8 +777,9 @@ footer.f { color: var(--muted); font-size: 12px; margin-top: 28px; }
   function route(keepScroll) {
     var raw = (location.hash || "#today").slice(1), i = raw.indexOf("-");
     var page = i < 0 ? raw : raw.slice(0, i), sub = i < 0 ? "" : raw.slice(i + 1);
+    if (page === "library") { location.replace("/library"); return; }
     if (!PAGES.some(function (p) { return p[0] === page; })) { page = "today"; sub = ""; }
-    document.getElementById("tabs").innerHTML = PAGES.map(function (p) { return '<a href="#' + p[0] + '"' + (p[0] === page ? ' aria-current="page"' : "") + ">" + p[1] + "</a>"; }).join("");
+    document.getElementById("tabs").innerHTML = PAGES.map(function (p) { return '<a href="' + (p[2] || "#" + p[0]) + '"' + (p[0] === page ? ' aria-current="page"' : "") + ">" + p[1] + "</a>"; }).join("");
     var app = document.getElementById("app"), h;
     if (page === "today") h = todayPage();
     else if (page === "intl") h = newsPage("intl", "國際新聞", "每日 10 則", "intl", sub);
