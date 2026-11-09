@@ -16,10 +16,18 @@ a { color:var(--accent); text-decoration:none; } a:hover { text-decoration:under
 button, input, select, textarea { font:inherit; color:inherit; }
 button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
 .wrap { max-width:1080px; margin:0 auto; padding:0 max(16px, env(safe-area-inset-left)); }
-header.top { background:var(--surface); border-bottom:1px solid var(--line); padding:calc(12px + env(safe-area-inset-top)) 0 12px; }
-header.top .wrap { display:flex; justify-content:space-between; align-items:baseline; gap:12px; }
-.brand { font-family:"Unbounded",var(--mono); font-weight:600; font-size:17px; color:var(--ink); }
+header.top { position:sticky; top:env(safe-area-inset-top, 0px); z-index:20; background:var(--surface); border-bottom:1px solid var(--line); }
+.mast { display:flex; align-items:baseline; justify-content:space-between; gap:12px; padding-top:12px; }
+.brand { font-family:"Unbounded",var(--mono); font-weight:600; letter-spacing:-.01em; font-size:17px; line-height:1; }
+.brand a { display:inline-flex; align-items:center; gap:9px; color:inherit; text-decoration:none; }
+.brand a:hover { text-decoration:none; opacity:.8; }
+.brand svg { width:30px; height:30px; flex:none; }
 .brand b { color:var(--accent); font-weight:600; }
+nav.tabs { display:flex; gap:2px; overflow-x:auto; scrollbar-width:none; margin-top:6px; }
+nav.tabs::-webkit-scrollbar { display:none; }
+nav.tabs a { flex:none; padding:10px 14px; color:var(--muted); font-weight:500; border-bottom:3px solid transparent; white-space:nowrap; }
+nav.tabs a:hover { color:var(--ink); text-decoration:none; }
+nav.tabs a[aria-current="page"] { color:var(--ink); border-bottom-color:var(--accent); }
 main { padding-bottom:60px; }
 h1 { font-family:var(--display); font-size:30px; margin:28px 0 4px; }
 .sub { color:var(--muted); margin:0 0 20px; font-size:14px; }
@@ -57,10 +65,14 @@ h1 { font-family:var(--display); font-size:30px; margin:28px 0 4px; }
 </style>
 </head>
 <body>
-<header class="top"><div class="wrap">
-  <a class="brand" href="/">Works<b>Hub</b></a>
-  <span><a href="/">← 返回主頁</a></span>
-</div></header>
+<header class="top">
+  <div class="wrap">
+    <div class="mast">
+      <div class="brand"><a href="/#today" aria-label="Works Hub 首頁"><svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" style="fill:var(--accent)"/><path d="M6 10.5 L11.2 22 L16 13 L20.8 22 L26 10.5" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="6" cy="10.5" r="2.2" fill="#fff"/><circle cx="26" cy="10.5" r="2.2" fill="#fff"/><circle cx="16" cy="13" r="2.2" fill="#fff"/></svg><span>Works<b>Hub</b></span></a></div>
+    </div>
+    <nav class="tabs" aria-label="主選單"><a href="/#today">今日</a><a href="/#intl">國際新聞</a><a href="/#finance">財經新聞</a><a href="/#monitor">美股風險監測</a><a href="/#report">美股日報</a><a href="/#pain">痛點</a><a href="/#spark">靈感</a><a href="/#saved">收藏</a><a href="/library" aria-current="page">文章庫</a><a href="/#weekly">每週總結</a></nav>
+  </div>
+</header>
 
 <main class="wrap">
   <h1>文章庫</h1>
