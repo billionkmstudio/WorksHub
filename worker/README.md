@@ -20,10 +20,10 @@
    - URL：`https://workshub.me/api/lib`
    - 方法：POST
    - 標頭：`Authorization` = `Bearer 你的LIB_TOKEN`；`Content-Type` = `application/json`
-   - 要求本文：JSON，加兩個欄位：`url`（文字）= 「捷徑輸入」；`note`（文字）= 留空（想加備註就先加一個「要求輸入」動作）
+   - 要求本文：JSON，加兩個欄位：`text`（文字）= 「捷徑輸入」；`note`（文字）= 留空（想加備註就先加一個「要求輸入」動作）
 2. 動作「顯示通知」，內容用上一步結果，確認已儲存。
 
-之後喺 Threads / IG / FB 撳分享 → 揀「儲去 WorksHub」就完成。分享出嚟嘅如果係一段文字（Facebook 有時咁），本文改傳 `text` 欄位，Worker 會自動由文字入面抽連結。
+之後喺 Threads / IG / FB 撳分享 → 揀「儲去 WorksHub」就完成。用 `text` 欄位就連連結同純文字分享都啱用，Worker 會自動由文字入面抽連結。
 
 ## API
 

@@ -138,6 +138,8 @@ async function handle(req, env, url) {
   if (req.method === "POST" && !id) {
     const b = await req.json().catch(() => ({}));
     let text = String(b.text || "").trim(), raw = String(b.url || "").trim();
+    // 捷徑有時將成段文字塞入 url 欄：唔係純連結就當文字處理
+    if (raw && !/^https?:\/\/\S+$/.test(raw)) { text = (text + "\n" + raw).trim(); raw = ""; }
     // 分享鍵有時只傳一段文字，連結夾喺入面
     if (!raw) { const f = text.match(/https?:\/\/\S+/); if (f) raw = f[0]; }
     const u = raw ? cleanUrl(raw) : null;
