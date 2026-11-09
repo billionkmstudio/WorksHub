@@ -243,7 +243,7 @@ footer.f { color: var(--muted); font-size: 12px; margin-top: 28px; }
 <footer class="sitefoot">
   <div class="wrap row">
     <span>© <span id="yr">2026</span> Billion Studio　僅供個人使用，保留所有權利。</span>
-    <span><a href="mailto:info@billionstudio.app">info@billionstudio.app</a>　<span class="mono">Works Hub v1.9.0</span></span>
+    <span><a href="mailto:info@billionstudio.app">info@billionstudio.app</a>　<span class="mono">Works Hub v1.10.0</span></span>
   </div>
 </footer>
 
@@ -696,11 +696,12 @@ footer.f { color: var(--muted); font-size: 12px; margin-top: 28px; }
     var ws = DATA.weeks.slice().sort(function (a, b) { return a.start < b.start ? 1 : -1; });
     var w = ws.filter(function (x) { return x.start === sub; })[0] || ws[0];
     var h = "<h1>每週總結</h1><p class='sub'>" + dmy(w.start) + " 至 " + dmy(w.end) + "</p>";
-    h += '<div class="archive"><span class="lab">每週存檔</span>';
-    ws.forEach(function (x, i) { h += '<a href="#weekly' + (i === 0 ? "" : "-" + x.start) + '"' + (x === w ? ' aria-current="true"' : "") + ">" + dmy(x.start) + " 起</a>"; });
-    h += "</div><h2>" + esc(w.headline) + '</h2><div class="weekbox">';
+    var a = '<div class="archive bottom"><span class="lab">每週存檔</span>';
+    ws.forEach(function (x, i) { a += '<a href="#weekly' + (i === 0 ? "" : "-" + x.start) + '"' + (x === w ? ' aria-current="true"' : "") + ">" + dmy(x.start) + " 起</a>"; });
+    a += "</div>";
+    h += "<h2>" + esc(w.headline) + '</h2><div class="weekbox">';
     w.sections.forEach(function (s) { h += "<section><h3>" + esc(s.h) + "</h3><p>" + esc(s.p) + "</p></section>"; });
-    return h + "</div>";
+    return h + "</div>" + a;
   }
 
   /* ---------- 美股日報: daily report JSON pushed to public/reports/ ---------- */
