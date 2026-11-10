@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-10T15:08",
+ "updated": "2026-11-10 20:51",
  "days": {
   "2026-10-31": {
    "note": "新聞資料日期：2026-10-30（美股收市）至 2026-10-31",
@@ -2825,6 +2825,98 @@
      "full": true,
      "src": "The Guardian",
      "url": "https://www.theguardian.com/world/2026/nov/06/kenyan-doomsday-sect-leader-jailed-murders-paul-mackenzie"
+    }
+   ],
+   "finance": [
+    {
+     "t": "輝達CEO黃仁勳爆婚外情 涉中國間諜疑雲",
+     "h": "輝達行政總裁黃仁勳被指與一名涉嫌與中國情報部門有關的女性有婚外情，此指控引發對美國對華晶片銷售政策的關注。",
+     "s": "輝達行政總裁黃仁勳被指與一名涉嫌與中國情報部門有關的女性有婚外情，此指控引發對美國對華晶片銷售政策的關注。",
+     "k": [],
+     "full": false,
+     "src": "CNBC / BBC Business / The Guardian Business",
+     "url": "https://www.cnbc.com/2026/11/10/jensen-huang-nvidia-china-ties.html"
+    },
+    {
+     "t": "美國10月消費者物價指數按月升0.4%",
+     "h": "美國10月消費者物價指數上升0.4%，較9月有所放緩，但經濟學家指出通脹水平仍然偏高。",
+     "s": "美國10月消費者物價指數上升0.4%，較9月有所放緩，但經濟學家指出通脹水平仍然偏高。",
+     "k": [],
+     "full": false,
+     "src": "CNBC / BBC Business",
+     "url": "https://www.cnbc.com/2026/11/10/october-2026-cpi-inflation-breakdown.html"
+    },
+    {
+     "t": "特朗普稱伊朗戰爭結束 油價創8月以來新低",
+     "h": "特朗普表示對伊朗的戰爭「實際上已結束」，布蘭特原油價格下跌近3%至每桶89.66美元，創8月下旬以來新低。",
+     "s": "特朗普表示對伊朗的戰爭「實際上已結束」，布蘭特原油價格下跌近3%至每桶89.66美元，創8月下旬以來新低。",
+     "k": [],
+     "full": false,
+     "src": "The Guardian Business",
+     "url": "https://www.theguardian.com/business/2026/nov/10/oil-prices-fall-donald-trump-iran-war-ftse-100-markets"
+    },
+    {
+     "t": "Claude開發商Anthropic擬上市 估值達1.3萬億美元",
+     "h": "開發Claude聊天機器人的AI公司Anthropic將上市，招股價介乎每股70至78美元，低於原先預期。",
+     "s": "開發Claude聊天機器人的AI公司Anthropic將上市，招股價介乎每股70至78美元，低於原先預期。",
+     "k": [],
+     "full": false,
+     "src": "BBC Business",
+     "url": "https://www.bbc.co.uk/news/articles/crpdgd723x2zo?at_medium=RSS&at_campaign=rss"
+    },
+    {
+     "t": "學者警告美聯儲激進加息或成2027年股市最大風險",
+     "h": "經濟學家Neil Dutta警告，美聯儲對控制通脹過於樂觀，激進加息正迅速成為2027年股市最大的風險。",
+     "s": "經濟學家Neil Dutta警告，美聯儲對控制通脹過於樂觀，激進加息正迅速成為2027年股市最大的風險。",
+     "k": [],
+     "full": false,
+     "src": "MarketWatch",
+     "url": "https://www.marketwatch.com/story/an-overzealous-fed-is-quickly-becoming-the-biggest-risk-to-stocks-in-2027-ba28e51d?mod=mw_rss_topstories"
+    },
+    {
+     "t": "波音公司擬裁減商用飛機部門約5%員工",
+     "h": "波音公司宣布，因放緩產量提升節奏，將透過裁員和自然流失削減商用飛機部門約5%的職位。",
+     "s": "波音公司宣布，因放緩產量提升節奏，將透過裁員和自然流失削減商用飛機部門約5%的職位。",
+     "k": [],
+     "full": false,
+     "src": "The Guardian Business",
+     "url": "https://www.theguardian.com/business/2026/nov/09/boeing-to-cut-commercial-plane-workforce"
+    },
+    {
+     "t": "通脹數據及官員言論推高加息預期 美國10年期國債收益率達5%",
+     "h": "高於預期的通脹報告及美聯儲官員沃勒的言論推高加息預期，帶動美國10年期國債收益率升至5%。",
+     "s": "高於預期的通脹報告及美聯儲官員沃勒的言論推高加息預期，帶動美國10年期國債收益率升至5%。",
+     "k": [],
+     "full": false,
+     "src": "CNBC",
+     "url": "https://www.cnbc.com/2026/11/10/us-bonds-treasurys-yields.html"
+    },
+    {
+     "t": "美國10月新增16.5萬職位 超出市場預期",
+     "h": "美國10月新增16.5萬個就業職位，反映勞動力市場在經濟不確定性下仍具韌性，市場預計12月將加息。",
+     "s": "美國10月新增16.5萬個就業職位，反映勞動力市場在經濟不確定性下仍具韌性，市場預計12月將加息。",
+     "k": [],
+     "full": false,
+     "src": "The Guardian Business",
+     "url": "https://www.theguardian.com/business/2026/nov/06/us-job-growth-october"
+    },
+    {
+     "t": "民主黨中選獲勝引發科技股拋售 巨頭市值單日蒸發萬億",
+     "h": "民主黨在美國中期選舉中獲勝後引發AI發展放緩疑慮，全球科技股大跌，蘋果、特斯拉及輝達等單日市值蒸發約1萬億美元。",
+     "s": "民主黨在美國中期選舉中獲勝後引發AI發展放緩疑慮，全球科技股大跌，蘋果、特斯拉及輝達等單日市值蒸發約1萬億美元。",
+     "k": [],
+     "full": false,
+     "src": "The Guardian Business",
+     "url": "https://www.theguardian.com/news/video/2026/nov/06/could-the-ai-bubble-burst-after-democrats-midterms-sweep-the-latest"
+    },
+    {
+     "t": "特斯拉擬逐步停產Cybertruck 廠房轉產Cybercab",
+     "h": "馬斯克宣布特斯拉將於明年年中左右停產Cybertruck，位於德州的工廠將轉為生產自動駕駛出租車Cybercab。",
+     "s": "馬斯克宣布特斯拉將於明年年中左右停產Cybertruck，位於德州的工廠將轉為生產自動駕駛出租車Cybercab。",
+     "k": [],
+     "full": false,
+     "src": "The Guardian Business",
+     "url": "https://www.theguardian.com/technology/2026/nov/06/tesla-to-wind-down-cybertruck-production-as-elon-musk-focuses-on-robotics-and-ai"
     }
    ]
   }
