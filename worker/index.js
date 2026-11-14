@@ -151,6 +151,14 @@ async function classify(env, { url, text, note }, errs = []) {
 
 const row = (r) => ({ ...r, tags: JSON.parse(r.tags || "[]"), ai: !!r.ai });
 
+// Facebook 等平台嘅 og:title 成日係「2.2 萬個心情 · 7,648 次分享 | 成段貼文」，要剪短先做得標題
+function shortTitle(t, max = 60) {
+  t = String(t || "")
+    .replace(/^[^|｜]*(心情|次分享|reactions?|shares?|likes?|comments?|留言)[^|｜]*[|｜]\s*/i, "")
+    .replace(/\s+/g, " ").trim();
+  return t.length > max ? t.slice(0, max).trim() + "…" : t;
+}
+
 async function analyse(env, it, errs = []) {
   let text = it.text, title = "";
   if (it.url && (text || "").length < 80) {
@@ -159,7 +167,7 @@ async function analyse(env, it, errs = []) {
     text = [text, m.title, m.desc].filter(Boolean).join("\n");
   }
   const ai = await classify(env, { url: it.url, text, note: it.note }, errs);
-  const fallbackTitle = title || (text || "").replace(/https?:\/\/\S+/g, "").trim().split("\n")[0].slice(0, 40) || it.url || "（無標題）";
+  const fallbackTitle = shortTitle(title || (text || "").replace(/https?:\/\/\S+/g, "").trim().split("\n")[0]) || it.url || "（無標題）";
   return {
     text: (text || "").slice(0, 8000),
     title: ai?.title || fallbackTitle,
