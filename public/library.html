@@ -60,6 +60,10 @@ h1 { font-family:var(--display); font-size:30px; margin:28px 0 4px; }
 .msg.err { color:var(--bad); }
 .notice { background:var(--warn-soft); border:1px solid var(--line); border-radius:6px; padding:10px 14px; font-size:14px; margin-bottom:16px; }
 .hide { display:none !important; }
+.catlist { display:grid; gap:6px; }
+.catrow { display:flex; gap:6px; align-items:center; border-bottom:1px solid var(--line); padding:4px 0; }
+.catrow span:first-child { flex:1; min-width:0; word-break:break-word; }
+.catrow .n { color:var(--muted); font-family:var(--mono); font-size:12px; }
 .tools { display:grid; grid-template-columns:1fr auto; gap:8px; }
 @media (max-width:520px) { h1 { font-size:26px; } .tools { grid-template-columns:1fr; } }
 </style>
@@ -98,6 +102,13 @@ h1 { font-family:var(--display); font-size:30px; margin:28px 0 4px; }
       <button class="btn" id="rand">🎲 隨機重溫 3 篇</button>
     </div>
     <div class="chips" id="chips"></div>
+    <section class="panel hide" id="catPanel">
+      <b>管理分類</b>
+      <p class="sub" style="margin:4px 0 8px">AI 之後會按呢個清單分類。刪除分類唔會刪文章，只會退返去「未分類」。</p>
+      <div class="catlist" id="catList"></div>
+      <div class="row"><input type="text" id="catNew" maxlength="20" placeholder="新分類名，例如：詠春、移英、YouTube 素材"><button class="btn primary" id="catAdd">新增</button></div>
+      <div class="msg" id="catMsg"></div>
+    </section>
     <div class="msg" id="listMsg"></div>
     <div class="list" id="list"></div>
   </div>
@@ -153,6 +164,43 @@ h1 { font-family:var(--display); font-size:30px; margin:28px 0 4px; }
       b.onclick = function () { cat = c; mode = "all"; render(); };
       box.appendChild(b);
     });
+    var open = !$("catPanel").classList.contains("hide");
+    var mg = el("button", { class: "chip", text: open ? "完成" : "⚙ 管理分類", "aria-expanded": String(open) });
+    mg.onclick = function () { $("catPanel").classList.toggle("hide"); $("catMsg").textContent = ""; render(); };
+    box.appendChild(mg);
+  }
+
+  function catOp(body) {
+    var msg = $("catMsg"); msg.className = "msg"; msg.textContent = "處理中…";
+    return api("POST", "/api/lib/categories", body).then(function (j) { cats = j.categories || []; msg.textContent = ""; return true; })
+      .catch(function (e) { if (e.status === 401) { showGate("密碼唔啱"); return false; } msg.className = "msg err"; msg.textContent = "失敗：" + e.message; return false; });
+  }
+  function catPanel() {
+    var box = $("catList"); box.textContent = "";
+    var counts = {}; items.forEach(function (i) { counts[i.category] = (counts[i.category] || 0) + 1; });
+    cats.forEach(function (name) {
+      var ren = el("button", { class: "btn", text: "改名" }), del = el("button", { class: "btn danger", text: "刪除" });
+      ren.onclick = function () {
+        var to = (prompt("「" + name + "」改做：", name) || "").trim();
+        if (!to || to === name) return;
+        catOp({ op: "rename", name: name, to: to }).then(function (ok) {
+          if (!ok) return;
+          items.forEach(function (i) { if (i.category === name) i.category = to; });
+          if (cat === name) cat = to; render();
+        });
+      };
+      del.onclick = function () {
+        var n = counts[name] || 0;
+        if (!confirm("刪除分類「" + name + "」？" + (n ? "入面 " + n + " 篇文章會變返「未分類」。" : ""))) return;
+        catOp({ op: "delete", name: name }).then(function (ok) {
+          if (!ok) return;
+          items.forEach(function (i) { if (i.category === name) { i.category = "未分類"; i.ai = false; } });
+          if (cat === name) cat = "all"; render();
+        });
+      };
+      box.appendChild(el("div", { class: "catrow" }, [el("span", { text: name }), el("span", { class: "n", text: String(counts[name] || 0) }), ren, del]));
+    });
+    if (!cats.length) box.appendChild(el("p", { class: "empty", text: "未有分類，喺下面新增。" }));
   }
 
   function card(i) {
@@ -183,7 +231,7 @@ h1 { font-family:var(--display); font-size:30px; margin:28px 0 4px; }
   function fail(e) { if (e.status === 401) return showGate("密碼唔啱"); $("listMsg").textContent = "失敗：" + e.message; $("listMsg").className = "msg err"; }
 
   function render() {
-    chips();
+    chips(); catPanel();
     var list = visible(), box = $("list"); box.textContent = "";
     $("listMsg").textContent = ""; $("listMsg").className = "msg";
     if (!list.length) box.appendChild(el("p", { class: "empty", text: items.length ? "冇符合嘅文章。" : "仲未有文章。喺 Threads / IG / Facebook 撳分享，揀你嘅「儲去 WorksHub」捷徑，或者喺上面手動加入。" }));
@@ -198,6 +246,11 @@ h1 { font-family:var(--display); font-size:30px; margin:28px 0 4px; }
     while (pool.length && pick.length < 3) pick.push(pool.splice(Math.floor(Math.random() * pool.length), 1)[0].id);
     randIds = pick; mode = "rand"; render();
   };
+  $("catAdd").onclick = function () {
+    var v = $("catNew").value.trim(); if (!v) return;
+    catOp({ op: "add", name: v }).then(function (ok) { if (ok) { $("catNew").value = ""; render(); } });
+  };
+  $("catNew").onkeydown = function (e) { if (e.key === "Enter") $("catAdd").click(); };
   $("addGo").onclick = function () {
     var v = $("addText").value.trim(), msg = $("addMsg");
     if (!v) return;

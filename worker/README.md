@@ -35,7 +35,10 @@
 - `POST /api/lib/:id/ai` 重新 AI 分類
 - `DELETE /api/lib/:id`
 
-分類清單喺 `worker/index.js` 頂部 `CATEGORIES`，想改直接改嗰行。
+- `GET /api/lib/categories` 分類清單
+- `POST /api/lib/categories` `{op:"add",name}` / `{op:"rename",name,to}` / `{op:"delete",name}`（刪除後文章退返「未分類」）
+
+分類喺 `/library` 頁面「⚙ 管理分類」自訂，存喺 D1 嘅 `categories` 表（第一次用自動起表，填入 `worker/index.js` 嘅 `DEFAULT_CATEGORIES`）。AI 按呢個清單分類。
 
 ## 已知限制
 

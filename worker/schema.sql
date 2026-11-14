@@ -12,3 +12,9 @@ CREATE TABLE IF NOT EXISTS items (
   saved_at  TEXT NOT NULL
 );
 CREATE INDEX IF NOT EXISTS idx_items_saved ON items (saved_at DESC);
+
+-- 自訂分類（Worker 第一次用會自動起表同填預設，呢度只係記錄結構）
+CREATE TABLE IF NOT EXISTS categories (
+  name TEXT PRIMARY KEY,
+  pos  INTEGER NOT NULL DEFAULT 0
+);
