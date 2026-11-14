@@ -164,10 +164,36 @@ h1 { font-family:var(--display); font-size:30px; margin:28px 0 4px; }
       b.onclick = function () { cat = c; mode = "all"; render(); };
       box.appendChild(b);
     });
+    var pending = items.filter(function (i) { return !i.ai; }).length;
+    if (pending) {
+      var bulk = el("button", { class: "chip", text: busy ? "AI 分類中… " + busy : "✨ AI 分類全部未處理 " + pending });
+      if (busy) bulk.disabled = true;
+      bulk.onclick = bulkAi;
+      box.appendChild(bulk);
+    }
     var open = !$("catPanel").classList.contains("hide");
     var mg = el("button", { class: "chip", text: open ? "完成" : "⚙ 管理分類", "aria-expanded": String(open) });
     mg.onclick = function () { $("catPanel").classList.toggle("hide"); $("catMsg").textContent = ""; render(); };
     box.appendChild(mg);
+  }
+
+  var busy = "";
+  function bulkAi() {
+    var todo = items.filter(function (i) { return !i.ai; }), done = 0, bad = 0, lastErr = "";
+    function next() {
+      if (!todo.length) {
+        busy = ""; render();
+        if (bad) { $("listMsg").className = "msg err"; $("listMsg").textContent = "完成 " + done + " 篇，失敗 " + bad + " 篇：" + lastErr; }
+        else { $("listMsg").className = "msg"; $("listMsg").textContent = "完成，" + done + " 篇已分類。"; }
+        return;
+      }
+      var i = todo.shift();
+      busy = (done + bad + 1) + "/" + (done + bad + 1 + todo.length); render();
+      api("POST", "/api/lib/" + i.id + "/ai").then(function (j) { Object.assign(i, j.item); done++; })
+        .catch(function (e) { bad++; lastErr = e.message; if (e.status === 401) { todo = []; showGate("密碼唔啱"); } })
+        .then(next);
+    }
+    next();
   }
 
   function catOp(body) {
