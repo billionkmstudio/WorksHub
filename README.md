@@ -60,5 +60,6 @@
 - 用同一個 `POLYGON_API_KEY`，不需要新的 Secret。價格歷史（最高、最低、收市、成交量，約 320 個交易日）另存於 `state_vcp/`，只在 GitHub Actions 快取，不會 commit。
 - **首次執行**：Actions → Daily VCP scan → Run workflow。第一次會回補約 320 個交易日，大約 70 分鐘。之後每日只下載最新一天。
 - 每日最多顯示 10 隻（`MAX_SHOW`）：先列當日放量突破的，再列準備就緒、最接近樞紐的。沒有符合條件的股票就不顯示。網站保留最近 7 日存檔。
+- **Telegram 通知**：掃描到新一日有「突破」股票時，會用美股日報同一個 Telegram bot（`STOCKS_TELEGRAM_BOT_TOKEN`、`STOCKS_TELEGRAM_CHAT_ID`）發一則訊息，列出突破的股票和最接近樞紐的 5 隻等突破股票。沒有突破就不發；同一日重跑也不會重發。想測試：Run workflow 時勾選 `notify_test`。
 - 規則和門檻寫在 `update_vcp.py` 頂部，和 TradingView 上的 `vcp_breakout.pine` 預設值一致；改了一邊要同步改另一邊。相對強度以 SPY 的 1 年漲幅作比較。
 - 股票池：普通股、收市 ≥ $5、50 日平均成交金額 ≥ 2,000 萬美元、有完整一年歷史。儲存的價格中若出現單日升超過 80% 或跌超過 45% 的跳動（多數是拆股或合股造成），該股票會被略過，避免假訊號。
