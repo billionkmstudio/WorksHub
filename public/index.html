@@ -220,6 +220,15 @@ footer.f { color: var(--muted); font-size: 12px; margin-top: 28px; }
 .rp-tbl .tbl { max-height: none; }
 .rp-tbl .fl { white-space: normal; min-width: 220px; text-align: left; font-size: 12px; color: var(--bad); }
 .rp-ai { white-space: pre-wrap; font-size: 14px; margin: 0; }
+
+/* VCP 掃描 */
+.vcp-tbl .tbl { max-height: none; }
+.vcp-tbl td:first-child a { font-weight: 700; }
+.vcp-tbl td small { max-width: 190px; overflow: hidden; text-overflow: ellipsis; font-family: var(--body); }
+.vcp-tbl .stt { text-align: center; font-weight: 700; }
+@media (max-width: 560px) { .vcp-tbl td small { max-width: 120px; } }
+.vcp-key { margin: 0; padding-left: 18px; font-size: 14px; }
+.vcp-key li { margin: 2px 0; }
 .sitefoot { border-top: 1px solid var(--line); margin-top: 8px; }
 .sitefoot .row { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 16px; padding-block: 16px 28px; font-size: 12px; color: var(--muted); }
 .sitefoot .mono { font-size: 12px; }
@@ -243,7 +252,7 @@ footer.f { color: var(--muted); font-size: 12px; margin-top: 28px; }
 <footer class="sitefoot">
   <div class="wrap row">
     <span>© <span id="yr">2026</span> Billion Studio　僅供個人使用，保留所有權利。</span>
-    <span><a href="mailto:info@billionstudio.app">info@billionstudio.app</a>　<span class="mono">Works Hub v1.10.0</span></span>
+    <span><a href="mailto:info@billionstudio.app">info@billionstudio.app</a>　<span class="mono">Works Hub v1.11.0</span></span>
   </div>
 </footer>
 
@@ -251,7 +260,7 @@ footer.f { color: var(--muted); font-size: 12px; margin-top: 28px; }
 (function () {
   var PAGES = [
     ["today", "今日"], ["intl", "國際新聞"], ["finance", "財經新聞"],
-    ["monitor", "美股風險監測"], ["report", "美股日報"], ["pain", "痛點"], ["spark", "靈感"], ["saved", "收藏"], ["library", "文章庫", "/library"], ["weekly", "每週總結"]
+    ["monitor", "美股風險監測"], ["report", "美股日報"], ["vcp", "VCP 掃描"], ["pain", "痛點"], ["spark", "靈感"], ["saved", "收藏"], ["library", "文章庫", "/library"], ["weekly", "每週總結"]
   ];
   var WD = ["日", "一", "二", "三", "四", "五", "六"];
   var DATA = null;
@@ -760,6 +769,59 @@ footer.f { color: var(--muted); font-size: 12px; margin-top: 28px; }
     return h;
   }
 
+  /* ---------- VCP 掃描: scripts/update_vcp.py writes public/vcp/<date>.json ---------- */
+  function vcpBody(r) {
+    var h = '<div class="rp-sum"><span class="pill good">🟢 突破 ' + r.green + '</span><span class="pill warn">🟠 準備就緒 ' + r.orange + '</span><span class="pill neutral">共掃 ' + r.scanned + " 隻</span></div>";
+    var items = r.items || [];
+    if (!items.length) {
+      h += '<div class="panel" style="margin-bottom:20px"><p style="margin:0">這天沒有任何股票符合條件。大市偏弱時這是正常的，沒有訊號就不用行動。</p></div>';
+    } else {
+      if (r.green + r.orange > items.length) h += '<p class="sub" style="margin-bottom:12px">符合條件的共 ' + (r.green + r.orange) + " 隻，只顯示最接近訊號的 " + items.length + " 隻（突破的排最前，其餘按距離樞紐由近到遠）。</p>";
+      h += '<div class="vcp-tbl"><div class="tbl"><table><thead><tr><th>股票</th><th>狀態</th><th>收市</th><th>日 %</th><th>樞紐價</th><th>距樞紐</th><th>三段收縮</th><th>量縮比</th><th>當日量比</th><th>1 年漲幅</th></tr></thead><tbody>';
+      items.forEach(function (x) {
+        var g = x.st === "g";
+        h += '<tr><td><a href="https://www.tradingview.com/chart/?symbol=' + encodeURIComponent(x.t) + '" target="_blank" rel="noopener">' + esc(x.t) + "</a><small>" + esc(x.n || "") + "</small></td>" +
+          '<td class="stt ' + (g ? "g" : "w") + '">' + (g ? "🟢 突破" : "🟠 等突破") + "</td>" +
+          "<td>" + x.px.toFixed(2) + '</td><td class="' + (x.chg >= 0 ? "up" : "dn") + '">' + sgn(x.chg) + "</td>" +
+          "<td>" + x.pv.toFixed(2) + "</td><td>" + sgn(x.gap) + "</td>" +
+          "<td>" + x.d.map(function (v) { return v.toFixed(1); }).join(" → ") + "%</td>" +
+          "<td>" + x.vr.toFixed(2) + "</td><td>" + x.bv.toFixed(2) + "×</td><td>" + sgn(x.roc, 0) + "</td></tr>";
+      });
+      h += "</tbody></table></div></div>";
+    }
+    var p = r.params || {};
+    h += '<div class="panel" style="margin:20px 0 0"><h2>怎樣看</h2><ul class="vcp-key">' +
+      "<li><b>🟢 突破</b>：當天收市升穿樞紐價，而且成交量大於 50 日平均的 " + (p.brk || 1.3) + " 倍。7 項條件全部符合。</li>" +
+      "<li><b>🟠 等突破</b>：強勢股、波幅收窄、成交萎縮等 5 項準備條件都符合，但還沒有放量升穿樞紐。只是觀察名單。</li>" +
+      "<li><b>樞紐價</b>：最近 " + (p.seg || 15) + " 個交易日的最高價。「距樞紐」是收市價離它還有幾遠。</li>" +
+      "<li><b>三段收縮</b>：把過去 " + 3 * (p.seg || 15) + " 個交易日分成三段，每段的高低波幅，由舊到新。數字越來越小代表波動在收窄。</li>" +
+      "<li>點股票代號會在新分頁開啟 TradingView 圖表。" + (r.benchRoc == null ? "" : "同期 " + esc(r.bench) + " 的 1 年漲幅是 " + sgn(r.benchRoc, 1) + "。") + "</li></ul></div>";
+    h += '<footer class="f" style="margin-top:16px">每日最多顯示 ' + (r.max || 10) + " 隻。規則與 TradingView 上的 VCP 突破警示相同，門檻已按美股放寬，未經回測驗證。訊號可能失敗，本頁只供研究參考，並非投資建議。</footer>";
+    return h;
+  }
+  function vcpPage(sub) {
+    var h = "<h1>VCP 掃描</h1><p class='sub' id='vcpsub'>每日掃描美股，找出波動收縮後準備突破的強勢股。只供參考，並非投資建議。</p>";
+    h += '<div id="vcp"><p class="empty">載入中…</p></div>';
+    fetch("vcp/index.json?t=" + Date.now()).then(function (r) { if (!r.ok) throw 0; return r.json(); }).then(function (j) {
+      var ds = (j.dates || []).slice().sort().reverse().slice(0, 7);
+      var box = document.getElementById("vcp");
+      if (!box) return;
+      if (!ds.length) { box.innerHTML = '<p class="empty">暫時未有掃描結果。</p>'; return; }
+      var cur = sub && ds.indexOf(sub) >= 0 ? sub : ds[0];
+      var arch = '<div class="archive bottom"><span class="lab">日期存檔（最近 7 日）</span>';
+      ds.forEach(function (d, i) { arch += '<a href="#vcp' + (i === 0 ? "" : "-" + d) + '"' + (d === cur ? ' aria-current="true"' : "") + ">" + dmy(d) + (i === 0 ? "（最新）" : "") + "</a>"; });
+      arch += "</div>";
+      var sb = document.getElementById("vcpsub"); if (sb) sb.textContent = "資料日期 " + zhDate(cur) + "　每日掃描美股，找出波動收縮後準備突破的強勢股";
+      fetch("vcp/" + cur + ".json?t=" + Date.now()).then(function (r) { if (!r.ok) throw 0; return r.json(); }).then(function (r) {
+        box.innerHTML = vcpBody(r) + arch;
+      }).catch(function () { box.innerHTML = '<p class="empty">這天的掃描結果載入失敗。</p>' + arch; });
+    }).catch(function () {
+      var box = document.getElementById("vcp");
+      if (box) box.innerHTML = '<p class="empty">暫時未有掃描結果。第一次執行需要約 70 分鐘回補歷史價格。</p>';
+    });
+    return h;
+  }
+
   function todayPage() {
     var d = days("intl")[0] || days()[0], day = DATA.days[d], m = DATA.monitor, st = scoreStatus(m.score);
     var h = "<h1>" + zhDate(d) + "</h1><p class='sub'>每日最重要的國際與財經消息，以及美股風險分數。</p>";
@@ -787,6 +849,7 @@ footer.f { color: var(--muted); font-size: 12px; margin-top: 28px; }
     else if (page === "finance") h = newsPage("finance", "財經新聞", "每日 10 則", "finance", sub);
     else if (page === "monitor") h = monitorPage();
     else if (page === "report") h = reportPage(sub);
+    else if (page === "vcp") h = vcpPage(sub);
     else if (page === "pain") h = insightPage("pain", "痛點", "每日 5 個，來自 Reddit 與 Hacker News 的熱門討論", "pain", sub, [["why", "為何是痛點"], ["idea", "可做的方向"]]);
     else if (page === "spark") h = insightPage("spark", "靈感", "每日 5 個，來自 Reddit 與 Hacker News 的熱門討論", "spark", sub, [["angle", "切入角度"], ["idea", "內容或產品點子"]]);
     else if (page === "saved") h = savedPage();
