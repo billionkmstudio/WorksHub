@@ -112,6 +112,27 @@ async function handleCats(req, env) {
   return json({ ok: true, categories: await getCats(env) });
 }
 
+// Google 會停用舊模型（例如 gemini-2.5-flash），所以每次由 API 攞現有嘅 flash 模型，新版本排先。快取 6 小時。
+const MODEL_CACHE = { at: 0, list: [] };
+async function geminiModels(env) {
+  if (MODEL_CACHE.list.length && Date.now() - MODEL_CACHE.at < 6 * 3600e3) return [...MODEL_CACHE.list];
+  try {
+    const r = await fetch("https://generativelanguage.googleapis.com/v1beta/models?pageSize=200", {
+      headers: { "x-goog-api-key": env.GEMINI_API_KEY }, signal: AbortSignal.timeout(8000),
+    });
+    if (!r.ok) return [];
+    const j = await r.json();
+    const ver = (n) => parseFloat((n.match(/gemini-(\d+(?:\.\d+)?)/) || [])[1] || 0);
+    const names = (j.models || [])
+      .filter((m) => (m.supportedGenerationMethods || []).includes("generateContent"))
+      .map((m) => String(m.name).replace(/^models\//, ""))
+      .filter((n) => n.includes("flash") && !/lite|image|tts|live|audio|thinking|robotics|computer|embedding|gemma/.test(n))
+      .sort((a, b) => ver(b) - ver(a) || /preview|exp/.test(a) - /preview|exp/.test(b));
+    MODEL_CACHE.at = Date.now(); MODEL_CACHE.list = names.slice(0, 4);
+    return [...MODEL_CACHE.list];
+  } catch { return []; }
+}
+
 async function classify(env, { url, text, note }, errs = []) {
   if (!env.GEMINI_API_KEY) { errs.push("Worker 未設定 GEMINI_API_KEY"); return null; }
   const cats = await getCats(env);
@@ -126,8 +147,11 @@ async function classify(env, { url, text, note }, errs = []) {
 用戶備註：${note || "無"}
 內容：${(text || "").slice(0, 6000)}
 </article>`;
-  const models = [env.GEMINI_MODEL, "gemini-flash-latest", "gemini-2.5-flash"].filter(Boolean);
-  for (const m of models) {
+  const models = [...new Set([env.GEMINI_MODEL, ...(await geminiModels(env)), "gemini-flash-latest"].filter(Boolean))];
+  // 兩輪：Gemini 繁忙（503/429）通常幾秒後就得，第二輪前等一陣
+  for (let round = 0; round < 2; round++) {
+  if (round) await new Promise((r) => setTimeout(r, 2500));
+  for (const m of [...models]) {
     try {
       const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent`, {
         method: "POST",
@@ -135,7 +159,13 @@ async function classify(env, { url, text, note }, errs = []) {
         body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { responseMimeType: "application/json", temperature: 0.2 } }),
         signal: AbortSignal.timeout(20000),
       });
-      if (!r.ok) { errs.push(`${m}: HTTP ${r.status} ${(await r.text()).replace(/\s+/g, " ").slice(0, 160)}`); continue; }
+      if (!r.ok) {
+        const t = (await r.text()).replace(/\s+/g, " ");
+        const msg = (t.match(/"message":\s*"([^"]{0,140})/) || [])[1] || t.slice(0, 140);
+        if (!round || r.status !== 404) errs.push(`${m}: HTTP ${r.status} ${msg}`);
+        if (r.status === 404 || r.status === 403) { models.splice(models.indexOf(m), 1); MODEL_CACHE.at = 0; }
+        continue;
+      }
       const j = await r.json();
       const o = JSON.parse(j.candidates?.[0]?.content?.parts?.[0]?.text || "");
       return {
@@ -145,6 +175,7 @@ async function classify(env, { url, text, note }, errs = []) {
         tags: (Array.isArray(o.tags) ? o.tags : []).map((x) => String(x).slice(0, 12)).filter(Boolean).slice(0, 5),
       };
     } catch (e) { errs.push(`${m}: ${String(e && e.message || e).slice(0, 120)}`); /* 試下個模型 */ }
+  }
   }
   return null;
 }
