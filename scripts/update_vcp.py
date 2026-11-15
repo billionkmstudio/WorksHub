@@ -16,6 +16,9 @@ Environment:
   WH_VCP_DIR        output folder        (default public/vcp)
   WH_VCP_STATE      state folder         (default state_vcp, not committed)
   WH_SLEEP          seconds between Polygon calls (default 12.5, i.e. 5 calls a minute)
+  TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID   optional: send a Telegram message when a new day has breakouts
+  VCP_NOTIFY_TEST   "true" = send the message even with no breakout or for a day already scanned (to test)
+  WH_SITE_URL       link put in the message (default https://workshub.me/#vcp)
 """
 import datetime as dt
 import json
@@ -26,10 +29,15 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
+import requests
 
 from update_monitor import API, KEY, SLEEP, NotAvailable, api_get, latest_complete_day, log
 
 OUT_DIR = Path(os.environ.get("WH_VCP_DIR", "public/vcp"))
+TG_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "")
+TG_CHAT = os.environ.get("TELEGRAM_CHAT_ID", "")
+NOTIFY_TEST = os.environ.get("VCP_NOTIFY_TEST", "false").lower() == "true"
+SITE_URL = os.environ.get("WH_SITE_URL", "https://workshub.me/#vcp")
 STATE_DIR = Path(os.environ.get("WH_VCP_STATE", "state_vcp"))
 
 HISTORY_DAYS = 320       # trading days kept (252 for the 52-week numbers and 1-year return, plus slack)
@@ -267,6 +275,50 @@ def write_result(data_date, scanned, out, names, now_utc):
         if p.name != "index.json" and len(p.stem) == 10 and p.stem not in dates:
             p.unlink()
     log(f"done: {ds} scanned {scanned}, green {n_green}, orange {n_orange}, shown {len(items)}")
+    return res
+
+
+# ---------------------------------------------------------------- Telegram
+def build_message(res):
+    greens = [x for x in res["items"] if x["st"] == "g"]
+    oranges = [x for x in res["items"] if x["st"] == "o"]
+    d = dt.date.fromisoformat(res["date"])
+    lines = [f"VCP 掃描 {d.day}/{d.month}（美股收市）"]
+    if greens:
+        lines += ["", f"🟢 突破 {res['green']} 隻"]
+        for x in greens:
+            lines += [f"{x['t']}  {x['n']}".rstrip(),
+                      f"  收市 {x['px']:.2f}（{x['chg']:+.1f}%），樞紐 {x['pv']:.2f}，高於樞紐 {-x['gap']:.1f}%，量比 {x['bv']:.2f}×"]
+        if res["green"] > len(greens):
+            lines.append(f"  另有 {res['green'] - len(greens)} 隻，請看網頁")
+    else:
+        lines += ["", "🟢 今天沒有突破"]
+    if oranges:
+        lines += ["", f"🟠 等突破 {res['orange']} 隻（最接近樞紐的）"]
+        lines += [f"{x['t']}  樞紐 {x['pv']:.2f}（差 {x['gap']:+.1f}%）" for x in oranges[:5]]
+    lines += ["", SITE_URL, "只供研究參考，並非投資建議。"]
+    return "\n".join(lines)
+
+
+def notify(res, is_new_day):
+    """One message per new data day, and only when that day has a breakout. Never fails the run."""
+    if not (TG_TOKEN and TG_CHAT):
+        log("telegram: token/chat id not set, skipping")
+        return
+    if not NOTIFY_TEST:
+        if not is_new_day:
+            log("telegram: this day was already scanned, not sending again")
+            return
+        if not res["green"]:
+            log("telegram: no breakout today, nothing to send")
+            return
+    try:
+        r = requests.post(f"https://api.telegram.org/bot{TG_TOKEN}/sendMessage",
+                          json={"chat_id": TG_CHAT, "text": build_message(res), "disable_web_page_preview": True},
+                          timeout=30)
+        log("telegram:", "sent" if r.ok else f"failed {r.status_code} {r.text[:200]}")
+    except Exception as e:
+        log("telegram: failed", e)
 
 
 def main():
@@ -281,7 +333,9 @@ def main():
     data_date, scanned, out = scan(st, names)
     if data_date is None:
         sys.exit("not enough history to scan yet")
-    write_result(data_date, scanned, out, names, now)
+    is_new_day = not (OUT_DIR / f"{data_date.isoformat()}.json").exists()
+    res = write_result(data_date, scanned, out, names, now)
+    notify(res, is_new_day)
 
 
 if __name__ == "__main__":

@@ -5,6 +5,11 @@ on:
     # 07:00 UTC, Tuesday to Saturday: after the previous US trading day has closed and after the daily monitor
     - cron: "0 7 * * 2-6"
   workflow_dispatch:
+    inputs:
+      notify_test:
+        description: "Send the Telegram message even if there is no breakout (to test)"
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -41,6 +46,9 @@ jobs:
       - name: Scan
         env:
           POLYGON_API_KEY: ${{ secrets.POLYGON_API_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.STOCKS_TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.STOCKS_TELEGRAM_CHAT_ID }}
+          VCP_NOTIFY_TEST: ${{ inputs.notify_test && 'true' || 'false' }}
         run: python scripts/update_vcp.py
 
       - name: Save price history
