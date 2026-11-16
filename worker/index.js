@@ -133,7 +133,7 @@ async function geminiModels(env) {
   } catch { return []; }
 }
 
-async function classify(env, { url, text, note }, errs = []) {
+async function classify(env, { url, text, note }, errs = [], deadline = Date.now() + 25000) {
   if (!env.GEMINI_API_KEY) { errs.push("Worker 未設定 GEMINI_API_KEY"); return null; }
   const cats = await getCats(env);
   if (!cats.length) { errs.push("未有任何分類"); return null; }
@@ -152,12 +152,15 @@ async function classify(env, { url, text, note }, errs = []) {
   for (let round = 0; round < 2; round++) {
   if (round) await new Promise((r) => setTimeout(r, 2500));
   for (const m of [...models]) {
+    // 總時限：Gemini 慢／卡住時唔好逐個模型等 20 秒，超時就放棄（文章已經儲咗，之後可以再按 AI 分類）
+    const left = deadline - Date.now();
+    if (left < 3000) { errs.push("AI 超時（Gemini 回應太慢）"); return null; }
     try {
       const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent`, {
         method: "POST",
         headers: { "content-type": "application/json", "x-goog-api-key": env.GEMINI_API_KEY },
         body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { responseMimeType: "application/json", temperature: 0.2 } }),
-        signal: AbortSignal.timeout(20000),
+        signal: AbortSignal.timeout(Math.min(15000, left)),
       });
       if (!r.ok) {
         const t = (await r.text()).replace(/\s+/g, " ");
@@ -190,14 +193,14 @@ function shortTitle(t, max = 60) {
   return t.length > max ? t.slice(0, max).trim() + "…" : t;
 }
 
-async function analyse(env, it, errs = []) {
+async function analyse(env, it, errs = [], deadline) {
   let text = it.text, title = "";
   if (it.url && (text || "").length < 80) {
     const m = await fetchMeta(it.url);
     title = m.title || "";
     text = [text, m.title, m.desc].filter(Boolean).join("\n");
   }
-  const ai = await classify(env, { url: it.url, text, note: it.note }, errs);
+  const ai = await classify(env, { url: it.url, text, note: it.note }, errs, deadline);
   const fallbackTitle = shortTitle(title || (text || "").replace(/https?:\/\/\S+/g, "").trim().split("\n")[0]) || it.url || "（無標題）";
   return {
     text: (text || "").slice(0, 8000),
@@ -209,7 +212,7 @@ async function analyse(env, it, errs = []) {
   };
 }
 
-async function handle(req, env, url) {
+async function handle(req, env, url, ctx) {
   const p = url.pathname.replace(/\/$/, "");
   if (p === "/api/lib/categories") return handleCats(req, env);
   const m = p.match(/^\/api\/lib(?:\/([\w-]+))?(\/ai)?$/);
@@ -234,11 +237,22 @@ async function handle(req, env, url) {
     const note = String(b.note || "").trim().slice(0, 500);
     const dup = u ? await env.DB.prepare("SELECT * FROM items WHERE url=?").bind(u).first() : null;
     if (dup) return json({ ok: true, duplicate: true, item: row(dup) });
-    const a = await analyse(env, { url: u, text: text.slice(0, 8000), note });
-    const item = { id: crypto.randomUUID(), url: u, source: sourceOf(u), note, saved_at: new Date().toISOString(), ...a };
+    // 先即刻儲（捷徑唔使等 AI，唔會再「要求逾時」），AI 分類喺背景做完再更新
+    const t0 = text.slice(0, 8000);
+    const item = {
+      id: crypto.randomUUID(), url: u, source: sourceOf(u), note, saved_at: new Date().toISOString(),
+      text: t0, title: shortTitle(t0.replace(/https?:\/\/\S+/g, "").trim().split("\n")[0]) || u || "（無標題）",
+      summary: "", category: UNCAT, tags: [], ai: 0,
+    };
     await env.DB.prepare("INSERT INTO items (id,url,source,title,summary,text,note,category,tags,ai,saved_at) VALUES (?,?,?,?,?,?,?,?,?,?,?)")
       .bind(item.id, item.url, item.source, item.title, item.summary, item.text, item.note, item.category, JSON.stringify(item.tags), item.ai, item.saved_at).run();
-    return json({ ok: true, item: { ...item, ai: !!item.ai } }, 201);
+    const bg = (async () => {
+      const a = await analyse(env, { url: u, text: t0, note }, [], Date.now() + 20000);
+      await env.DB.prepare("UPDATE items SET title=?,summary=?,category=?,tags=?,ai=?,text=? WHERE id=?")
+        .bind(a.title, a.summary, a.category, JSON.stringify(a.tags), a.ai, a.text, item.id).run();
+    })().catch(() => {});
+    if (ctx && ctx.waitUntil) ctx.waitUntil(bg); else await bg;
+    return json({ ok: true, queued: true, item: { ...item, ai: false } }, 201);
   }
 
   if (!id) return json({ error: "method not allowed" }, 405);
@@ -270,11 +284,11 @@ async function handle(req, env, url) {
 }
 
 export default {
-  async fetch(req, env) {
+  async fetch(req, env, ctx) {
     const url = new URL(req.url);
     if (!url.pathname.startsWith("/api/")) return env.ASSETS.fetch(req);
     if (!authed(req, env)) return json({ error: "unauthorized" }, 401);
-    try { return await handle(req, env, url); }
+    try { return await handle(req, env, url, ctx); }
     catch (e) { return json({ error: "server error", detail: String(e && e.message || e) }, 500); }
   },
 };
