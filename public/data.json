@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-17T16:22",
+ "updated": "2026-11-17 19:06",
  "days": {
   "2026-10-31": {
    "note": "新聞資料日期：2026-10-30（美股收市）至 2026-10-31",
@@ -5116,6 +5116,100 @@
      "idea": "開發一個將紙上手寫字快速轉化成 Web Font 的線上微工具，並拍片分享字體設計技巧。",
      "src": "HN 首頁　62 則留言",
      "url": "https://news.ycombinator.com/item?id=50509972"
+    }
+   ]
+  },
+  "2026-11-17": {
+   "intl": [
+    {
+     "t": "特朗普出訪亞洲將會習近平及普京 科技界冀黃仁勳重返Nvidia",
+     "h": "特朗普表示計劃在亞洲之行期間討論烏克蘭問題，與白宮先前公布不符。矽谷領袖亦推動黃仁勳重返Nvidia。",
+     "s": "特朗普表示計劃在亞洲之行期間討論烏克蘭問題，與白宮先前公布不符。矽谷領袖亦推動黃仁勳重返Nvidia。",
+     "k": [],
+     "full": false,
+     "src": "NPR / DW",
+     "url": "https://www.npr.org/2026/11/17/g-s1-153950/up-first-newsletter-faa-ground-stop-trump-asia-trip-nvidia-lindsay-clancy"
+    },
+    {
+     "t": "美國麻疹病例創紀錄 保持26年消除麻疹地位宣告失守",
+     "h": "美國各州報告超過5,400宗麻疹病例及10宗死亡個案，為1990年代初以來首次。",
+     "s": "美國各州報告超過5,400宗麻疹病例及10宗死亡個案，為1990年代初以來首次。",
+     "k": [],
+     "full": false,
+     "src": "BBC News / Al Jazeera",
+     "url": "https://www.bbc.co.uk/news/articles/c977p71jx0xxo?at_medium=RSS&at_campaign=rss"
+    },
+    {
+     "t": "克里米亞大橋遭烏克蘭襲擊部分坍塌 澤連斯基讚揚前所未有",
+     "h": "烏克蘭對俄羅斯吞併的克里米亞戰略大橋發動飛彈及無人機襲擊，並指襲擊籌備數週。",
+     "s": "烏克蘭對俄羅斯吞併的克里米亞戰略大橋發動飛彈及無人機襲擊，並指襲擊籌備數週。",
+     "k": [],
+     "full": false,
+     "src": "BBC News",
+     "url": "https://www.bbc.co.uk/news/articles/cw772jk4rvmxo?at_medium=RSS&at_campaign=rss"
+    },
+    {
+     "t": "歐盟五國擬在盧旺達設移民遣返中心 被批重大道德失敗",
+     "h": "德國、奧地利、荷蘭、丹麥及希臘宣布計劃在盧旺達設立海外中心，收容無合法停留歐洲權利的人士。",
+     "s": "德國、奧地利、荷蘭、丹麥及希臘宣布計劃在盧旺達設立海外中心，收容無合法停留歐洲權利的人士。",
+     "k": [],
+     "full": false,
+     "src": "The Guardian",
+     "url": "https://www.theguardian.com/world/2026/nov/16/eu-states-immigration-return-hubs-rwanda"
+    },
+    {
+     "t": "伊朗向巴林美軍雷達設施發射無人機 展開第三輪打擊",
+     "h": "伊朗向位於巴林的美軍雷達設施發射無人機，這是戰事沉寂約兩個月後，近期對美軍目標的第三次襲擊。",
+     "s": "伊朗向位於巴林的美軍雷達設施發射無人機，這是戰事沉寂約兩個月後，近期對美軍目標的第三次襲擊。",
+     "k": [],
+     "full": false,
+     "src": "NPR",
+     "url": "https://www.npr.org/2026/11/17/nx-s1-6044255/us-iran-war-latest-bahrain"
+    },
+    {
+     "t": "黃仁勳同意赴美國眾議院作證 表示準備好重任Nvidia CEO",
+     "h": "黃仁勳表示，若Nvidia董事會希望他重新掌舵，他已準備好重返行政總裁崗位。",
+     "s": "黃仁勳表示，若Nvidia董事會希望他重新掌舵，他已準備好重返行政總裁崗位。",
+     "k": [],
+     "full": false,
+     "src": "Al Jazeera",
+     "url": "https://www.aljazeera.com/economy/2026/11/17/jensen-huang-to-testify-before-us-house-committees-next-month?traffic_source=rss"
+    },
+    {
+     "t": "沙特處決人數升至最少211人 人權組織發警報",
+     "h": "沙特阿拉伯人權狀況依然嚴峻，已執行最少211次處決，並實施體罰及加強打壓批評者。",
+     "s": "沙特阿拉伯人權狀況依然嚴峻，已執行最少211次處決，並實施體罰及加強打壓批評者。",
+     "k": [],
+     "full": false,
+     "src": "DW",
+     "url": "https://www.dw.com/en/saudi-arabia-rights-groups-raise-alarm-over-rising-number-of-executions/a-79970773?maca=en-rss-en-world-4025-rdf"
+    },
+    {
+     "t": "以色列軍隊入侵敘利亞村莊 襲擊民居致房屋受損",
+     "h": "以色列突襲敘利亞德拉州的民居後，現場影片顯示牆壁滿佈彈孔，物品被燒焦。",
+     "s": "以色列突襲敘利亞德拉州的民居後，現場影片顯示牆壁滿佈彈孔，物品被燒焦。",
+     "k": [],
+     "full": false,
+     "src": "Al Jazeera",
+     "url": "https://www.aljazeera.com/video/newsfeed/2026/11/17/israeli-forces-invade-syrian-village-leaving-homes-damaged?traffic_source=rss"
+    },
+    {
+     "t": "俄羅斯要求北約撤出東歐 大幅縮減東擴範圍至1997年前",
+     "h": "據報克里姆林宮呼籲北約撤出東歐大部分地區，將其範圍倒退至1997年之前。",
+     "s": "據報克里姆林宮呼籲北約撤出東歐大部分地區，將其範圍倒退至1997年之前。",
+     "k": [],
+     "full": false,
+     "src": "DW",
+     "url": "https://www.dw.com/en/back-to-1997-russia-wants-nato-to-roll-back-its-eastern-expansion/a-79970289?maca=en-rss-en-world-4025-rdf"
+    },
+    {
+     "t": "聯合國在日內瓦商討限制AI自主武器 遭遇美俄以抵抗",
+     "h": "各國在日內瓦開會協商無需人類干預即可選擇並殺傷目標的武器規則，但美、俄及以色列抵抗約束力規範。",
+     "s": "各國在日內瓦開會協商無需人類干預即可選擇並殺傷目標的武器規則，但美、俄及以色列抵抗約束力規範。",
+     "k": [],
+     "full": false,
+     "src": "NPR",
+     "url": "https://www.npr.org/2026/11/16/nx-s1-6042548/un-killer-robots-ai-weapons-drones"
     }
    ]
   }
