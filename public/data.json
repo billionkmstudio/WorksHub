@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-18T15:54",
+ "updated": "2026-11-18 18:30",
  "days": {
   "2026-10-31": {
    "note": "新聞資料日期：2026-10-30（美股收市）至 2026-10-31",
@@ -5304,6 +5304,98 @@
      "full": false,
      "src": "BBC News",
      "url": "https://www.bbc.co.uk/news/articles/cmy86pp336qlo?at_medium=RSS&at_campaign=rss"
+    }
+   ],
+   "finance": [
+    {
+     "t": "英偉達業績飆升重申不留黃仁勳",
+     "h": "人工智能晶片巨頭英偉達公佈強勁季度業績，並表示在黃仁勳離職後不會重新任用他。",
+     "s": "人工智能晶片巨頭英偉達公佈強勁季度業績，並表示在黃仁勳離職後不會重新任用他。",
+     "k": [],
+     "full": false,
+     "src": "BBC Business / The Guardian Business",
+     "url": "https://www.bbc.co.uk/news/articles/cm2kl50vkwkdo?at_medium=RSS&at_campaign=rss"
+    },
+    {
+     "t": "美聯儲沃勒稱或需加息半厘震撼市場",
+     "h": "美聯儲官員沃勒表示，由於通脹持續高於2%目標，央行可能需要加息半厘以震懾市場。",
+     "s": "美聯儲官員沃勒表示，由於通脹持續高於2%目標，央行可能需要加息半厘以震懾市場。",
+     "k": [],
+     "full": false,
+     "src": "CNBC",
+     "url": "https://www.cnbc.com/2026/11/18/federal-reserve-governor-christopher-waller.html"
+    },
+    {
+     "t": "Anthropic擬因需求強勁擴大上市規模",
+     "h": "消息指人工智能實驗室Anthropic因投資者需求激增，正考慮擴大首次公開招股規模。",
+     "s": "消息指人工智能實驗室Anthropic因投資者需求激增，正考慮擴大首次公開招股規模。",
+     "k": [],
+     "full": false,
+     "src": "CNBC",
+     "url": "https://www.cnbc.com/2026/11/18/anthropic-ipo-ai-offering-price.html"
+    },
+    {
+     "t": "盧比奧指無證據顯示科技故障有所關聯",
+     "h": "美國國務卿盧比奧表示，完全沒有證據顯示近期一連串科技故障之間存在關聯或屬惡意攻擊。",
+     "s": "美國國務卿盧比奧表示，完全沒有證據顯示近期一連串科技故障之間存在關聯或屬惡意攻擊。",
+     "k": [],
+     "full": false,
+     "src": "The Guardian Business",
+     "url": "https://www.theguardian.com/us-news/2026/nov/18/zero-evidence-recent-tech-outages-linked-marco-rubio"
+    },
+    {
+     "t": "特朗普習近平普京預計在華舉行會談",
+     "h": "美國總統特朗普、中國國家主席習近平與俄羅斯總統普京預計將於週四舉行罕見的三方會談。",
+     "s": "美國總統特朗普、中國國家主席習近平與俄羅斯總統普京預計將於週四舉行罕見的三方會談。",
+     "k": [],
+     "full": false,
+     "src": "CNBC",
+     "url": "https://www.cnbc.com/2026/11/18/trump-xi-putin-apec-shenzhen-china.html"
+    },
+    {
+     "t": "英國通脹上升 能源帳單料增兩成六",
+     "h": "英國通脹率升至一年來最高，預計自1月起一般家庭每年能源帳單將增加26%或443英鎊。",
+     "s": "英國通脹率升至一年來最高，預計自1月起一般家庭每年能源帳單將增加26%或443英鎊。",
+     "k": [],
+     "full": false,
+     "src": "BBC Business",
+     "url": "https://www.bbc.co.uk/news/articles/cmy498kdkx3xo?at_medium=RSS&at_campaign=rss"
+    },
+    {
+     "t": "德意志銀行據報忽視高風險客戶警告",
+     "h": "洩漏文件調查顯示，德意志銀行被指忽視與高風險客戶交易的合規警告，以保障利潤。",
+     "s": "洩漏文件調查顯示，德意志銀行被指忽視與高風險客戶交易的合規警告，以保障利潤。",
+     "k": [],
+     "full": false,
+     "src": "The Guardian Business",
+     "url": "https://www.theguardian.com/business/2026/nov/17/deutsche-bank-dimissed-warnings-risky-clients-reports-claim"
+    },
+    {
+     "t": "福特採用寧德時代技術在美生產電池",
+     "h": "福特已開始在美國利用中國電池巨頭寧德時代授權的技術，生產及交付下一代電動車電池。",
+     "s": "福特已開始在美國利用中國電池巨頭寧德時代授權的技術，生產及交付下一代電動車電池。",
+     "k": [],
+     "full": false,
+     "src": "CNBC",
+     "url": "https://www.cnbc.com/2026/11/18/ford-us-battery-cells-catl-tech.html"
+    },
+    {
+     "t": "聯合航空宣佈廣泛系統故障已解決",
+     "h": "聯合航空表示，已解決早前導致航班延誤的技術問題及廣泛系統故障。",
+     "s": "聯合航空表示，已解決早前導致航班延誤的技術問題及廣泛系統故障。",
+     "k": [],
+     "full": false,
+     "src": "The Guardian Business",
+     "url": "https://www.theguardian.com/us-news/2026/nov/16/united-airlines-system-outage"
+    },
+    {
+     "t": "法官延長特朗普誹謗BBC案作供限期",
+     "h": "美國法官給予特朗普臨時延期，要求他在1月22日前就針對BBC的100億美元誹謗訴訟作供。",
+     "s": "美國法官給予特朗普臨時延期，要求他在1月22日前就針對BBC的100億美元誹謗訴訟作供。",
+     "k": [],
+     "full": false,
+     "src": "The Guardian Business",
+     "url": "https://www.theguardian.com/us-news/2026/nov/17/trump-bbc-deposition-delay"
     }
    ]
   }
