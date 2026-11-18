@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-17 19:06",
+ "updated": "2026-11-18 15:00",
  "days": {
   "2026-10-31": {
    "note": "新聞資料日期：2026-10-30（美股收市）至 2026-10-31",
@@ -5210,6 +5210,100 @@
      "full": false,
      "src": "NPR",
      "url": "https://www.npr.org/2026/11/16/nx-s1-6042548/un-killer-robots-ai-weapons-drones"
+    }
+   ]
+  },
+  "2026-11-18": {
+   "intl": [
+    {
+     "t": "Nvidia季度收益強勁 澄清不會重新任用黃仁勳",
+     "h": "人工智慧晶片巨頭Nvidia於星期二公布強勁季度收益，並澄清在黃仁勳戲劇性離職後，不會重新任用他。",
+     "s": "人工智慧晶片巨頭Nvidia於星期二公布強勁季度收益，並澄清在黃仁勳戲劇性離職後，不會重新任用他。",
+     "k": [],
+     "full": false,
+     "src": "BBC News / NPR",
+     "url": "https://www.bbc.co.uk/news/articles/cm2kl50vkwkdo?at_medium=RSS&at_campaign=rss"
+    },
+    {
+     "t": "特朗普歷史性訪華 與習近平及普京握手",
+     "h": "美國總統特朗普、中國國家主席習近平與俄羅斯總統普京將於星期四的峰會首次會面，三人會前互相握手。",
+     "s": "美國總統特朗普、中國國家主席習近平與俄羅斯總統普京將於星期四的峰會首次會面，三人會前互相握手。",
+     "k": [],
+     "full": false,
+     "src": "BBC News / NPR",
+     "url": "https://www.bbc.co.uk/news/articles/ck9d75x5wwwwo?at_medium=RSS&at_campaign=rss"
+    },
+    {
+     "t": "國際法院將裁決緬甸案 傳美或制裁法官",
+     "h": "若國際法院於星期四裁定緬甸政府對羅興亞人犯下種族滅絕罪，各界擔心美國或會對包括諾貝爾和平獎得主皮萊在內的法官實施制裁。",
+     "s": "若國際法院於星期四裁定緬甸政府對羅興亞人犯下種族滅絕罪，各界擔心美國或會對包括諾貝爾和平獎得主皮萊在內的法官實施制裁。",
+     "k": [],
+     "full": false,
+     "src": "The Guardian",
+     "url": "https://www.theguardian.com/world/2026/nov/18/us-sanctions-icj-judges-myanmar-genocide-ruling-israel-gaza-court"
+    },
+    {
+     "t": "歐盟委員會遭控美化數據 以向埃及發放資金",
+     "h": "洩漏文件顯示埃及是否達到福利目標存疑。歐盟委員會被指美化數據，以向埃及阿塞西政府發放貸款及協議資金。",
+     "s": "洩漏文件顯示埃及是否達到福利目標存疑。歐盟委員會被指美化數據，以向埃及阿塞西政府發放貸款及協議資金。",
+     "k": [],
+     "full": false,
+     "src": "The Guardian",
+     "url": "https://www.theguardian.com/world/2026/nov/18/european-commission-accused-sugarcoating-figures-egypt-loans"
+    },
+    {
+     "t": "美軍空襲伊朗島嶼後 科威特稱擊退伊朗進攻",
+     "h": "美軍於星期二空襲波斯灣伊朗格什姆島後，科威特表示擊退了兩個月來首次來自伊朗的襲擊，巴林亦稱遭到伊朗襲擊。",
+     "s": "美軍於星期二空襲波斯灣伊朗格什姆島後，科威特表示擊退了兩個月來首次來自伊朗的襲擊，巴林亦稱遭到伊朗襲擊。",
+     "k": [],
+     "full": false,
+     "src": "BBC News",
+     "url": "https://www.bbc.co.uk/news/articles/cw4gn9jeqjq7o?at_medium=RSS&at_campaign=rss"
+    },
+    {
+     "t": "歐盟五國擬於盧旺達設立無合法居留權者轉運中心",
+     "h": "德國、奧地利、荷蘭、丹麥和希臘計劃在盧旺達設立境外中心，處理無權留歐的人士。該方案被指存在重大道德缺陷並可能面臨法律挑戰。",
+     "s": "德國、奧地利、荷蘭、丹麥和希臘計劃在盧旺達設立境外中心，處理無權留歐的人士。該方案被指存在重大道德缺陷並可能面臨法律挑戰。",
+     "k": [],
+     "full": false,
+     "src": "The Guardian",
+     "url": "https://www.theguardian.com/world/2026/nov/16/eu-states-immigration-return-hubs-rwanda"
+    },
+    {
+     "t": "美國中期選舉點票兩周 民主黨贏得阿拉斯加參議院席位",
+     "h": "美國中期選舉開始點票兩周後，民主黨確認彭托拉贏得阿拉斯加州參議院席位，完成該黨在中期參議院選舉中對共和黨的擊敗。",
+     "s": "美國中期選舉開始點票兩周後，民主黨確認彭托拉贏得阿拉斯加州參議院席位，完成該黨在中期參議院選舉中對共和黨的擊敗。",
+     "k": [],
+     "full": false,
+     "src": "BBC News",
+     "url": "https://www.bbc.co.uk/news/articles/cqev3v2ygzlvo?at_medium=RSS&at_campaign=rss"
+    },
+    {
+     "t": "中美仍為最大溫室氣體排放國 中國減用煤炭",
+     "h": "中國與美國是全球最大的溫室氣體排放國。目前中國多個省份正減少煤炭使用，而美國在氣候科技發展方面則有所落後。",
+     "s": "中國與美國是全球最大的溫室氣體排放國。目前中國多個省份正減少煤炭使用，而美國在氣候科技發展方面則有所落後。",
+     "k": [],
+     "full": false,
+     "src": "NPR",
+     "url": "https://www.npr.org/2026/11/18/nx-s1-6044646/china-and-the-u-s-emissions-cop31-antalya"
+    },
+    {
+     "t": "人權組織警告沙特阿拉伯處決人數持續上升",
+     "h": "人權組織表示沙特阿拉伯人權狀況嚴峻，當地已執行至少211次處決，並實施體罰及加強打壓批評人士。",
+     "s": "人權組織表示沙特阿拉伯人權狀況嚴峻，當地已執行至少211次處決，並實施體罰及加強打壓批評人士。",
+     "k": [],
+     "full": false,
+     "src": "DW",
+     "url": "https://www.dw.com/en/saudi-arabia-rights-groups-raise-alarm-over-rising-number-of-executions/a-79970773?maca=en-rss-en-world-4025-rdf"
+    },
+    {
+     "t": "加州禁行公路後 Waymo撤回全美高速公路無人駕駛出租車",
+     "h": "在發生一連串交通事故後，加州禁止Waymo無人駕駛汽車在該州公路運行，公司隨後決定撤回全美高速公路的無人駕駛出租車。",
+     "s": "在發生一連串交通事故後，加州禁止Waymo無人駕駛汽車在該州公路運行，公司隨後決定撤回全美高速公路的無人駕駛出租車。",
+     "k": [],
+     "full": false,
+     "src": "BBC News",
+     "url": "https://www.bbc.co.uk/news/articles/cmy86pp336qlo?at_medium=RSS&at_campaign=rss"
     }
    ]
   }
