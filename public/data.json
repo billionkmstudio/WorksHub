@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-21T14:51",
+ "updated": "2026-11-22 13:55",
  "days": {
   "2026-10-31": {
    "note": "新聞資料日期：2026-10-30（美股收市）至 2026-10-31",
@@ -6450,6 +6450,100 @@
      "idea": "製作短影音「網速慢未必關電訊商事？盤點3個連工程師都差點被騙的奇葩硬體干擾陷阱」。",
      "src": "HN 首頁　15 則留言",
      "url": "https://news.ycombinator.com/item?id=50587875"
+    }
+   ]
+  },
+  "2026-11-22": {
+   "intl": [
+    {
+     "t": "印尼糖果廠大火 至少3死36人失蹤",
+     "h": "印尼一家糖果廠發生火災，造成至少3人死亡，目前仍有36人失蹤。",
+     "s": "印尼一家糖果廠發生火災，造成至少3人死亡，目前仍有36人失蹤。",
+     "k": [],
+     "full": false,
+     "src": "BBC News / The Guardian / DW",
+     "url": "https://www.bbc.co.uk/news/articles/cw8dvg5pgm0eo?at_medium=RSS&at_campaign=rss"
+    },
+    {
+     "t": "駛往俄羅斯貨船在芬蘭灣遭襲起火",
+     "h": "一艘駛往俄羅斯的船隻在芬蘭灣遭無人機襲擊後起火，芬蘭國防軍指烏克蘭可能是幕後黑手。",
+     "s": "一艘駛往俄羅斯的船隻在芬蘭灣遭無人機襲擊後起火，芬蘭國防軍指烏克蘭可能是幕後黑手。",
+     "k": [],
+     "full": false,
+     "src": "BBC News / Al Jazeera",
+     "url": "https://www.bbc.co.uk/news/articles/cj752ddve27ko?at_medium=RSS&at_campaign=rss"
+    },
+    {
+     "t": "洛杉磯男子縱火引發山火罪名成立",
+     "h": "洛杉磯一名30歲居民因縱火引發山火被定罪，大火造成12人死亡並摧毀超過6,800座建築物。",
+     "s": "洛杉磯一名30歲居民因縱火引發山火被定罪，大火造成12人死亡並摧毀超過6,800座建築物。",
+     "k": [],
+     "full": false,
+     "src": "BBC News / DW",
+     "url": "https://www.bbc.co.uk/news/articles/c64gn0gy8rj3o?at_medium=RSS&at_campaign=rss"
+    },
+    {
+     "t": "墨西哥毒梟梅薩弗洛雷斯槍戰後被捕",
+     "h": "名列美國聯邦調查局十大通緝犯、涉嫌販毒及酷刑的墨西哥毒梟梅薩弗洛雷斯，在與當局槍戰後被捕。",
+     "s": "名列美國聯邦調查局十大通緝犯、涉嫌販毒及酷刑的墨西哥毒梟梅薩弗洛雷斯，在與當局槍戰後被捕。",
+     "k": [],
+     "full": false,
+     "src": "BBC News",
+     "url": "https://www.bbc.co.uk/news/articles/ckz749ey0r75o?at_medium=RSS&at_campaign=rss"
+    },
+    {
+     "t": "歐盟與印尼簽署貿易協定",
+     "h": "歐盟與印尼簽署涵蓋7.3億人的貿易協定，旨在降低關稅並提供新投資機會，推進貿易多元化。",
+     "s": "歐盟與印尼簽署涵蓋7.3億人的貿易協定，旨在降低關稅並提供新投資機會，推進貿易多元化。",
+     "k": [],
+     "full": false,
+     "src": "DW",
+     "url": "https://www.dw.com/en/eu-and-indonesia-sign-trade-deal/a-80010099?maca=en-rss-en-world-4025-rdf"
+    },
+    {
+     "t": "聯合國殺手機器人談判未達管制協議",
+     "h": "聯合國在日內瓦的談判未能就自主武器達成具法律約束力的規則，人道組織警告軍事人工智慧發展迅速。",
+     "s": "聯合國在日內瓦的談判未能就自主武器達成具法律約束力的規則，人道組織警告軍事人工智慧發展迅速。",
+     "k": [],
+     "full": false,
+     "src": "NPR",
+     "url": "https://www.npr.org/2026/11/21/nx-s1-6047916/killer-robots-un-drones"
+    },
+    {
+     "t": "Anthropic研究員利用AI破解著名數學難題",
+     "h": "AI公司Anthropic的研究員利用其AI工具解開著名數學難題，該項突破仍需獨立驗證。",
+     "s": "AI公司Anthropic的研究員利用其AI工具解開著名數學難題，該項突破仍需獨立驗證。",
+     "k": [],
+     "full": false,
+     "src": "DW",
+     "url": "https://www.dw.com/en/anthropic-researcher-uses-ai-to-solve-math-s-greatest-riddle/a-80008428?maca=en-rss-en-world-4025-rdf"
+    },
+    {
+     "t": "中國與東盟就南海行為準則談判進展緩慢",
+     "h": "菲律賓希望在2026年前落實南海行為準則，但中國與東盟國家之間的持續分歧拖慢了進展。",
+     "s": "菲律賓希望在2026年前落實南海行為準則，但中國與東盟國家之間的持續分歧拖慢了進展。",
+     "k": [],
+     "full": false,
+     "src": "DW",
+     "url": "https://www.dw.com/en/china-asean-countries-struggle-over-south-china-sea-code-of-conduct/a-80009799?maca=en-rss-en-world-4025-rdf"
+    },
+    {
+     "t": "歐盟新預算案建議向大型數碼企業徵稅3%",
+     "h": "歐洲理事會主席科斯塔提出新預算案，建議向大型數碼企業徵稅3%以減輕成員國負擔，法國已拒絕該方案。",
+     "s": "歐洲理事會主席科斯塔提出新預算案，建議向大型數碼企業徵稅3%以減輕成員國負擔，法國已拒絕該方案。",
+     "k": [],
+     "full": false,
+     "src": "DW",
+     "url": "https://www.dw.com/en/new-eu-budget-proposal-aims-at-tax-gobal-tech-giants/a-80009255?maca=en-rss-en-world-4025-rdf"
+    },
+    {
+     "t": "南韓教育部長因高考混亂引咎辭職",
+     "h": "南韓教育部長崔教振承認在高考期間為阻止人工智慧作弊而採取的臨時措施引致混亂，宣佈辭職。",
+     "s": "南韓教育部長崔教振承認在高考期間為阻止人工智慧作弊而採取的臨時措施引致混亂，宣佈辭職。",
+     "k": [],
+     "full": false,
+     "src": "BBC News",
+     "url": "https://www.bbc.co.uk/news/articles/cw3dgk29d37no?at_medium=RSS&at_campaign=rss"
     }
    ]
   }
