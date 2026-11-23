@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-22 23:11",
+ "updated": "2026-11-23 22:02",
  "days": {
   "2026-10-31": {
    "note": "新聞資料日期：2026-10-30（美股收市）至 2026-10-31",
@@ -6770,6 +6770,100 @@
      "idea": "撰寫文章分析 Local LLM 離線模型對中小企的省錢與環保優勢，並提供低成本本地 AI 導入的微型工具或服務。",
      "src": "HN 首頁　594 則留言",
      "url": "https://news.ycombinator.com/item?id=50597612"
+    }
+   ]
+  },
+  "2026-11-23": {
+   "intl": [
+    {
+     "t": "烏克蘭於利比亞港口擊沉俄戰艦 戰事局勢升溫",
+     "h": "烏克蘭在利比亞一處港口擊沉一艘俄羅斯戰艦，令兩國戰事的局勢進一步升溫。",
+     "s": "烏克蘭在利比亞一處港口擊沉一艘俄羅斯戰艦，令兩國戰事的局勢進一步升溫。",
+     "k": [],
+     "full": false,
+     "src": "BBC News / Al Jazeera",
+     "url": "https://www.bbc.co.uk/news/articles/cm894p88jzxpo?at_medium=RSS&at_campaign=rss"
+    },
+    {
+     "t": "墨西哥特種部隊突襲 拘捕美通緝毒梟伊西德羅",
+     "h": "墨西哥軍方在錫那羅亞州展開特種部隊突襲，爆發槍戰後拘捕已被美國聯邦調查局通緝逾十年的毒梟伊西德羅及其兩名幫派頭目。",
+     "s": "墨西哥軍方在錫那羅亞州展開特種部隊突襲，爆發槍戰後拘捕已被美國聯邦調查局通緝逾十年的毒梟伊西德羅及其兩名幫派頭目。",
+     "k": [],
+     "full": false,
+     "src": "The Guardian / DW",
+     "url": "https://www.theguardian.com/world/2026/nov/21/alleged-mexican-drug-cartel-boss-el-chapo-isidro-meza-flores-arrested"
+    },
+    {
+     "t": "印度承諾向尼泊爾提供16億美元援助修復關係",
+     "h": "尼泊爾在致命洪水後重建，總理擱置爭議議題，成功爭取印度提供16億美元資金、港口使用權及新鐵路服務。",
+     "s": "尼泊爾在致命洪水後重建，總理擱置爭議議題，成功爭取印度提供16億美元資金、港口使用權及新鐵路服務。",
+     "k": [],
+     "full": false,
+     "src": "BBC News / Al Jazeera",
+     "url": "https://www.bbc.co.uk/news/articles/cwx2ervemj4ko?at_medium=RSS&at_campaign=rss"
+    },
+    {
+     "t": "印尼糖果廠大火最少24死 約30人失蹤",
+     "h": "印尼一間糖果廠發生大火，已確認最少24人死亡。救援人員冒險在殘骸中搜尋約30名失蹤者，當局正調查起火原因。",
+     "s": "印尼一間糖果廠發生大火，已確認最少24人死亡。救援人員冒險在殘骸中搜尋約30名失蹤者，當局正調查起火原因。",
+     "k": [],
+     "full": false,
+     "src": "The Guardian / DW",
+     "url": "https://www.theguardian.com/world/2026/nov/22/fire-confectionary-factory-indonesia-jakarta"
+    },
+    {
+     "t": "美國民主黨眾議院席位大增 COP31無協議閉幕",
+     "h": "美國民主黨已翻轉47個眾議院席位。第31屆氣候變化大會（COP31）比預期延長兩天，成為史上最長峰會，但最終未能達成協議。",
+     "s": "美國民主黨已翻轉47個眾議院席位。第31屆氣候變化大會（COP31）比預期延長兩天，成為史上最長峰會，但最終未能達成協議。",
+     "k": [],
+     "full": false,
+     "src": "NPR",
+     "url": "https://www.npr.org/2026/11/23/g-s1-155021/up-first-newsletter-midterms-house-ai-stocks-poland-nato-cop31"
+    },
+    {
+     "t": "伊朗女歌手無佩戴頭巾演出遭處以鞭刑",
+     "h": "伊朗女歌手帕拉斯圖·阿赫馬迪因無佩戴頭巾演出遭處以鞭刑，她與四名製作團隊成員亦面臨為期兩年的旅遊及藝術活動禁令。",
+     "s": "伊朗女歌手帕拉斯圖·阿赫馬迪因無佩戴頭巾演出遭處以鞭刑，她與四名製作團隊成員亦面臨為期兩年的旅遊及藝術活動禁令。",
+     "k": [],
+     "full": false,
+     "src": "Al Jazeera",
+     "url": "https://www.aljazeera.com/news/2026/11/23/iran-flogs-singer-parastoo-ahmadi-for-performing-without-headscarf?traffic_source=rss"
+    },
+    {
+     "t": "日中關係於亞佩克峰會顯冷淡 走向引關注",
+     "h": "日本長期關注中國軍事擴張，北京則不滿高市早苗涉台言論。兩國冷淡的關係在亞佩克峰會上展現。",
+     "s": "日本長期關注中國軍事擴張，北京則不滿高市早苗涉台言論。兩國冷淡的關係在亞佩克峰會上展現。",
+     "k": [],
+     "full": false,
+     "src": "DW",
+     "url": "https://www.dw.com/en/after-japan-s-apec-snub-what-s-next-for-its-china-ties/a-80020823?maca=en-rss-en-world-4025-rdf"
+    },
+    {
+     "t": "伊朗加強襲擊海灣地區美軍基地及民用設施",
+     "h": "受美國海軍封鎖及制裁影響，伊朗近日加大了對海灣地區美軍基地及民用設施的襲擊力度。",
+     "s": "受美國海軍封鎖及制裁影響，伊朗近日加大了對海灣地區美軍基地及民用設施的襲擊力度。",
+     "k": [],
+     "full": false,
+     "src": "Al Jazeera",
+     "url": "https://www.aljazeera.com/video/inside-story/2026/11/23/iran-hits-us-bases-and-civilian-sites-in-the-gulf-after-a-lull?traffic_source=rss"
+    },
+    {
+     "t": "黃仁勳涉間諜醜聞辭職11天後重任英偉達CEO",
+     "h": "黃仁勳在因涉嫌間諜醜聞辭職僅11天後，已重新獲任命為英偉達（Nvidia）執行長。",
+     "s": "黃仁勳在因涉嫌間諜醜聞辭職僅11天後，已重新獲任命為英偉達（Nvidia）執行長。",
+     "k": [],
+     "full": false,
+     "src": "Al Jazeera",
+     "url": "https://www.aljazeera.com/video/newsfeed/2026/11/23/jensen-huang-reinstated-as-nvidia-chief-how-did-we-get-here?traffic_source=rss"
+    },
+    {
+     "t": "加州沿海迎多年最大浪潮 當局發布危險警報",
+     "h": "低氣壓引發強勁湧浪及超過9米高巨浪，加州沿海地區全週收到多項危險警報，部分海灘及碼頭關閉。",
+     "s": "低氣壓引發強勁湧浪及超過9米高巨浪，加州沿海地區全週收到多項危險警報，部分海灘及碼頭關閉。",
+     "k": [],
+     "full": false,
+     "src": "The Guardian",
+     "url": "https://www.theguardian.com/us-news/2026/nov/20/california-coastal-communities-alert-big-waves-hit-state"
     }
    ]
   }
