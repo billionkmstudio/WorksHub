@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-25T17:30",
+ "updated": "2026-11-25 19:52",
  "days": {
   "2026-10-31": {
    "note": "新聞資料日期：2026-10-30（美股收市）至 2026-10-31",
@@ -7228,6 +7228,100 @@
      "idea": "撰寫專題文章分析「單人 App 開發者的平台風險」，並提供轉型 Web App (PWA) 的具體策略。",
      "src": "HN 首頁　108 則留言",
      "url": "https://news.ycombinator.com/item?id=50616933"
+    }
+   ]
+  },
+  "2026-11-25": {
+   "finance": [
+    {
+     "t": "美國擬對中歐等14個貿易夥伴加徵新關稅",
+     "h": "美國提議對中國及歐盟等14個貿易夥伴加徵新關稅，以應對被指不公、具歧視性或損害美國商業的對外貿易行為。",
+     "s": "美國提議對中國及歐盟等14個貿易夥伴加徵新關稅，以應對被指不公、具歧視性或損害美國商業的對外貿易行為。",
+     "k": [],
+     "full": false,
+     "src": "CNBC / BBC Business / The Guardian Business",
+     "url": "https://www.cnbc.com/2026/11/25/us-tariffs-trump-section-301.html"
+    },
+    {
+     "t": "輝達領跌科技股 黃仁勳回歸升勢消退",
+     "h": "隨著投資者權衡人工智能支出、通脹及高利率風險，黃仁勳回歸帶動的升勢消退，輝達及其他AI概念股下挫，領跌科技板塊。",
+     "s": "隨著投資者權衡人工智能支出、通脹及高利率風險，黃仁勳回歸帶動的升勢消退，輝達及其他AI概念股下挫，領跌科技板塊。",
+     "k": [],
+     "full": false,
+     "src": "CNBC / The Guardian Business",
+     "url": "https://www.cnbc.com/2026/11/25/nvidia-ai-stock-tech-selloff.html"
+    },
+    {
+     "t": "美聯儲12月議息前夕稱通脹未見好轉",
+     "h": "在即將迎來關鍵的12月加息表決前夕，美聯儲表示頑固的通脹依然是經濟擴張中的棘手問題。",
+     "s": "在即將迎來關鍵的12月加息表決前夕，美聯儲表示頑固的通脹依然是經濟擴張中的棘手問題。",
+     "k": [],
+     "full": false,
+     "src": "MarketWatch",
+     "url": "https://www.marketwatch.com/story/the-fed-says-inflation-hasnt-gotten-any-better-ahead-of-its-key-december-vote-to-raise-rates-65024d33?mod=mw_rss_topstories"
+    },
+    {
+     "t": "英國折扣連鎖店Poundland倒閉 萬一職位堪憂",
+     "h": "英國折扣連鎖店Poundland在物色買家失敗後進入破產管理程序，導致多達11,000個工作崗位面臨風險。",
+     "s": "英國折扣連鎖店Poundland在物色買家失敗後進入破產管理程序，導致多達11,000個工作崗位面臨風險。",
+     "k": [],
+     "full": false,
+     "src": "BBC Business",
+     "url": "https://www.bbc.co.uk/news/articles/cm3vgdn037z4o?at_medium=RSS&at_campaign=rss"
+    },
+    {
+     "t": "美國10月新屋銷量創今年新高",
+     "h": "在房屋建築商提供大幅折扣、低按揭利率及黑色星期五促銷的推動下，美國10月新建房屋銷量激增，創下年內新高。",
+     "s": "在房屋建築商提供大幅折扣、低按揭利率及黑色星期五促銷的推動下，美國10月新建房屋銷量激增，創下年內新高。",
+     "k": [],
+     "full": false,
+     "src": "MarketWatch",
+     "url": "https://www.marketwatch.com/story/new-home-sales-just-hit-a-2026-high-as-builders-dangle-low-mortgages-and-black-friday-deals-291a3b62?mod=mw_rss_topstories"
+    },
+    {
+     "t": "輝達行政總裁黃仁勳就個人行為向員工致歉",
+     "h": "黃仁勳承認違反行為準則發生婚外情，並就給公司帶來的動盪向員工致歉，但他否認特朗普在其重返CEO職位中發揮了關鍵作用。",
+     "s": "黃仁勳承認違反行為準則發生婚外情，並就給公司帶來的動盪向員工致歉，但他否認特朗普在其重返CEO職位中發揮了關鍵作用。",
+     "k": [],
+     "full": false,
+     "src": "The Guardian Business",
+     "url": "https://www.theguardian.com/technology/2026/nov/24/jensen-huang-nvidia-apologizes-staff"
+    },
+    {
+     "t": "涉OpenAI竊聽案沙特前工程師獲准保釋",
+     "h": "涉及OpenAI竊聽案的前工程師、沙特籍阿爾福贊在司法部試圖阻攔後仍獲准保釋，其律師透露他預計將佩戴電子腳鐐。",
+     "s": "涉及OpenAI竊聽案的前工程師、沙特籍阿爾福贊在司法部試圖阻攔後仍獲准保釋，其律師透露他預計將佩戴電子腳鐐。",
+     "k": [],
+     "full": false,
+     "src": "CNBC",
+     "url": "https://www.cnbc.com/2026/11/25/openai-bugging-aflozan-bond-release-saudi.html"
+    },
+    {
+     "t": "SpaceX獲FCC批准部署百萬顆軌道數據中心衛星",
+     "h": "SpaceX獲美國聯邦通訊委員會（FCC）批准將100萬顆軌道數據中心衛星送入太空，該提案此前遭到亞馬遜等團體反對。",
+     "s": "SpaceX獲美國聯邦通訊委員會（FCC）批准將100萬顆軌道數據中心衛星送入太空，該提案此前遭到亞馬遜等團體反對。",
+     "k": [],
+     "full": false,
+     "src": "CNBC",
+     "url": "https://www.cnbc.com/2026/11/25/spacex-fcc-satellite-approval.html"
+    },
+    {
+     "t": "燃氣價格飆升 英國1月家庭能源賬單料漲26%",
+     "h": "由於燃氣價格急升，自1月起能源賬單將上漲26%。若該水平維持一年，典型家庭的年支出將從1,723英鎊增至2,166英鎊。",
+     "s": "由於燃氣價格急升，自1月起能源賬單將上漲26%。若該水平維持一年，典型家庭的年支出將從1,723英鎊增至2,166英鎊。",
+     "k": [],
+     "full": false,
+     "src": "BBC Business",
+     "url": "https://www.bbc.co.uk/news/articles/cm20qnq33e90o?at_medium=RSS&at_campaign=rss"
+    },
+    {
+     "t": "歐盟下月將對中國混合動力汽車實施進口配額限制",
+     "h": "歐盟委員會宣佈下月起對中國混合動力車進口實施配額限制。該臨時配額亦適用於來自日本、土耳其、南韓及英國的汽車。",
+     "s": "歐盟委員會宣佈下月起對中國混合動力車進口實施配額限制。該臨時配額亦適用於來自日本、土耳其、南韓及英國的汽車。",
+     "k": [],
+     "full": false,
+     "src": "The Guardian Business",
+     "url": "https://www.theguardian.com/business/2026/nov/24/eu-cap-chinese-hybrid-ev-imports-tariff-uk"
     }
    ]
   }
