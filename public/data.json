@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-26T17:13",
+ "updated": "2026-11-26 19:40",
  "days": {
   "2026-10-31": {
    "note": "新聞資料日期：2026-10-30（美股收市）至 2026-10-31",
@@ -7322,6 +7322,100 @@
      "full": false,
      "src": "The Guardian Business",
      "url": "https://www.theguardian.com/business/2026/nov/24/eu-cap-chinese-hybrid-ev-imports-tariff-uk"
+    }
+   ]
+  },
+  "2026-11-26": {
+   "intl": [
+    {
+     "t": "法國影星謝烈迪比達度涉強奸案 將出庭受審",
+     "h": "巴黎上訴法院裁定，影星謝烈迪比達度因涉嫌在2018年強奸女演員 Charlotte Arnould 而將出庭受審。",
+     "s": "巴黎上訴法院裁定，影星謝烈迪比達度因涉嫌在2018年強奸女演員 Charlotte Arnould 而將出庭受審。",
+     "k": [],
+     "full": false,
+     "src": "BBC News / Al Jazeera",
+     "url": "https://www.bbc.co.uk/news/articles/cmlyd76kyx44o?at_medium=RSS&at_campaign=rss"
+    },
+    {
+     "t": "柴油油輪在西班牙伊維薩島附近傾覆沉沒 釀一死",
+     "h": "一艘載有多達7000噸柴油的油輪在西班牙伊維薩島附近傾覆，造成一名船員死亡。救援部門正評估潛在環境破壞。",
+     "s": "一艘載有多達7000噸柴油的油輪在西班牙伊維薩島附近傾覆，造成一名船員死亡。救援部門正評估潛在環境破壞。",
+     "k": [],
+     "full": false,
+     "src": "BBC News / Al Jazeera",
+     "url": "https://www.bbc.co.uk/news/articles/c9gklryvj24do?at_medium=RSS&at_campaign=rss"
+    },
+    {
+     "t": "兩名意大利人於科威特襲擊中喪生 伊朗否認責任",
+     "h": "意大利外交部指，兩名為德國萊茵金屬公司工作的意大利技術人員在科威特襲擊中身亡。伊朗否認承擔責任。",
+     "s": "意大利外交部指，兩名為德國萊茵金屬公司工作的意大利技術人員在科威特襲擊中身亡。伊朗否認承擔責任。",
+     "k": [],
+     "full": false,
+     "src": "BBC News / Al Jazeera",
+     "url": "https://www.bbc.co.uk/news/articles/c39w9y5dx4k5o?at_medium=RSS&at_campaign=rss"
+    },
+    {
+     "t": "剛果伊波拉疫情錄1.2萬宗 部分救援人員撤離",
+     "h": "剛果東部伊波拉疫情已累積1.2萬宗病例。政府軍與叛軍持續交戰干擾控制疫情工作，部分救援人員正撤離。",
+     "s": "剛果東部伊波拉疫情已累積1.2萬宗病例。政府軍與叛軍持續交戰干擾控制疫情工作，部分救援人員正撤離。",
+     "k": [],
+     "full": false,
+     "src": "NPR",
+     "url": "https://www.npr.org/2026/11/26/g-s1-155957/congo-ebola-responders"
+    },
+    {
+     "t": "埃及開羅公路油罐車相撞起火 造成至少31死",
+     "h": "埃及開羅環城公路發生油罐車相撞事故並引發大火，造成至少31人死亡、21人受傷，當局已拘捕一名涉事司機。",
+     "s": "埃及開羅環城公路發生油罐車相撞事故並引發大火，造成至少31人死亡、21人受傷，當局已拘捕一名涉事司機。",
+     "k": [],
+     "full": false,
+     "src": "The Guardian",
+     "url": "https://www.theguardian.com/world/2026/nov/25/people-killed-fuel-tanker-crash-ignites-large-fire-cairo-highway"
+    },
+    {
+     "t": "金正恩無視特朗普倡議 誓言製造更多核武器",
+     "h": "朝鮮最高領導人金正恩視察核原料生產設施，要求製造更多核武器以應對美國及韓國的威脅。",
+     "s": "朝鮮最高領導人金正恩視察核原料生產設施，要求製造更多核武器以應對美國及韓國的威脅。",
+     "k": [],
+     "full": false,
+     "src": "NPR",
+     "url": "https://www.npr.org/2026/11/26/g-s1-155955/north-korea-kim-nuclear-weapons-trump"
+    },
+    {
+     "t": "特朗普稱中期選舉前公布的GDP數據「虛假」",
+     "h": "美國總統特朗普表示，中期選舉前公布「虛假」經濟增長數據屬刻意決定，並要求對此展開調查。",
+     "s": "美國總統特朗普表示，中期選舉前公布「虛假」經濟增長數據屬刻意決定，並要求對此展開調查。",
+     "k": [],
+     "full": false,
+     "src": "Al Jazeera",
+     "url": "https://www.aljazeera.com/economy/2026/11/26/trump-calls-gdp-data-released-before-midterms-fake-demands-investigation?traffic_source=rss"
+    },
+    {
+     "t": "歐盟各國領袖難就長期預算及援助烏克蘭達共識",
+     "h": "歐盟在布魯塞爾召開特別峰會，討論2028至2034年的預算草案，各國領袖難以就長期預算及對烏克蘭提供更多資金達成共識。",
+     "s": "歐盟在布魯塞爾召開特別峰會，討論2028至2034年的預算草案，各國領袖難以就長期預算及對烏克蘭提供更多資金達成共識。",
+     "k": [],
+     "full": false,
+     "src": "Al Jazeera",
+     "url": "https://www.aljazeera.com/economy/2026/11/26/eu-leaders-struggle-to-agree-on-long-term-budget-more-money-for-ukraine?traffic_source=rss"
+    },
+    {
+     "t": "中國調查政治局委員兼上海市委書記陳吉寧",
+     "h": "中國國家主席習近平長期推進反腐敗行動，政治局委員兼上海市委書記陳吉寧成為最新受調查的高層官員。",
+     "s": "中國國家主席習近平長期推進反腐敗行動，政治局委員兼上海市委書記陳吉寧成為最新受調查的高層官員。",
+     "k": [],
+     "full": false,
+     "src": "NPR",
+     "url": "https://www.npr.org/2026/11/25/nx-s1-6053801/china-investigation-politburo-shanghai-party"
+    },
+    {
+     "t": "廉價針劑愛滋病毒預防藥物運抵非洲",
+     "h": "每年注射兩次的愛滋病毒預防藥物 Lenacapavir 已運抵非洲，該藥物在預防愛滋病毒感染方面有效率接近100%。",
+     "s": "每年注射兩次的愛滋病毒預防藥物 Lenacapavir 已運抵非洲，該藥物在預防愛滋病毒感染方面有效率接近100%。",
+     "k": [],
+     "full": false,
+     "src": "BBC News",
+     "url": "https://www.bbc.co.uk/news/articles/cmly7jve72r2o?at_medium=RSS&at_campaign=rss"
     }
    ]
   }
